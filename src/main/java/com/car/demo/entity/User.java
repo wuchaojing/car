@@ -1,19 +1,9 @@
 package com.car.demo.entity;
 
+import lombok.Data;
+
+@Data // lombok
 public class User {
 	private int id;
 	private String name;
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 }
