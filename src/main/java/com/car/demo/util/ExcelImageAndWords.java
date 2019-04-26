@@ -1,5 +1,6 @@
 package com.car.demo.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
@@ -13,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// todo 可以学习下lombok里面的@Slf4j的用法。禁止使用System.out.println打印，因为上线之后万一出bug没法通过查看运行日志找问题
+@Slf4j
 public class ExcelImageAndWords {
 
     public static void getDataFromExcel(String filePath) throws IOException {
