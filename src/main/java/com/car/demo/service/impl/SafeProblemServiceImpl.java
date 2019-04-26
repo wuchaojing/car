@@ -1,5 +1,6 @@
 package com.car.demo.service.impl;
 
+import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
@@ -14,7 +15,11 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     private SafeProblemMapper safeProblemMapper;
 
     @Override
-    public List<SafeProblem> searchByCondition(SafeProblem safeProblem) {
-        return safeProblemMapper.searchByCondition(safeProblem);
+    public ResultInfo searchByCondition(SafeProblem safeProblem) {
+//        return safeProblemMapper.searchByCondition(safeProblem);
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblem);
+
+        return new ResultInfo(true, "success", safeProblems);
+
     }
 }
