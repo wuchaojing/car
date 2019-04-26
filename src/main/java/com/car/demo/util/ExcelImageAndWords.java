@@ -71,7 +71,7 @@ public class ExcelImageAndWords {
 
         // 判断表头是否正确
         System.out.println(rowHead.getPhysicalNumberOfCells());
-        int len=rowHead.getPhysicalNumberOfCells();
+        int len = rowHead.getPhysicalNumberOfCells();
 
         // 获得数据的总行数
         int totalRowNum = sheet.getLastRowNum();
@@ -85,11 +85,11 @@ public class ExcelImageAndWords {
             Cell cell = null;
             for (int j = 0; j < len; j++) {
                 cell = row.getCell((short) j);
-                if(cell!=null){
+                if (cell != null) {
                     cell.setCellType(Cell.CELL_TYPE_STRING);
                     temp = cell.getStringCellValue();
                     System.out.print(temp + " ");
-                }else{
+                } else {
                     System.out.println("空数据 ");
                 }
 

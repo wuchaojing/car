@@ -15,5 +15,5 @@ public interface SafeProblemMapper {
             "</if> " +
             "</where>" +
             "</script>")
-     List<SafeProblem> searchAll(SafeProblem safeProblem) ;
+     List<SafeProblem> searchByCondition(SafeProblem safeProblem) ;
 }
