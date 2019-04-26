@@ -25,7 +25,7 @@ public class SafeProblemController {
             js.setMsg("成功");
             js.setSuccess(true);
         }catch (Exception e){
-            js.setMsg("查询出错");
+            js.setMsg("查询出错");//--
             js.setSuccess(false);
         }
         return js;
