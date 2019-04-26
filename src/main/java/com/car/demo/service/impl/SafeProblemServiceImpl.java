@@ -13,7 +13,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
     private SafeProblemMapper safeProblemMapper;
     @Override
-    public List<SafeProblem> searchAll() {
-        return safeProblemMapper.searchAll();
+    public List<SafeProblem> searchAll(SafeProblem safeProblem) {
+        return safeProblemMapper.searchAll(safeProblem);
     }
 }

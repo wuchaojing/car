@@ -1,6 +1,7 @@
 package com.car.demo.controller;
 
 import com.car.demo.entity.Json;
+import com.car.demo.entity.SafeProblem;
 import com.car.demo.service.SafeProblemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +18,12 @@ public class SafeProblemController {
     private SafeProblemService safeProblemService;
     @RequestMapping("selectAll")
     @ResponseBody
-    public Json addExcel()
+    public Json addExcel(SafeProblem safeProblem)
     {
         Json js=new Json();
         js.setMsg("成功");
         js.setSuccess(true);
-        js.setData(safeProblemService.searchAll());
+        js.setData(safeProblemService.searchAll(safeProblem));
         return js;
     }
 }
