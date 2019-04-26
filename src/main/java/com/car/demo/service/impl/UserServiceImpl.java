@@ -12,11 +12,11 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService{
 	@Resource
-	UserDao userDao;
+	private UserDao userDao;
 
 	@Override
-	public List<User> searchAll() {
-		return userDao.selectAll();
+	public List<User> searchAll(User user) {
+		return userDao.selectAll(user);
 	}
 	
 }

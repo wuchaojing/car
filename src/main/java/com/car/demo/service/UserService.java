@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface UserService {
 
-	public List<User> searchAll();
+	public List<User> searchAll(User user);
 }
