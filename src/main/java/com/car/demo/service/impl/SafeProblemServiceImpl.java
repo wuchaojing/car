@@ -12,8 +12,9 @@ import java.util.List;
 public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
     private SafeProblemMapper safeProblemMapper;
+
     @Override
-    public List<SafeProblem> searchAll(SafeProblem safeProblem) {
-        return safeProblemMapper.searchAll(safeProblem);
+    public List<SafeProblem> searchByCondition(SafeProblem safeProblem) {
+        return safeProblemMapper.searchByCondition(safeProblem);
     }
 }
