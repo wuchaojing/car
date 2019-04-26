@@ -16,10 +16,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo searchByCondition(SafeProblem safeProblem) {
-//        return safeProblemMapper.searchByCondition(safeProblem);
         List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblem);
-
-        return new ResultInfo(true, "success", safeProblems);
-
+        return new ResultInfo(1, "success", safeProblems);
     }
 }

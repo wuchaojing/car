@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 
 @Controller
-public class SafeProblemController { // 提示：controller的作用只是参数判断和请求转发。一般比较简洁
+public class SafeProblemController {
 
     @Resource
     private SafeProblemService safeProblemService;
 
-    @GetMapping("safeProblems") // todo 改为safe_problems // 一般url里面不使用大写
+    @GetMapping("safe_problems")
     @ResponseBody
     public ResultInfo searchByCondition(SafeProblem safeProblem) {
         return safeProblemService.searchByCondition(safeProblem);
