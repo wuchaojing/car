@@ -1,5 +1,6 @@
 package com.car.demo.util;
 
+import com.car.demo.entity.SafeProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.*;
@@ -8,18 +9,20 @@ import org.apache.poi.xssf.usermodel.*;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 public class ExcelImageAndWords {
 
-    public static void getDataFromExcel(String filePath) throws IOException {
+    public static List<SafeProblem> getDataFromExcel(String filePath) {
         // String filePath = "E:\\123.xlsx";
-
+        List<SafeProblem> safeProblems=new ArrayList<>();
         // 判断是否为excel类型文件
         if (!filePath.endsWith(".xls") && !filePath.endsWith(".xlsx")) {
             System.out.println("文件不是excel类型");
@@ -35,35 +38,40 @@ public class ExcelImageAndWords {
             e.printStackTrace();
         }
 
-        try {
-            // 2003版本的excel，用.xls结尾
-            wookbook = new HSSFWorkbook(fis);// 得到工作簿
 
-        } catch (Exception ex) {
-            // ex.printStackTrace();
-            try {
+        try {
+            if (filePath.endsWith(".xls")) {
+                // 2003版本的excel，用.xls结尾
+                wookbook = new HSSFWorkbook(fis);// 得到工作簿
+            } else if (filePath.endsWith(".xlsx")) {
                 // 2007版本的excel，用.xlsx结尾
                 fis = new FileInputStream(filePath);
                 wookbook = new XSSFWorkbook(fis);// 得到工作簿
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } else {//【不是的话，我暂时是设了抛出异常】
+                try {
+                    throw new Exception("不是excel表格");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         Map<String, PictureData> maplist = null;
-
+        Map<String, String> picMap = null;
         sheet = wookbook.getSheetAt(0);
         // 判断用07还是03的方法获取图片
-        if (filePath.endsWith(".xls")) {
-            maplist = getPictures1((HSSFSheet) sheet);
-        } else if (filePath.endsWith(".xlsx")) {
-            maplist = getPictures2((XSSFSheet) sheet);
-        }
         try {
-            printImg(maplist);
+            if (filePath.endsWith(".xls")) {
+                maplist = getPictures1((HSSFSheet) sheet);
+            } else if (filePath.endsWith(".xlsx")) {
+                maplist = getPictures2((XSSFSheet) sheet);
+            }
+            picMap = printImg(maplist);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         // 得到一个工作表
@@ -72,7 +80,6 @@ public class ExcelImageAndWords {
         Row rowHead = sheet.getRow(0);
 
         // 判断表头是否正确
-        System.out.println(rowHead.getPhysicalNumberOfCells());
         int len = rowHead.getPhysicalNumberOfCells();
 
         // 获得数据的总行数
@@ -81,28 +88,63 @@ public class ExcelImageAndWords {
         // 要获得属性
         String temp = "";
         // 获得所有数据
-        for (int i = 1; i <= totalRowNum; i++) {
-            // 获得第i行对象【第一行是表头】
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        for (int i = 2; i <= totalRowNum; i++) {
+            // 获得第i行对象【表格第一、二行无用，i从2开始】
             Row row = sheet.getRow(i);
             Cell cell = null;
+            String cellValue = null;
+            SafeProblem safeProblem = new SafeProblem();
             for (int j = 0; j < len; j++) {
                 cell = row.getCell((short) j);
-                if (cell != null) {
-                    cell.setCellType(Cell.CELL_TYPE_STRING);
-                    temp = cell.getStringCellValue();
-                    System.out.print(temp + " ");
-                } else {
-                    System.out.println("空数据 ");
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                cellValue = cell.getStringCellValue();
+                if (j == 1) {
+                    safeProblem.setAuditAera(cellValue);
+                } else if (j == 2) {
+                    try {
+                        safeProblem.setProposeTime(simpleDateFormat.parse(cellValue));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } else if (j == 3) {
+                    safeProblem.setProblemDescription(cellValue);
+                } else if (j == 4) {
+                    safeProblem.setPhoto(picMap.get(i + "-" + j));
+                } else if (j == 5) {
+                    safeProblem.setStateJudgement(cellValue);
+                } else if (j == 6) {
+                    safeProblem.setProblemClassification(cellValue);
+                } else if (j == 7) {
+                    safeProblem.setSubdivisionType(cellValue);
+                } else if (j == 8) {
+                    safeProblem.setRank(cellValue);
+                } else if (j == 9) {
+                    safeProblem.setRectificationMeasures(cellValue);
+                } else if (j == 10) {
+                    safeProblem.setResponsibleArea(cellValue);
+                } else if (j == 11) {
+                    safeProblem.setPersonLiable(cellValue);
+                } else if (j == 12) {
+                    safeProblem.setCompletionDeadline(cellValue);
+                } else if (j == 13) {
+                    safeProblem.setAuditHierarchy(cellValue);
+                } else if (j == 14) {
+                    safeProblem.setRepeatQuestion(cellValue);
+                } else if (j == 15) {
+                    safeProblem.setCompletionStatus(cellValue);
+                } else if (j == 16) {
+                    safeProblem.setFinishPhoto(picMap.get(i + "-" + j));
                 }
-
             }
-            System.out.println();
+            //数据库剩余内容填充
+            safeProblem.setSubmitPerson(666);//自己随便编写的
+            safeProblem.setCreateTime(new Date());
+            safeProblem.setLastTime(new Date());
+            //System.out.println(safeProblem);
+            safeProblems.add(safeProblem);
         }
-        for (Map.Entry<String, PictureData> entry : maplist.entrySet()) { /* 自带的entry */
-
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-
-        }
+        return safeProblems;
     }
 
     /**
@@ -154,18 +196,17 @@ public class ExcelImageAndWords {
     }
 
     // 图片写出
-    public static void printImg(Map<String, PictureData> sheetList) throws IOException {
-
+    public static Map<String, String> printImg(Map<String, PictureData> sheetList) throws IOException {
+        Map<String, String> picMap = new HashMap<>();
         // for (Map<String, PictureData> map : sheetList) {
-        Object key[] = sheetList.keySet().toArray();
-        for (int i = 0; i < sheetList.size(); i++) {
+        for (String key : sheetList.keySet()) {
             // 获取图片流
-            PictureData pic = sheetList.get(key[i]);
+            PictureData pic = sheetList.get(key);
             // 获取图片索引
-            String picName = key[i].toString();
+            String picName = UUID.randomUUID().toString();//随机生成个名，这样不重复
             // 获取图片格式
             String ext = pic.suggestFileExtension();
-
+            picMap.put(key, picName + "." + ext);//我按照  【"行-列",图片名】存储在picMap
             byte[] data = pic.getData();
 
             // 图片保存路径
@@ -174,13 +215,16 @@ public class ExcelImageAndWords {
             out.close();
         }
         // }
-
+        return picMap;
     }
 
     public static void main(String[] args) throws Exception {
         // getDataFromExcel("E:"+ File.separator +"学生信息表.xlsx");
-        getDataFromExcel("D:\\jk.xlsx");
-
+        //getDataFromExcel("D:\\jk.xlsx");
+        List<SafeProblem> safeProblems=getDataFromExcel("D:\\jk.xlsx");
+        for(SafeProblem safeProblem:safeProblems){
+            System.out.println(safeProblem);
+        }
     }
 
 }

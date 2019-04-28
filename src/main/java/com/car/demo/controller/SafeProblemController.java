@@ -5,7 +5,9 @@ import com.car.demo.entity.SafeProblem;
 import com.car.demo.service.SafeProblemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 
@@ -19,5 +21,11 @@ public class SafeProblemController {
     @ResponseBody
     public ResultInfo searchByCondition(SafeProblem safeProblem) {
         return safeProblemService.searchByCondition(safeProblem);
+    }
+
+    @PostMapping("safe_problems")
+    @ResponseBody
+    public ResultInfo insert(MultipartFile[] myfiles) {
+        return safeProblemService.insert(myfiles);
     }
 }

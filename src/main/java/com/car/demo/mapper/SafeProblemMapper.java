@@ -1,8 +1,7 @@
 package com.car.demo.mapper;
 
 import com.car.demo.entity.SafeProblem;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -16,4 +15,9 @@ public interface SafeProblemMapper {
             "</where>" +
             "</script>")
      List<SafeProblem> searchByCondition(SafeProblem safeProblem) ;
+    @Insert("<script> insert into safe_problem (audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, `rank`, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, last_time) values(" +
+            "#{auditAera},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{lastTime})" +
+            " </script>")
+    public Integer insert(SafeProblem safeProblem);
+
 }
