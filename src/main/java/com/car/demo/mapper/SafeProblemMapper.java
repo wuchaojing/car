@@ -15,8 +15,8 @@ public interface SafeProblemMapper {
             "</where>" +
             "</script>")
      List<SafeProblem> searchByCondition(SafeProblem safeProblem) ;
-    @Insert("<script> insert into safe_problem (audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, `rank`, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, last_time) values(" +
-            "#{auditAera},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{lastTime})" +
+    @Insert("<script> insert into safe_problem (audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo,submit_person, create_time, last_time) values (" +
+            "#{auditAera},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{submitPerson},#{createTime},#{lastTime})" +
             " </script>")
     public Integer insert(SafeProblem safeProblem);
 

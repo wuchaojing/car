@@ -5,6 +5,7 @@ import com.car.demo.entity.SafeProblem;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ExcelImageAndWords;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
@@ -44,10 +46,9 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                 }
             }
         } catch (IllegalStateException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error("IllegalStateException",e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException",e);
         }
         //Integer n=safeProblemMapper.insert(safeProblem);
         return new ResultInfo(1,"success",len);

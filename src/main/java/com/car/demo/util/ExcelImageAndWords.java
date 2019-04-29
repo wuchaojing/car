@@ -65,50 +65,77 @@ public class ExcelImageAndWords {
                 // 获得第i行对象【表格第一、二行无用，i从2开始】
                 Row row = sheet.getRow(i);
                 Cell cell = null;
-                String cellValue = null;
                 SafeProblem safeProblem = new SafeProblem();
-                for (int j = 0; j < len; j++) {
-                    cell = row.getCell((short) j);
+
+                cell = row.getCell((short) 1);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setAuditAera(cell.getStringCellValue());
+
+                try {
+                    cell = row.getCell((short) 2);
                     cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
-                    cellValue = cell.getStringCellValue();
-                    if (j == 1) {
-                        safeProblem.setAuditAera(cellValue);
-                    } else if (j == 2) {
-                        try {
-                            safeProblem.setProposeTime(simpleDateFormat.parse(cellValue));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    } else if (j == 3) {
-                        safeProblem.setProblemDescription(cellValue);
-                    } else if (j == 4) {
-                        safeProblem.setPhoto(picMap.get(i + "-" + j));
-                    } else if (j == 5) {
-                        safeProblem.setStateJudgement(cellValue);
-                    } else if (j == 6) {
-                        safeProblem.setProblemClassification(cellValue);
-                    } else if (j == 7) {
-                        safeProblem.setSubdivisionType(cellValue);
-                    } else if (j == 8) {
-                        safeProblem.setRank(cellValue);
-                    } else if (j == 9) {
-                        safeProblem.setRectificationMeasures(cellValue);
-                    } else if (j == 10) {
-                        safeProblem.setResponsibleArea(cellValue);
-                    } else if (j == 11) {
-                        safeProblem.setPersonLiable(cellValue);
-                    } else if (j == 12) {
-                        safeProblem.setCompletionDeadline(cellValue);
-                    } else if (j == 13) {
-                        safeProblem.setAuditHierarchy(cellValue);
-                    } else if (j == 14) {
-                        safeProblem.setRepeatQuestion(cellValue);
-                    } else if (j == 15) {
-                        safeProblem.setCompletionStatus(cellValue);
-                    } else if (j == 16) {
-                        safeProblem.setFinishPhoto(picMap.get(i + "-" + j));
-                    }
+                    safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
+                } catch (ParseException e) {
+                    log.error("ParseException",e);
                 }
+
+                cell = row.getCell((short) 3);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setProblemDescription(cell.getStringCellValue());
+
+                cell = row.getCell((short) 4);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setPhoto(picMap.get(i + "-" + 4));
+
+                cell = row.getCell((short) 5);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setStateJudgement(cell.getStringCellValue());
+
+                cell = row.getCell((short) 6);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setProblemClassification(cell.getStringCellValue());
+
+                cell = row.getCell((short) 7);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setSubdivisionType(cell.getStringCellValue());
+
+                cell = row.getCell((short) 8);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setRank(cell.getStringCellValue());
+
+                cell = row.getCell((short) 9);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setRectificationMeasures(cell.getStringCellValue());
+
+                cell = row.getCell((short) 10);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setResponsibleArea(cell.getStringCellValue());
+
+                cell = row.getCell((short) 11);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setPersonLiable(cell.getStringCellValue());
+
+                cell = row.getCell((short) 12);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setCompletionDeadline(cell.getStringCellValue());
+
+                cell = row.getCell((short) 13);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setAuditHierarchy(cell.getStringCellValue());
+
+                cell = row.getCell((short) 14);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setRepeatQuestion(cell.getStringCellValue());
+
+                cell = row.getCell((short) 15);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setCompletionStatus(cell.getStringCellValue());
+
+                cell = row.getCell((short) 16);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//都按照string读入
+                safeProblem.setFinishPhoto(picMap.get(i + "-" + 16));
+
+
                 //数据库剩余内容填充
                 safeProblem.setSubmitPerson(666);//自己随便编写的
                 safeProblem.setCreateTime(new Date());
@@ -117,9 +144,9 @@ public class ExcelImageAndWords {
                 safeProblems.add(safeProblem);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("FileNotFoundException",e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException",e);
         }
         return safeProblems;
     }
@@ -181,14 +208,15 @@ public class ExcelImageAndWords {
                 // 图片保存路径
                 FileOutputStream out = null;
                 out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picName + "." + ext);
+                log.info("图片输出地址："+"D:\\photo_xingyi_excel2\\" + picName + "." + ext);
                 out.write(data);
                 out.close();
             }
             // }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("FileNotFoundException",e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IOException",e);
         }
         return picMap;
     }
