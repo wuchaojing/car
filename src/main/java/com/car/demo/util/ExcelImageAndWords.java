@@ -1,5 +1,6 @@
 package com.car.demo.util;
 
+import com.car.demo.entity.SafeProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.hssf.usermodel.*;
@@ -8,111 +9,152 @@ import org.apache.poi.xssf.usermodel.*;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 public class ExcelImageAndWords {
 
-    public static void getDataFromExcel(String filePath) throws IOException {
-        // String filePath = "E:\\123.xlsx";
-
-        // 判断是否为excel类型文件
-        if (!filePath.endsWith(".xls") && !filePath.endsWith(".xlsx")) {
-            System.out.println("文件不是excel类型");
-        }
-
-        FileInputStream fis = null;
-        Workbook wookbook = null;
-        Sheet sheet = null;
+    public static List<SafeProblem> getDataFromExcel(String filePath) {
+        List<SafeProblem> safeProblems = new ArrayList<>();
         try {
-            // 获取一个绝对地址的流
-            fis = new FileInputStream(filePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            // 2003版本的excel，用.xls结尾
-            wookbook = new HSSFWorkbook(fis);// 得到工作簿
-
-        } catch (Exception ex) {
-            // ex.printStackTrace();
-            try {
-                // 2007版本的excel，用.xlsx结尾
-                fis = new FileInputStream(filePath);
-                wookbook = new XSSFWorkbook(fis);// 得到工作簿
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            // is excel?
+            if (!filePath.endsWith(".xls") && !filePath.endsWith(".xlsx")) {
+                log.error("{} is not excel",filePath);
             }
-        }
+            FileInputStream fis = null;
+            Workbook wookbook = null;
+            Sheet sheet = null;
+            // get absolute stream
+            fis = new FileInputStream(filePath);
+            if (filePath.endsWith(".xls")) {
+                // 2003 excel endWith .xls
+                wookbook = new HSSFWorkbook(fis);// getWorkBook
+            } else if (filePath.endsWith(".xlsx")) {
+                // 2007 excel excel endWith .xlsx
+                fis = new FileInputStream(filePath);
+                wookbook = new XSSFWorkbook(fis);// getWorkBook
+            }
+            Map<String, PictureData> maplist = null;
+            Map<String, String> picMap = null;
+            sheet = wookbook.getSheetAt(0);
+            // 07 or 03 getPicture
+            if (filePath.endsWith(".xls")) {
+                maplist = getXlsPicture((HSSFSheet) sheet);
+            } else if (filePath.endsWith(".xlsx")) {
+                maplist = getXlsxPicture((XSSFSheet) sheet);
+            }
+            picMap = printImg(maplist);
+            // getWorkSheet
+            // GetRowHead
+            Row rowHead = sheet.getRow(0);
+            // getTotalColumnLen
+            int len = rowHead.getPhysicalNumberOfCells();
+            // getTotalRowLen
+            int totalRowNum = sheet.getLastRowNum();
+            // get attribute
+            String temp = "";
+            // getAllStatus
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+            for (int i = 2; i <= totalRowNum; i++) {
+                // get row[i] object【the 0,1 is no use】
+                Row row = sheet.getRow(i);
+                Cell cell = null;
+                SafeProblem safeProblem = new SafeProblem();
 
-        Map<String, PictureData> maplist = null;
+                cell = row.getCell((short) 1);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setAuditAera(cell.getStringCellValue());
 
-        sheet = wookbook.getSheetAt(0);
-        // 判断用07还是03的方法获取图片
-        if (filePath.endsWith(".xls")) {
-            maplist = getPictures1((HSSFSheet) sheet);
-        } else if (filePath.endsWith(".xlsx")) {
-            maplist = getPictures2((XSSFSheet) sheet);
-        }
-        try {
-            printImg(maplist);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        // 得到一个工作表
-
-        // 获得表头
-        Row rowHead = sheet.getRow(0);
-
-        // 判断表头是否正确
-        System.out.println(rowHead.getPhysicalNumberOfCells());
-        int len = rowHead.getPhysicalNumberOfCells();
-
-        // 获得数据的总行数
-        int totalRowNum = sheet.getLastRowNum();
-
-        // 要获得属性
-        String temp = "";
-        // 获得所有数据
-        for (int i = 1; i <= totalRowNum; i++) {
-            // 获得第i行对象【第一行是表头】
-            Row row = sheet.getRow(i);
-            Cell cell = null;
-            for (int j = 0; j < len; j++) {
-                cell = row.getCell((short) j);
-                if (cell != null) {
-                    cell.setCellType(Cell.CELL_TYPE_STRING);
-                    temp = cell.getStringCellValue();
-                    System.out.print(temp + " ");
-                } else {
-                    System.out.println("空数据 ");
+                try {
+                    cell = row.getCell((short) 2);
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
+                } catch (ParseException e) {
+                    log.error("ParseException",e);
                 }
 
+                cell = row.getCell((short) 3);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setProblemDescription(cell.getStringCellValue());
+
+                cell = row.getCell((short) 4);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setPhoto(picMap.get(i + "-" + 4));
+
+                cell = row.getCell((short) 5);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setStateJudgement(cell.getStringCellValue());
+
+                cell = row.getCell((short) 6);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setProblemClassification(cell.getStringCellValue());
+
+                cell = row.getCell((short) 7);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setSubdivisionType(cell.getStringCellValue());
+
+                cell = row.getCell((short) 8);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setRank(cell.getStringCellValue());
+
+                cell = row.getCell((short) 9);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setRectificationMeasures(cell.getStringCellValue());
+
+                cell = row.getCell((short) 10);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setResponsibleArea(cell.getStringCellValue());
+
+                cell = row.getCell((short) 11);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setPersonLiable(cell.getStringCellValue());
+
+                cell = row.getCell((short) 12);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setCompletionDeadline(cell.getStringCellValue());
+
+                cell = row.getCell((short) 13);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setAuditHierarchy(cell.getStringCellValue());
+
+                cell = row.getCell((short) 14);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setRepeatQuestion(cell.getStringCellValue());
+
+                cell = row.getCell((short) 15);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setCompletionStatus(cell.getStringCellValue());
+
+                cell = row.getCell((short) 16);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setFinishPhoto(picMap.get(i + "-" + 16));
+
+
+                //the last content
+                safeProblem.setSubmitPerson(666);//now no use
+                safeProblem.setCreateTime(new Date());
+                safeProblem.setLastTime(new Date());
+                //System.out.println(safeProblem);
+                safeProblems.add(safeProblem);
             }
-            System.out.println();
+        } catch (FileNotFoundException e) {
+            log.error("FileNotFoundException: {}",filePath);
+        } catch (IOException e) {
+            log.error("IOException: new HSSFWorkbook or XSSFWorkbook");
         }
-        for (Map.Entry<String, PictureData> entry : maplist.entrySet()) { /* 自带的entry */
-
-            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-
-        }
+        return safeProblems;
     }
 
     /**
-     * 获取图片和位置 (xls)
-     *
-     * @param sheet
-     * @return
-     * @throws IOException
+     * get picture and position (xls)
      */
-    public static Map<String, PictureData> getPictures1(HSSFSheet sheet) throws IOException {
+    public static Map<String, PictureData> getXlsPicture(HSSFSheet sheet) {
         Map<String, PictureData> map = new HashMap<String, PictureData>();
         List<HSSFShape> list = sheet.getDrawingPatriarch().getChildren();
         for (HSSFShape shape : list) {
@@ -128,13 +170,9 @@ public class ExcelImageAndWords {
     }
 
     /**
-     * 获取图片和位置 (xlsx)
-     *
-     * @param sheet
-     * @return
-     * @throws IOException
+     * get picture and position (xlsx)
      */
-    public static Map<String, PictureData> getPictures2(XSSFSheet sheet) throws IOException {
+    public static Map<String, PictureData> getXlsxPicture(XSSFSheet sheet) {
         Map<String, PictureData> map = new HashMap<String, PictureData>();
         List<POIXMLDocumentPart> list = sheet.getRelations();
         for (POIXMLDocumentPart part : list) {
@@ -153,34 +191,35 @@ public class ExcelImageAndWords {
         return map;
     }
 
-    // 图片写出
-    public static void printImg(Map<String, PictureData> sheetList) throws IOException {
-
-        // for (Map<String, PictureData> map : sheetList) {
-        Object key[] = sheetList.keySet().toArray();
-        for (int i = 0; i < sheetList.size(); i++) {
-            // 获取图片流
-            PictureData pic = sheetList.get(key[i]);
-            // 获取图片索引
-            String picName = key[i].toString();
-            // 获取图片格式
-            String ext = pic.suggestFileExtension();
-
-            byte[] data = pic.getData();
-
-            // 图片保存路径
-            FileOutputStream out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picName + "." + ext);
-            out.write(data);
-            out.close();
+    // write picture to disk
+    public static Map<String, String> printImg(Map<String, PictureData> sheetList) {
+        Map<String, String> picMap = new HashMap<>();
+        String picNameAndExt=null;
+        try {
+            // for (Map<String, PictureData> map : sheetList) {
+            for (String key : sheetList.keySet()) {
+                // get picture stream
+                PictureData pic = sheetList.get(key);
+                // get picture index
+                String picName = UUID.randomUUID().toString();//UUID to identity
+                // get picture type
+                String ext = pic.suggestFileExtension();
+                picNameAndExt=picName + "." + ext;
+                picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap
+                byte[] data = pic.getData();
+                // get picture save position
+                FileOutputStream out = null;
+                out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picNameAndExt);
+                log.info("picture save position："+"D:\\photo_xingyi_excel2\\{}",picNameAndExt);
+                out.write(data);
+                out.close();
+            }
+            // }
+        } catch (FileNotFoundException e) {
+            log.error("FileNotFoundException: {}",picNameAndExt);
+        } catch (IOException e) {
+            log.error("IOException: {} or {}","out.write","out.close");
         }
-        // }
-
+        return picMap;
     }
-
-    public static void main(String[] args) throws Exception {
-        // getDataFromExcel("E:"+ File.separator +"学生信息表.xlsx");
-        getDataFromExcel("D:\\jk.xlsx");
-
-    }
-
 }
