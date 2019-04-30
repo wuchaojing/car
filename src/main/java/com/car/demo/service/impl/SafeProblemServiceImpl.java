@@ -30,6 +30,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     @Override
     public ResultInfo insert(MultipartFile[] myfiles) {
         int len=0;
+        String filePath=null;
         try {
             String uploadPath = "D:/car";
             for (MultipartFile myfile : myfiles) {
@@ -37,18 +38,17 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                     String oldName = myfile.getOriginalFilename();
                     UUID uuid = UUID.randomUUID();
                     String newName = uuid.toString() + oldName.substring(oldName.lastIndexOf("."));
-                    //io包下的file
-                    myfile.transferTo(new File(uploadPath + "/" + newName));
+                    //io's package file
+                    filePath=uploadPath + "/" + newName;
+                    myfile.transferTo(new File(filePath));
                     List<SafeProblem> safeProblems=ExcelImageAndWords.getDataFromExcel(uploadPath + "/" + newName);
                     for(SafeProblem safeProblem:safeProblems){
                         len+=safeProblemMapper.insert(safeProblem);
                     }
                 }
             }
-        } catch (IllegalStateException e) {
-            log.error("IllegalStateException",e);
         } catch (IOException e) {
-            log.error("IOException",e);
+            log.error("IOException: transferTo {} catch wrong",filePath);
         }
         //Integer n=safeProblemMapper.insert(safeProblem);
         return new ResultInfo(1,"success",len);
