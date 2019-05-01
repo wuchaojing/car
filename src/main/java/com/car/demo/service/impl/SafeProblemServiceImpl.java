@@ -1,10 +1,14 @@
 package com.car.demo.service.impl;
 
+import com.car.demo.entity.Record;
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
+import com.car.demo.entity.User;
+import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ExcelImageAndWords;
+import com.car.demo.util.MD5Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +25,8 @@ import java.util.UUID;
 public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
     private SafeProblemMapper safeProblemMapper;
+    @Resource
+    private RecordMapper recordMapper;
 
     @Override
     public ResultInfo searchByCondition(SafeProblem safeProblem) {
@@ -28,29 +35,36 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     }
 
     @Override
-    public ResultInfo insert(MultipartFile[] myfiles) {
-        int len=0;
-        String filePath=null;
+    public ResultInfo insert(MultipartFile[] myfiles, User user) {
+        int len = 0;
+        String filePath = null;
         try {
             String uploadPath = "D:/car";
+            Date nowSameDate = new Date();//same Date
+            //insert record begin
+            String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
+            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate);
+            recordMapper.insert(record);
+            //insert record end
             for (MultipartFile myfile : myfiles) {
                 if (!myfile.isEmpty()) {
+                    //save excel begin
                     String oldName = myfile.getOriginalFilename();
                     UUID uuid = UUID.randomUUID();
                     String newName = uuid.toString() + oldName.substring(oldName.lastIndexOf("."));
-                    //io's package file
-                    filePath=uploadPath + "/" + newName;
-                    myfile.transferTo(new File(filePath));
-                    List<SafeProblem> safeProblems=ExcelImageAndWords.getDataFromExcel(uploadPath + "/" + newName);
-                    for(SafeProblem safeProblem:safeProblems){
-                        len+=safeProblemMapper.insert(safeProblem);
+                    filePath = uploadPath + "/" + newName;
+                    myfile.transferTo(new File(filePath));//io's package file
+                    //save excel end
+                    List<SafeProblem> safeProblems = ExcelImageAndWords.getDataFromExcel(filePath, nowSameDate, recordId);
+                    for (SafeProblem safeProblem : safeProblems) {
+                        len += safeProblemMapper.insert(safeProblem);
                     }
                 }
             }
         } catch (IOException e) {
-            log.error("IOException: transferTo {} catch wrong",filePath);
+            log.error("IOException: transferTo {} catch wrong", filePath);
         }
         //Integer n=safeProblemMapper.insert(safeProblem);
-        return new ResultInfo(1,"success",len);
+        return new ResultInfo(1, "success", len);
     }
 }

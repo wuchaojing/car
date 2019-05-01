@@ -20,7 +20,14 @@ import java.util.*;
 @Slf4j
 public class ExcelImageAndWords {
 
-    public static List<SafeProblem> getDataFromExcel(String filePath) {
+    /**
+     *
+     * @param filePath
+     * @param nowSameDate  a person's submitDate and recodeDate should be same
+     * @param recordId
+     * @return
+     */
+    public static List<SafeProblem> getDataFromExcel(String filePath,Date nowSameDate,String recordId) {
         List<SafeProblem> safeProblems = new ArrayList<>();
         try {
             // is excel?
@@ -61,7 +68,6 @@ public class ExcelImageAndWords {
             String temp = "";
             // getAllStatus
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
-            Date allNowTime = new Date();
             for (int i = 2; i <= totalRowNum; i++) {
                 // get row[i] object【the 0,1 is no use】
                 Row row = sheet.getRow(i);
@@ -138,10 +144,9 @@ public class ExcelImageAndWords {
 
 
                 //the last content
-                safeProblem.setSubmitPerson("submmit_id");//now no use
-                safeProblem.setCreateTime(allNowTime);//unite every time equal
-                safeProblem.setLastTime(allNowTime);
-                safeProblem.setRecordId("recore_id");
+                safeProblem.setCreateTime(nowSameDate);//unite every time equal
+                safeProblem.setLastTime(nowSameDate);
+                safeProblem.setRecordId(recordId);
                 //System.out.println(safeProblem);
                 safeProblems.add(safeProblem);
 

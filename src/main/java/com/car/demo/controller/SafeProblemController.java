@@ -2,6 +2,7 @@ package com.car.demo.controller;
 
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
+import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class SafeProblemController {
 
     @PostMapping("safe_problems")
     @ResponseBody
-    public ResultInfo insert(MultipartFile[] myfiles) {
-        return safeProblemService.insert(myfiles);
+    public ResultInfo insert(MultipartFile[] myfiles, User user) {
+        return safeProblemService.insert(myfiles,user);
     }
 }
