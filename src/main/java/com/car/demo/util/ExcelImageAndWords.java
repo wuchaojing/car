@@ -25,7 +25,7 @@ public class ExcelImageAndWords {
         try {
             // is excel?
             if (!filePath.endsWith(".xls") && !filePath.endsWith(".xlsx")) {
-                log.error("{} is not excel",filePath);
+                log.error("{} is not excel", filePath);
             }
             FileInputStream fis = null;
             Workbook wookbook = null;
@@ -61,23 +61,24 @@ public class ExcelImageAndWords {
             String temp = "";
             // getAllStatus
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
+            Date allNowTime = new Date();
             for (int i = 2; i <= totalRowNum; i++) {
                 // get row[i] object【the 0,1 is no use】
                 Row row = sheet.getRow(i);
                 Cell cell = null;
                 SafeProblem safeProblem = new SafeProblem();
 
+                safeProblem.setProblemId(MD5Util.str2MD5(UUID.randomUUID().toString()));//encryption UUID is problemId
+
                 cell = row.getCell((short) 1);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setAuditAera(cell.getStringCellValue());
 
-                try {
-                    cell = row.getCell((short) 2);
-                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                    safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
-                } catch (ParseException e) {
-                    log.error("ParseException",e);
-                }
+
+                cell = row.getCell((short) 2);
+                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
+
 
                 cell = row.getCell((short) 3);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
@@ -137,16 +138,20 @@ public class ExcelImageAndWords {
 
 
                 //the last content
-                safeProblem.setSubmitPerson(666);//now no use
-                safeProblem.setCreateTime(new Date());
-                safeProblem.setLastTime(new Date());
+                safeProblem.setSubmitPerson("submmit_id");//now no use
+                safeProblem.setCreateTime(allNowTime);//unite every time equal
+                safeProblem.setLastTime(allNowTime);
+                safeProblem.setRecordId("recore_id");
                 //System.out.println(safeProblem);
                 safeProblems.add(safeProblem);
+
             }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}",filePath);
+            log.error("FileNotFoundException: {}", filePath);
         } catch (IOException e) {
             log.error("IOException: new HSSFWorkbook or XSSFWorkbook");
+        } catch (ParseException e) {
+            log.error("ParseException: parse excel Time yyyy-MM-dd error");
         }
         return safeProblems;
     }
@@ -194,7 +199,7 @@ public class ExcelImageAndWords {
     // write picture to disk
     public static Map<String, String> printImg(Map<String, PictureData> sheetList) {
         Map<String, String> picMap = new HashMap<>();
-        String picNameAndExt=null;
+        String picNameAndExt = null;
         try {
             // for (Map<String, PictureData> map : sheetList) {
             for (String key : sheetList.keySet()) {
@@ -204,21 +209,21 @@ public class ExcelImageAndWords {
                 String picName = UUID.randomUUID().toString();//UUID to identity
                 // get picture type
                 String ext = pic.suggestFileExtension();
-                picNameAndExt=picName + "." + ext;
+                picNameAndExt = picName + "." + ext;
                 picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap
                 byte[] data = pic.getData();
                 // get picture save position
                 FileOutputStream out = null;
                 out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picNameAndExt);
-                log.info("picture save position："+"D:\\photo_xingyi_excel2\\{}",picNameAndExt);
+                log.info("picture save position：" + "D:/photo_xingyi_excel2/{}", picNameAndExt);
                 out.write(data);
                 out.close();
             }
             // }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}",picNameAndExt);
+            log.error("FileNotFoundException: {}", picNameAndExt);
         } catch (IOException e) {
-            log.error("IOException: {} or {}","out.write","out.close");
+            log.error("IOException: {} or {}", "out.write", "out.close");
         }
         return picMap;
     }
