@@ -19,7 +19,7 @@ public class SafeProblemController {
 
     @GetMapping("safe_problems")
     @ResponseBody
-    public ResultInfo searchByCondition(SafeProblem safeProblem) {
+    public ResultInfo searchByCondition(SafeProblem safeProblem) {//now only by id
         return safeProblemService.searchByCondition(safeProblem);
     }
 
