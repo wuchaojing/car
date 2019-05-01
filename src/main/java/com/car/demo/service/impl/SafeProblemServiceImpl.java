@@ -31,12 +31,14 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     @Override
     public ResultInfo searchByCondition(SafeProblem safeProblem) {
         List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblem);
+//        if(safeProblems==null||safeProblems.size()==0){
+//            return new ResultInfo(1, "no result", null);
+//        }
         return new ResultInfo(1, "success", safeProblems);
     }
 
     @Override
     public ResultInfo insert(MultipartFile[] myfiles, User user) {
-        int len = 0;
         String filePath = null;
         try {
             String uploadPath = "D:/car";
@@ -57,14 +59,16 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                     //save excel end
                     List<SafeProblem> safeProblems = ExcelImageAndWords.getDataFromExcel(filePath, nowSameDate, recordId);
                     for (SafeProblem safeProblem : safeProblems) {
-                        len += safeProblemMapper.insert(safeProblem);
+                        safeProblemMapper.insert(safeProblem);
                     }
                 }
             }
         } catch (IOException e) {
             log.error("IOException: transferTo {} catch wrong", filePath);
         }
-        //Integer n=safeProblemMapper.insert(safeProblem);
-        return new ResultInfo(1, "success", len);
+//        if(len==null||len<=0){
+//            return new ResultInfo(0,"insert_false",null);
+//        }
+        return new ResultInfo(1, "success");
     }
 }

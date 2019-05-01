@@ -8,5 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface RecordMapper {
     @Insert("insert into record (record_id, number, name, commit_time) values " +
             "(#{recordId},#{number},#{name},#{commitTime})")
-    Integer insert(Record record);
+    void insert(Record record);
 }
