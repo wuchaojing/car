@@ -22,4 +22,9 @@ public class ResultInfo {
     public ResultInfo(int code) {
         this.code = code;
     }
+
+    public ResultInfo(int code, Object data) {
+        this.code = code;
+        this.data = data;
+    }
 }
