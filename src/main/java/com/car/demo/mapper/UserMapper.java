@@ -14,7 +14,7 @@ public interface UserMapper {
             "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime})")
     void insert(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,update_time as updateTime from user where number=#{number} and password=#{password}")
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where number=#{number} and password=#{password}")
     User selectByNumberAndPassword(User user);
 
     @Select("select count(*) from user where number=#{number}")
@@ -32,9 +32,15 @@ public interface UserMapper {
     @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
     void updateReviewState(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,update_time as updateTime  from user where superior_id=#{userId}")
-    List<User> selectBySuperiorId(User user);//find lower level
+    @Update("update user set review_state = #{reviewState},superior_id = #{superiorId} where user_id = #{userId}")
+    void update(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,update_time as updateTime  from user where user_id=#{userId}")
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user")
+    List<User> selectAll();
+
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where user_id=#{userId}")
     User selectByUserId(User user);
+
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where superior_id=#{userId}")
+    List<User> selectSonsBySuperiorId(User userSuperior);
 }

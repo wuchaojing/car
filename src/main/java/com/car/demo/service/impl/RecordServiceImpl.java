@@ -54,7 +54,7 @@ public class RecordServiceImpl implements RecordService {
             return null;
         }
         list.add(userSuperior);//add this
-        List<User> cur = userMapper.selectBySuperiorId(userSuperior);
+        List<User> cur = userMapper.selectSonsBySuperiorId(userSuperior);
         for (User user : cur) {
             getRelativeUsers(user, list);//into his every son
         }

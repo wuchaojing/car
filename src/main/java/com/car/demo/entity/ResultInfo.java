@@ -14,9 +14,17 @@ public class ResultInfo {
     private String msg;
     private Object data;
 
+    public ResultInfo(int code) {
+        this.code = code;
+    }
+
     public ResultInfo(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
+    public ResultInfo(int code, Object data) {
+        this.code = code;
+        this.data = data;
+    }
 }

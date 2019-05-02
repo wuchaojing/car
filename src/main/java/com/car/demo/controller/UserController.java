@@ -3,9 +3,13 @@ package com.car.demo.controller;
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.User;
 import com.car.demo.service.UserService;
+import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -19,56 +23,64 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseBody
-    public ResultInfo insert(User user) {//number;name;password;superiorId
-//        if(user==null||StringUtil.haveNullOrEmpty(user.getName(),user.getNumber(),user.getPassword())){
-//            return new ResultInfo(0,"注册数据不合法");
-//        }
-        //need detial
+    public ResultInfo register(User user) {
         if (StringUtils.isEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
+
         if (StringUtils.isEmpty(user.getNumber())) {
             return new ResultInfo(0, "请输入编号");
         }
+
         if (StringUtils.isEmpty(user.getPassword())) {
             return new ResultInfo(0, "请输入密码");
         }
-        return userService.insert(user);
+
+        if (StringUtils.isEmpty(user.getSuperiorId())) {
+            return new ResultInfo(0, "请选择上级");
+        }
+
+        return userService.register(user);
     }
 
     @GetMapping("login")
     @ResponseBody
-    public ResultInfo selectByNumberAndPassword(HttpSession session, User user) {
-//        if (user == null || StringUtil.haveNullOrEmpty(user.getNumber(), user.getPassword())) {
-//            return new ResultInfo(0, "登录不合法");
-//        }//need detial
+    public ResultInfo login(HttpSession session, User user) {
         if (StringUtils.isEmpty(user.getNumber())) {
             return new ResultInfo(0, "请输入编号");
         }
         if (StringUtils.isEmpty(user.getPassword())) {
             return new ResultInfo(0, "请输入密码");
         }
-        return userService.selectByNumberAndPassword(session,user);
+        ResultInfo resultInfo = userService.login(user);
+        User dbUser = (User) resultInfo.getData();
+        session.setAttribute(ConstantUtil.CLIENT_ID, dbUser);
+        return resultInfo;
     }
 
-    @GetMapping("search_by_condition")
+    @GetMapping("admin_search_all") // 管理员只需要查看所有用户信息，不需要单独查看用户信息
     @ResponseBody
-    public ResultInfo selectByCondition(User user) {
-        return userService.selectByCondition(user);
+    public ResultInfo selectAll() {
+        return userService.selectAll();
     }
 
-    @PostMapping("update_review_state")
+
+    @PostMapping("admin_update") // 只有管理员有这个权限
     @ResponseBody
-    public ResultInfo updateReviewStateByUserId(User user) {//userId reviewState
-//        if (user == null || StringsHasNullorEmpty.check(user.getUserId(), user.getReviewState())) {
-//            return new ResultInfo(0, "修改操作不合法");
-//        }
+    public ResultInfo update(User user) {
+
         if (StringUtils.isEmpty(user.getUserId())) {
-            return new ResultInfo(0, "请输入用户id");
+            return new ResultInfo(0, "请选择用户");
         }
+
         if (StringUtils.isEmpty(user.getReviewState())) {
-            return new ResultInfo(0, "请输入要修改的状态");
+            return new ResultInfo(0, "请选择审核状态");
         }
-        return userService.updateReviewStateByUserId(user);
+
+        if (StringUtils.isEmpty(user.getSuperiorId())) {//无上级也传值
+            return new ResultInfo(0, "请选择该用户上级");
+        }
+
+        return userService.update(user);
     }
 }

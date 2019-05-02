@@ -43,11 +43,11 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         try {
             String uploadPath = "D:/car";
             Date nowSameDate = new Date();//same Date
-            //insert record begin
+            //register record begin
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
             Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate);
             recordMapper.insert(record);
-            //insert record end
+            //register record end
             for (MultipartFile myfile : myfiles) {
                 if (!myfile.isEmpty()) {
                     //save excel begin
