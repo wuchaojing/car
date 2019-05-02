@@ -19,4 +19,7 @@ public class ResultInfo {
         this.msg = msg;
     }
 
+    public ResultInfo(int code) {
+        this.code = code;
+    }
 }

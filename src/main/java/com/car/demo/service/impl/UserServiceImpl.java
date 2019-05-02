@@ -8,6 +8,7 @@ import com.car.demo.util.MD5Util;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultInfo selectByNumberAndPassword(User user) {
+    public ResultInfo selectByNumberAndPassword(HttpSession session,User user) {
         User u = userMapper.selectByNumberAndPassword(user);
         if (u == null) {//don't match
             return new ResultInfo(0, "账号或者密码错误", null);
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
         } else if (u.getReviewState().equals("拒绝")) {//hasn't review
             return new ResultInfo(0, "该用户审核不通过，拒绝访问", u);
         } else {
+            session.setAttribute("user",u);
             return new ResultInfo(1, "登录成功", u);
         }
 
@@ -68,5 +70,11 @@ public class UserServiceImpl implements UserService {
 //        }
         return new ResultInfo(1, "管理员修改数据成功");
 
+    }
+
+    @Override
+    public ResultInfo update(User user) {
+        userMapper.update(user);
+        return new ResultInfo(1);
     }
 }

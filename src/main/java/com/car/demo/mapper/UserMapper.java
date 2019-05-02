@@ -32,4 +32,6 @@ public interface UserMapper {
     @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
     void updateReviewState(User user);
 
+    @Update("update user set review_state = #{reviewState},superior_id = #{superiorId} where user_id = #{userId}")
+    void update(User user);
 }

@@ -5,9 +5,11 @@ import com.car.demo.entity.User;
 import com.car.demo.service.UserService;
 import com.car.demo.util.StringUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -19,10 +21,6 @@ public class UserController {
     @PostMapping("register")
     @ResponseBody
     public ResultInfo insert(User user) {//number;name;password;superiorId
-//        if(user==null||StringUtil.haveNullOrEmpty(user.getName(),user.getNumber(),user.getPassword())){
-//            return new ResultInfo(0,"注册数据不合法");
-//        }
-        //need detial
         if (StringUtil.hasNullOrEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
@@ -37,7 +35,7 @@ public class UserController {
 
     @GetMapping("login")
     @ResponseBody
-    public ResultInfo selectByNumberAndPassword(User user) {
+    public ResultInfo selectByNumberAndPassword(HttpSession session, User user) {
 //        if (user == null || StringUtil.haveNullOrEmpty(user.getNumber(), user.getPassword())) {
 //            return new ResultInfo(0, "登录不合法");
 //        }//need detial
@@ -47,7 +45,7 @@ public class UserController {
         if (StringUtil.hasNullOrEmpty(user.getPassword())) {
             return new ResultInfo(0, "请输入密码");
         }
-        return userService.selectByNumberAndPassword(user);
+        return userService.selectByNumberAndPassword(session,user);
     }
 
     @GetMapping("search_by_condition")
@@ -70,4 +68,24 @@ public class UserController {
         }
         return userService.updateReviewStateByUserId(user);
     }
+
+    @PostMapping("admin_update") // 只有管理员有这个权限
+    @ResponseBody
+    public ResultInfo update(User user) {
+
+        if (StringUtils.isEmpty(user.getUserId())) {
+            return new ResultInfo(0,"请选择用户");
+        }
+
+        if (StringUtils.isEmpty(user.getReviewState())) {
+            return new ResultInfo(0,"请选择审核状态");
+        }
+
+        if (StringUtils.isEmpty(user.getSuperiorId())) {
+            return new ResultInfo(0,"请选择该用户上级");
+        }
+
+        return userService.update(user);
+    }
+
 }
