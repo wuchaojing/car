@@ -32,4 +32,9 @@ public interface UserMapper {
     @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
     void updateReviewState(User user);
 
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,update_time as updateTime  from user where superior_id=#{userId}")
+    List<User> selectBySuperiorId(User user);//find lower level
+
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,update_time as updateTime  from user where user_id=#{userId}")
+    User selectByUserId(User user);
 }

@@ -4,8 +4,8 @@ import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
 import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
-import com.car.demo.util.StringUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +36,10 @@ public class SafeProblemController {
         if (myfiles.length <= 0) {
             return new ResultInfo(0, "请上传excel文件");
         }
-        if (StringUtil.hasNullOrEmpty(user.getNumber())) {
+        if (StringUtils.isEmpty(user.getNumber())) {
             return new ResultInfo(0, "请输入用户编号");
         }
-        if (StringUtil.hasNullOrEmpty(user.getName())) {
+        if (StringUtils.isEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
         return safeProblemService.insert(myfiles, user);
