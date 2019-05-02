@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -37,7 +38,7 @@ public class UserController {
 
     @GetMapping("login")
     @ResponseBody
-    public ResultInfo selectByNumberAndPassword(User user) {
+    public ResultInfo selectByNumberAndPassword(HttpSession session, User user) {
 //        if (user == null || StringUtil.haveNullOrEmpty(user.getNumber(), user.getPassword())) {
 //            return new ResultInfo(0, "登录不合法");
 //        }//need detial
@@ -47,7 +48,7 @@ public class UserController {
         if (StringUtil.hasNullOrEmpty(user.getPassword())) {
             return new ResultInfo(0, "请输入密码");
         }
-        return userService.selectByNumberAndPassword(user);
+        return userService.selectByNumberAndPassword(session,user);
     }
 
     @GetMapping("search_by_condition")
