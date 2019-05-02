@@ -60,7 +60,7 @@ public class UserController {
 
     @GetMapping("admin_search_all") // 管理员只需要查看所有用户信息，不需要单独查看用户信息
     @ResponseBody
-    public ResultInfo selectAll() {
+    public ResultInfo selectAll() {//login了审核的用户后方可使用
         return userService.selectAll();
     }
 
