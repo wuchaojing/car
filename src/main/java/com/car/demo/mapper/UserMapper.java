@@ -29,17 +29,7 @@ public interface UserMapper {
             "</script>")
     List<User> selectByCondition(User user);
 
-    @Update("<script>" +
-            "update user" +
-            "<set>" +
-            "review_state=#{reviewState}," +
-            "<if test='superiorId != null'>" +
-            "superior_id = #{superiorId}," +
-            "</if>" +
-            "</set>" +
-            "<where>" +
-            "user_id=#{userId}" +
-            "</where>" +
-            "</script>")
-    void updateSelective(User user);
+    @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
+    void updateReviewState(User user);
+
 }

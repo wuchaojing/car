@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultInfo updateReviewStateByUserId(User user) {
-        userMapper.updateSelective(user);
+        userMapper.updateReviewState(user);
 //        if(len==null||len<=0){
 //            return new ResultInfo(0,"no update",len);
 //        }

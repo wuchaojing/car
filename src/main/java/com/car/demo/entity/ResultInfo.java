@@ -15,7 +15,8 @@ public class ResultInfo {
     private Object data;
 
     public ResultInfo(int code, String msg) {
-        this.code=code;
-        this.msg=msg;
+        this.code = code;
+        this.msg = msg;
     }
+
 }

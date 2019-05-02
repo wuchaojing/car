@@ -4,7 +4,7 @@ import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
 import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
-import com.car.demo.util.StringIsNullorEmpty;
+import com.car.demo.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +30,18 @@ public class SafeProblemController {
     @PostMapping("insert_file_and_user")
     @ResponseBody
     public ResultInfo insert(MultipartFile[] myfiles, User user) {
-        if(myfiles==null||user==null|| StringIsNullorEmpty.check(user.getNumber(),user.getName())){
-            return new ResultInfo(0,"插入的数据不合法",null);
+//        if(myfiles==null||user==null|| StringsHasNullorEmpty.check(user.getNumber(),user.getName())){
+//            return new ResultInfo(0,"插入的数据不合法",null);
+//        }
+        if (myfiles.length <= 0) {
+            return new ResultInfo(0, "请上传excel文件");
         }
-        return safeProblemService.insert(myfiles,user);
+        if (StringUtil.hasNullOrEmpty(user.getNumber())) {
+            return new ResultInfo(0, "请输入用户编号");
+        }
+        if (StringUtil.hasNullOrEmpty(user.getName())) {
+            return new ResultInfo(0, "请输入用户名");
+        }
+        return safeProblemService.insert(myfiles, user);
     }
 }

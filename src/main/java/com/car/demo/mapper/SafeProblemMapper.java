@@ -14,7 +14,8 @@ public interface SafeProblemMapper {
             "</if> " +
             "</where>" +
             "</script>")
-     List<SafeProblem> searchByCondition(SafeProblem safeProblem) ;
+    List<SafeProblem> searchByCondition(SafeProblem safeProblem);
+
     @Insert("<script> insert into safe_problem (problem_id,audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, last_time,record_id) values (" +
             "#{problemId},#{auditAera},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{lastTime},#{recordId})" +
             " </script>")

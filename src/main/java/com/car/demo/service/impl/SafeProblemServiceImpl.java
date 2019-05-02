@@ -34,7 +34,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        if(safeProblems==null||safeProblems.size()==0){
 //            return new ResultInfo(1, "no result", null);
 //        }
-        return new ResultInfo(1, "success", safeProblems);
+        return new ResultInfo(1, "查询成功", safeProblems);
     }
 
     @Override
@@ -65,10 +65,11 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             }
         } catch (IOException e) {
             log.error("IOException: transferTo {} catch wrong", filePath);
+            return new ResultInfo(0, "filePath有误："+filePath);
         }
 //        if(len==null||len<=0){
 //            return new ResultInfo(0,"insert_false",null);
 //        }
-        return new ResultInfo(1, "success");
+        return new ResultInfo(1, "插入文件和用户成功");
     }
 }

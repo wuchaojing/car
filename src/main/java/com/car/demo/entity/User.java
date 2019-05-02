@@ -9,17 +9,17 @@ import java.util.Date;
 @Data
 public class User {
 
-  private String userId;
-  private String number;
-  private String name;
-  private String password;
-  private String superiorId;
-  private String reviewState;
+    private String userId;
+    private String number;
+    private String name;
+    private String password;
+    private String superiorId;
+    private String reviewState;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private Date createTime;
+    private Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-  private Date updateTime;
+    private Date updateTime;
 
 }
