@@ -34,7 +34,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        if(safeProblems==null||safeProblems.size()==0){
 //            return new ResultInfo(1, "no result", null);
 //        }
-        return new ResultInfo(1, "查询成功", safeProblems);
+        return new ResultInfo(1, safeProblems);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             Date nowSameDate = new Date();//same Date
             //register record begin
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
-            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate);
+            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate,user.getUserId());
             recordMapper.insert(record);
             //register record end
             for (MultipartFile myfile : myfiles) {
@@ -70,6 +70,6 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        if(len==null||len<=0){
 //            return new ResultInfo(0,"insert_false",null);
 //        }
-        return new ResultInfo(1, "插入文件和用户成功");
+        return new ResultInfo(1);
     }
 }

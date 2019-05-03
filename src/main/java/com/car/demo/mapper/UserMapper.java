@@ -1,10 +1,7 @@
 package com.car.demo.mapper;
 
 import com.car.demo.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -41,6 +38,6 @@ public interface UserMapper {
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where user_id=#{userId}")
     User selectByUserId(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where superior_id=#{userId}")
-    List<User> selectSonsBySuperiorId(User userSuperior);
+    @Select("select user_id as userId from user where superior_id=#{userSuperiorId}")
+    List<String> selectSonsIdBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
 }

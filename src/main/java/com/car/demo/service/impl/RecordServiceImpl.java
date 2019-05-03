@@ -18,45 +18,45 @@ import java.util.List;
 @Service
 public class RecordServiceImpl implements RecordService {
     @Resource
-    RecordMapper recordMapper;
+    private RecordMapper recordMapper;
     @Resource
-    UserMapper userMapper;
+    private UserMapper userMapper;
     @Resource
-    SafeProblemMapper safeProblemMapper;
+    private SafeProblemMapper safeProblemMapper;
 
     @Override
-    public ResultInfo getRelativeRecords(User user) {
-        user = userMapper.selectByUserId(user);//can get detail status;(avoid only userId)
-        if (user == null) {//avoid userId is not true
-            return new ResultInfo(0, "请传入正确的userId");
-        }
-        List<User> totalRelativeUsers = getRelativeUsers(user, new ArrayList<User>());
+    public ResultInfo getRelativeRecords(User user) {//simplify: only userId
+//        user = userMapper.selectByUserId(user);//can get detail status;(avoid only userId)
+//        if (user == null) {//avoid userId is not true（也保证一下吧）
+//            return new ResultInfo(0, "请传入正确的userId");
+//        }
+        List<String> totalRelativeUserIds = getRelativeUserIds(user.getUserId(), new ArrayList<String>());
         List<Record> totalRelativeRecords = new ArrayList<>();
         List<Record> cur = null;
-        for (User u : totalRelativeUsers) {//at least one user
-            cur = recordMapper.searchRecordByUserNumber(u);
+        for (String userId : totalRelativeUserIds) {//at least one user
+            cur = recordMapper.searchRecordByUserId(userId);
             //if(cur!=null) {//maybe null// can solve null
             totalRelativeRecords.addAll(cur);
             //}
         }
-        //return new ResultInfo(1, "所有的其直接或间接下属(其只有id信息)", totalRelativeUsers);
-        return new ResultInfo(1, "所有的其以及其直接或间接下属的Records", totalRelativeRecords);
+        //return new ResultInfo(1, "所有的其直接或间接下属(其只有id信息)", totalRelativeUserIds);
+        return new ResultInfo(1, totalRelativeRecords);
     }
 
     @Override
     public ResultInfo getSafeProblemByRecordId(Record record) {
-        List<SafeProblem> safeProblems= safeProblemMapper.searchByRecordId(record);
-        return new ResultInfo(1,"根据recordId查出的数据",safeProblems);
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordId(record);
+        return new ResultInfo(1, safeProblems);
     }
 
-    public List<User> getRelativeUsers(User userSuperior, List<User> list) {
-        if (userSuperior == null) {//end: is null
+    public List<String> getRelativeUserIds(String userSuperiorId, List<String> list) {
+        if (userSuperiorId == null) {//end: is null
             return null;
         }
-        list.add(userSuperior);//add this
-        List<User> cur = userMapper.selectSonsBySuperiorId(userSuperior);
-        for (User user : cur) {
-            getRelativeUsers(user, list);//into his every son
+        list.add(userSuperiorId);//add this
+        List<String> curs = userMapper.selectSonsIdBySuperiorId(userSuperiorId);
+        for (String userId : curs) {
+            getRelativeUserIds(userId, list);//into his every son
         }
         return list;
     }
