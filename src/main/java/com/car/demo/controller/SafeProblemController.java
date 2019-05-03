@@ -29,7 +29,7 @@ public class SafeProblemController {
         return safeProblemService.searchByCondition(safeProblem);
     }
 
-    @PostMapping("insert_file_and_user")
+    @PostMapping("upload")
     @ResponseBody
     public ResultInfo insert(HttpSession session, MultipartFile[] myfiles) {
         User user=(User)session.getAttribute(ConstantUtil.CLIENT_ID);
