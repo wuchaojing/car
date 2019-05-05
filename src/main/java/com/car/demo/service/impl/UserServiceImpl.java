@@ -68,4 +68,22 @@ public class UserServiceImpl implements UserService {
         userMapper.update(user);
         return new ResultInfo(1);
     }
+
+    @Override
+    public ResultInfo searchByCondition(User user) {
+        List<User> list = userMapper.searchByCondition(user);
+        return new ResultInfo(1, list);
+    }
+
+    @Override
+    public ResultInfo delete(User user) {
+        userMapper.delete(user);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updatePassword(User user) {
+        userMapper.updatePassword(user);
+        return new ResultInfo(1);
+    }
 }
