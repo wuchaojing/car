@@ -50,6 +50,8 @@ public class UserServiceImpl implements UserService {
 
             return new ResultInfo(0, "该用户审核不通过，拒绝访问");
 
+        } else if (dbUser.getReviewState().equals("已注销")) {//删除了后就是注销状态
+            return new ResultInfo(0, "该用户已注销，不可使用");
         } else {
             return new ResultInfo(1, dbUser);
         }
@@ -76,8 +78,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultInfo delete(User user) {
-        userMapper.delete(user);
+    public ResultInfo updateReviewStateToCancle(User user) {//伪删除，注销用户即可
+        user.setReviewState("已注销");
+        userMapper.updateReviewStateToCancle(user);
         return new ResultInfo(1);
     }
 

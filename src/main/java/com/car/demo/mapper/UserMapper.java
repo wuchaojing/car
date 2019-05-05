@@ -43,12 +43,15 @@ public interface UserMapper {
             "<if test='name != null'> " +
             "and name like '%${name}%'" +
             "</if> " +
+            "<if test='reviewState != null'> " +
+            "and review_state=#{reviewState}" +
+            "</if> " +
             "</where>" +
             "</script>")
     List<User> searchByCondition(User user);
 
-    @Delete("delete from user where user_id=#{userId}")
-    void delete(User user);
+    @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
+    void updateReviewStateToCancle(User user);
 
     @Update("update user set password=#{password} where user_id=#{userId}")
     void updatePassword(User user);
