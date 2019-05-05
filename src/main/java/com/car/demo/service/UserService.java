@@ -13,4 +13,10 @@ public interface UserService {
     ResultInfo update(User user);
 
     ResultInfo selectAll();
+
+    ResultInfo searchByCondition(User user);
+
+    ResultInfo delete(User user);
+
+    ResultInfo updatePassword(User user);
 }
