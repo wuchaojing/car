@@ -25,6 +25,7 @@ import java.util.UUID;
 public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
     private SafeProblemMapper safeProblemMapper;
+
     @Resource
     private RecordMapper recordMapper;
 
@@ -71,5 +72,6 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //            return new ResultInfo(0,"insert_false",null);
 //        }
         return new ResultInfo(1);
+
     }
 }
