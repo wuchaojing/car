@@ -53,4 +53,10 @@ public class SafeProblemController {
 
         return safeProblemService.insert(myfiles, user);
     }
+
+    @GetMapping("total_audit")
+    @ResponseBody
+    public ResultInfo totalAudit(){//表：车间问题总数统计
+        return safeProblemService.totalAudit();
+    }
 }

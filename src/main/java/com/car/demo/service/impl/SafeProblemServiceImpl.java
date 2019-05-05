@@ -1,9 +1,6 @@
 package com.car.demo.service.impl;
 
-import com.car.demo.entity.Record;
-import com.car.demo.entity.ResultInfo;
-import com.car.demo.entity.SafeProblem;
-import com.car.demo.entity.User;
+import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
@@ -16,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -73,5 +71,39 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        }
         return new ResultInfo(1);
 
+    }
+
+    @Override
+    public ResultInfo totalAudit() {
+//        Integer countRankA=safeProblemMapper.countRankByResponsibleArea("A","涂装车间");
+//        Integer countRankB=safeProblemMapper.countRankByResponsibleArea("B","涂装车间");//这一行测试通过了
+//        Integer countRankC=safeProblemMapper.countRankByResponsibleArea("C","涂装车间");
+//        Double done=(double)safeProblemMapper.completionStatusIsDone("涂装车间");//这一行测试通过了//这个地方错了，应该是重复率，我一开始写成完成率了
+//        Integer all=safeProblemMapper.completionStatusAll("涂装车间");//这一行测试通过了
+//        TotalAudit totalAudit=new TotalAudit("涂装车间",countRankA,countRankB,countRankC,done/all);
+//        return new ResultInfo(1,totalAudit);
+        String responsibleAreas[]=new String[]{"冲压","车身车间","涂装车间","总装","发动机车间","维修车间","采购","质量科"};
+        List<TotalAudit> totalAudits=new ArrayList<>();
+        Integer countRankA=null;
+        Integer countRankB=null;
+        Integer countRankC=null;
+        Double isRepeat=null;
+        Integer all=null;
+        String repetitionRate=null;
+        for(String responsibleArea:responsibleAreas){
+            countRankA=safeProblemMapper.countRankByResponsibleArea("A",responsibleArea);
+            countRankB=safeProblemMapper.countRankByResponsibleArea("B",responsibleArea);
+            countRankC=safeProblemMapper.countRankByResponsibleArea("C",responsibleArea);
+            isRepeat=(double)safeProblemMapper.completionStatusisRepeat(responsibleArea);
+            all=safeProblemMapper.completionStatusAll(responsibleArea);
+            if(all!=0){
+                repetitionRate=isRepeat/all+"";
+            }else{
+                repetitionRate="不存在（因为总数为0）";
+            }
+            TotalAudit totalAudit=new TotalAudit(responsibleArea,countRankA,countRankB,countRankC,repetitionRate);
+            totalAudits.add(totalAudit);
+        }
+        return new ResultInfo(1,totalAudits);
     }
 }

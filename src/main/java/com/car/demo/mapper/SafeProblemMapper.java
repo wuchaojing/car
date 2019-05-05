@@ -26,4 +26,16 @@ public interface SafeProblemMapper {
             "where record_id=#{recordId}")
     List<SafeProblem> searchByRecordId(Record record);
 
+    @Select("select count(problem_id) from safe_problem where responsible_area=#{responsibleArea} and rank=#{rank}")
+    int countRankByResponsibleArea(@Param("rank") String rank, @Param("responsibleArea")String responsibleArea);
+
+    @Select("select count(problem_id) from safe_problem where responsible_area=#{responsibleArea} and repeat_question='是'")
+    int completionStatusisRepeat(@Param("responsibleArea")String responsibleArea);
+
+    @Select("select count(problem_id) from safe_problem where responsible_area=#{responsibleArea} and completion_status in ('4/4','6/6','完成')")
+    int completionStatusIsDone(@Param("responsibleArea")String responsibleArea);
+
+    @Select("select count(problem_id) from safe_problem where responsible_area=#{responsibleArea}")
+    int completionStatusAll(@Param("responsibleArea")String responsibleArea);
+
 }
