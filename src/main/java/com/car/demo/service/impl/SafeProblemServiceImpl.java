@@ -1,9 +1,6 @@
 package com.car.demo.service.impl;
 
-import com.car.demo.entity.Record;
-import com.car.demo.entity.ResultInfo;
-import com.car.demo.entity.SafeProblem;
-import com.car.demo.entity.User;
+import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
@@ -18,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -45,7 +43,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             Date nowSameDate = new Date();//same Date
             //register record begin
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
-            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate,user.getUserId());
+            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate, user.getUserId());
             recordMapper.insert(record);
             //register record end
             for (MultipartFile myfile : myfiles) {
@@ -65,11 +63,27 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             }
         } catch (IOException e) {
             log.error("IOException: transferTo {} catch wrong", filePath);
-            return new ResultInfo(0, "filePath有误："+filePath);
+            return new ResultInfo(0, "filePath有误：" + filePath);
         }
 //        if(len==null||len<=0){
 //            return new ResultInfo(0,"insert_false",null);
 //        }
         return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo audit() {
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchFloorData();
+
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
+
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
+
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
+
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+
+        return new ResultInfo(1, auditData);
+
     }
 }

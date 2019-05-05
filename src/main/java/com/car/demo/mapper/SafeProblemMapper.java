@@ -2,9 +2,12 @@ package com.car.demo.mapper;
 
 import com.car.demo.entity.Record;
 import com.car.demo.entity.SafeProblem;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SafeProblemMapper {
@@ -25,4 +28,17 @@ public interface SafeProblemMapper {
     @Select("select problem_id as problemId,audit_aera as auditAera,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime,last_time as lastTime,record_id as recordId from safe_problem " +
             "where record_id=#{recordId}")
     List<SafeProblem> searchByRecordId(Record record);
+
+    @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy")
+    List<Map<String, Object>> searchFloorData();
+
+    @Select("select responsible_area as responsibleArea,count(*)/(select count(*) from safe_problem) as repetitionRate from safe_problem where completion_status in ('3/4','6/6','完成') group by responsible_area")
+    List<Map<String, Object>> searchFloorCompleteRatio();
+
+    @Select("select problem_classification,rank,count(*) as number from safe_problem group by problem_classification,rank")
+    List<Map<String, Object>> searchProblemType();
+
+    @Select("select state_judgement,count(*) as number from safe_problem group by state_judgement")
+    List<Map<String, Object>> searchCompanyAudit();
 }
+
