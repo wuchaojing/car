@@ -10,5 +10,5 @@ public class TotalAudit {
     private Integer countRankA;
     private Integer countRankB;
     private Integer countRankC;
-    private String repetitionRate;//因为可能是不存在
+    private String completionRate;//因为可能是不存在
 }

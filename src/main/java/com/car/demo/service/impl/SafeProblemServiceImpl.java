@@ -13,10 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -75,35 +72,59 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo totalAudit() {
-//        Integer countRankA=safeProblemMapper.countRankByResponsibleArea("A","涂装车间");
-//        Integer countRankB=safeProblemMapper.countRankByResponsibleArea("B","涂装车间");//这一行测试通过了
-//        Integer countRankC=safeProblemMapper.countRankByResponsibleArea("C","涂装车间");
-//        Double done=(double)safeProblemMapper.completionStatusIsDone("涂装车间");//这一行测试通过了//这个地方错了，应该是重复率，我一开始写成完成率了
-//        Integer all=safeProblemMapper.completionStatusAll("涂装车间");//这一行测试通过了
-//        TotalAudit totalAudit=new TotalAudit("涂装车间",countRankA,countRankB,countRankC,done/all);
-//        return new ResultInfo(1,totalAudit);
-        String responsibleAreas[]=new String[]{"冲压","车身车间","涂装车间","总装","发动机车间","维修车间","采购","质量科"};
-        List<TotalAudit> totalAudits=new ArrayList<>();
-        Integer countRankA=null;
-        Integer countRankB=null;
-        Integer countRankC=null;
-        Double isRepeat=null;
-        Integer all=null;
-        String repetitionRate=null;
-        for(String responsibleArea:responsibleAreas){
-            countRankA=safeProblemMapper.countRankByResponsibleArea("A",responsibleArea);
-            countRankB=safeProblemMapper.countRankByResponsibleArea("B",responsibleArea);
-            countRankC=safeProblemMapper.countRankByResponsibleArea("C",responsibleArea);
-            isRepeat=(double)safeProblemMapper.completionStatusisRepeat(responsibleArea);
-            all=safeProblemMapper.completionStatusAll(responsibleArea);
-            if(all!=0){
-                repetitionRate=isRepeat/all+"";
-            }else{
-                repetitionRate="不存在（因为总数为0）";
-            }
-            TotalAudit totalAudit=new TotalAudit(responsibleArea,countRankA,countRankB,countRankC,repetitionRate);
-            totalAudits.add(totalAudit);
+        List<Object> result=new ArrayList<>();
+        Map<String, Table1Row> table1=new HashMap<>();
+        //Map<String,Integer> mapAuditAll=new HashMap<>();
+        Map<String,Integer> mapAuditAll_done=new HashMap<>();
+        List<AuditAll> auditAlls=safeProblemMapper.searchResponsibleAreaAndNumber();
+//        for(AuditAll auditAll:auditAlls){
+//            mapAuditAll.put(auditAll.getResponsibleArea(),auditAll.getNumber());//总的
+//        }
+        List<AuditAll> auditAlls_done=safeProblemMapper.searchResponsibleAreaAndNumberAndCompletionStatusDone();//完成的
+        for(AuditAll auditAll:auditAlls_done){
+            mapAuditAll_done.put(auditAll.getResponsibleArea(),auditAll.getNumber());
         }
-        return new ResultInfo(1,totalAudits);
+        Integer fenmu=null;
+        Integer fenzi=null;
+        Table1Row table1Row=null;
+        for(AuditAll auditAll:auditAlls){//原来是遍历分子，但是分子可能没有；所以现在遍历分母，分母是0的话，就没有，我就在Table1Row默认是-1.0即没有完成率
+            fenmu=auditAll.getNumber();
+            fenzi=mapAuditAll_done.get(auditAll.getResponsibleArea());
+            table1Row =new Table1Row();
+            if(fenmu==null||fenmu==0){
+                table1Row.setComptetionRate(-1.0);//-1即因为分母是0
+            }else if(fenzi==null||fenzi==0){//分子没有（因为group by是0的不显示），或者是0
+                table1Row.setComptetionRate(0.0);
+            }else{
+                table1Row.setComptetionRate(Double.valueOf(fenzi)/fenmu);
+            }
+            table1.put(auditAll.getResponsibleArea(),table1Row);
+        }
+        //表一的柱状部分
+        List<Audit1> audit1s=safeProblemMapper.searchResponsibleAreaAndAuditHierarchyAndNumber();
+        List<Audit1> familyAudits=null;
+        for(Audit1 audit1:audit1s){
+            familyAudits=table1.get(audit1.getResponsibleArea()).getAudit1s();
+            familyAudits.add(audit1);
+        }
+        result.add(table1);
+        /*表2*/
+        List<Table2Row> table2=safeProblemMapper.searchStateJudgementAndNumber();
+        result.add(table2);
+        /*表3*/
+        Map<String,Table3Row> table3=new HashMap<>();
+        Table3Row table3Row=null;
+        List<Audit3> audit3s=safeProblemMapper.searchProblemClassificationAndRankAndNumber();
+        for(Audit3 audit3:audit3s){
+            if(table3.get(audit3.getProblemClassification())==null){//第一次是木有的
+                table3Row=new Table3Row();
+                table3Row.getAudit3s().add(audit3);
+                table3.put(audit3.getProblemClassification(),table3Row);
+            }else{
+                table3.get(audit3.getProblemClassification()).getAudit3s().add(audit3);
+            }
+        }
+        result.add(table3);
+        return new ResultInfo(1,result);
     }
 }
