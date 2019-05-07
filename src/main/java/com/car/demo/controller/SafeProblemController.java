@@ -53,4 +53,12 @@ public class SafeProblemController {
 
         return safeProblemService.insert(myfiles, user);
     }
+
+    @GetMapping("audit")
+    @ResponseBody
+    public ResultInfo audit() {
+        return safeProblemService.audit();
+    }
+
+
 }

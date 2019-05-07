@@ -28,7 +28,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private void response2Client(HttpServletResponse response) {
-        ResultInfo resultInfo = new ResultInfo(1, "need login");
+        ResultInfo resultInfo = new ResultInfo(0, "need login");
         PrintWriter out;
         try {
             out = response.getWriter();

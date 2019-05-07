@@ -12,4 +12,6 @@ public interface SafeProblemService {
     ResultInfo searchByCondition(SafeProblem safeProblem);
 
     ResultInfo insert(MultipartFile[] myfiles, User user);
+
+    ResultInfo audit();
 }

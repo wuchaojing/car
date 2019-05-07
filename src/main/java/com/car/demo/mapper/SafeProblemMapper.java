@@ -2,9 +2,12 @@ package com.car.demo.mapper;
 
 import com.car.demo.entity.Record;
 import com.car.demo.entity.SafeProblem;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface SafeProblemMapper {
@@ -26,4 +29,17 @@ public interface SafeProblemMapper {
             "where record_id=#{recordId}")
     List<SafeProblem> searchByRecordId(Record record);
 
+    @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
+    List<Map<String, Object>> searchHierarchy();
+
+    @Select("select responsible_area,sum(case when completion_status in ('4/4','6/6','完成') then 1 else 0 end)/count(*) as complete_ratio from safe_problem group by responsible_area order by responsible_area")
+    List<Map<String, Object>> searchFloorCompleteRatio();
+
+    @Select("select problem_classification,rank,count(*) as number from safe_problem group by problem_classification,rank order by problem_classification")
+    List<Map<String, Object>> searchProblemType();
+
+    @Select("select state_judgement,count(*) as number from safe_problem group by state_judgement order by state_judgement")
+    List<Map<String, Object>> searchCompanyAudit();
+
 }
+
