@@ -16,9 +16,9 @@ public interface UserService {
 
     ResultInfo selectAll();
 
-    ResultInfo searchByCondition(User user);
+    ResultInfo search(User user);
 
-    ResultInfo updateReviewStateToCancle(User user);
+    ResultInfo delete(User user);
 
     ResultInfo updatePassword(User user);
 }

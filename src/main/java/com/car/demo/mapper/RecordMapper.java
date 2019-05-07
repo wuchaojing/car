@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mapper
 public interface RecordMapper {
-    @Insert("insert into record (record_id, number, name, commit_time,user_id) values " +
+    @Insert("upload into record (record_id, number, name, commit_time,user_id) values " +
             "(#{recordId},#{number},#{name},#{commitTime},#{userId})")
     void insert(Record record);
 

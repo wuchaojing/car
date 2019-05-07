@@ -8,19 +8,13 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
     @Select("<script> select user_id as userId,number,name from user where review_state='已审核'" +
-            "<if test='userId != null and userId != \"\"'> " +
-            "and user_id=#{userId}" +
-            "</if> " +
-            "<if test='number != null and number != \"\"'> " +
-            "and number=#{number}" +
-            "</if> " +
             "<if test='name != null and name != \"\"'> " +
             "and name like '%${name}%'" +
             "</if> " +
             "</script>")
-    List<User> searchUserIdAndName(User user);
+    List<User> searchNumberAndName(User user);
 
-    @Insert("insert into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
+    @Insert("upload into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
             "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime})")
     void insert(User user);
 
@@ -64,7 +58,7 @@ public interface UserMapper {
     List<User> searchByCondition(User user);
 
     @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
-    void updateReviewStateToCancle(User user);
+    void update2Delete(User user);
 
     @Update("update user set password=#{password} where user_id=#{userId}")
     void updatePassword(User user);

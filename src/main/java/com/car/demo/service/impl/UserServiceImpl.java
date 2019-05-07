@@ -8,7 +8,6 @@ import com.car.demo.util.MD5Util;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultInfo getSuperior(User user) {
-        List<User> users = userMapper.searchUserIdAndName(user);
+        List<User> users = userMapper.searchNumberAndName(user);
         return new ResultInfo(1, users);
     }
 
@@ -78,15 +77,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultInfo searchByCondition(User user) {
+    public ResultInfo search(User user) {
         List<User> list = userMapper.searchByCondition(user);
         return new ResultInfo(1, list);
     }
 
     @Override
-    public ResultInfo updateReviewStateToCancle(User user) {//伪删除，注销用户即可
+    public ResultInfo delete(User user) {//伪删除，注销用户即可
         user.setReviewState("已注销");
-        userMapper.updateReviewStateToCancle(user);
+        userMapper.update2Delete(user);
         return new ResultInfo(1);
     }
 

@@ -12,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,6 +31,7 @@ public class ExcelImageAndWords {
             // is excel?
             if (!filePath.endsWith(".xls") && !filePath.endsWith(".xlsx")) {
                 log.error("{} is not excel", filePath);
+                return null;
             }
             FileInputStream fis = null;
             Workbook wookbook = null;
@@ -56,6 +56,9 @@ public class ExcelImageAndWords {
                 maplist = getXlsxPicture((XSSFSheet) sheet);
             }
             picMap = printImg(maplist);
+            if (null == picMap) {
+                return null;
+            }
             // getWorkSheet
             // GetRowHead
             Row rowHead = sheet.getRow(0);
@@ -77,13 +80,11 @@ public class ExcelImageAndWords {
 
                 cell = row.getCell((short) 1);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setAuditAera(cell.getStringCellValue());
-
+                safeProblem.setAuditArea(cell.getStringCellValue());
 
                 cell = row.getCell((short) 2);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
-
 
                 cell = row.getCell((short) 3);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
@@ -141,21 +142,22 @@ public class ExcelImageAndWords {
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setFinishPhoto(picMap.get(i + "-" + 16));
 
-
                 //the last content
                 safeProblem.setCreateTime(nowSameDate);//unite every time equal
-                safeProblem.setLastTime(nowSameDate);
                 safeProblem.setRecordId(recordId);
                 //System.out.println(safeProblem);
                 safeProblems.add(safeProblem);
 
             }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}", filePath);
+            log.error("FileNotFoundException: {}", filePath,e);
+            return null;
         } catch (IOException e) {
-            log.error("IOException: new HSSFWorkbook or XSSFWorkbook");
+            log.error("IOException: new HSSFWorkbook or XSSFWorkbook",e);
+            return null;
         } catch (ParseException e) {
-            log.error("ParseException: parse excel Time yyyy-MM-dd error");
+            log.error("ParseException: parse excel Time yyyy-MM-dd error",e);
+            return null;
         }
         return safeProblems;
     }
@@ -163,7 +165,7 @@ public class ExcelImageAndWords {
     /**
      * get picture and position (xls)
      */
-    public static Map<String, PictureData> getXlsPicture(HSSFSheet sheet) {
+    private static Map<String, PictureData> getXlsPicture(HSSFSheet sheet) {
         Map<String, PictureData> map = new HashMap<String, PictureData>();
         List<HSSFShape> list = sheet.getDrawingPatriarch().getChildren();
         for (HSSFShape shape : list) {
@@ -181,7 +183,7 @@ public class ExcelImageAndWords {
     /**
      * get picture and position (xlsx)
      */
-    public static Map<String, PictureData> getXlsxPicture(XSSFSheet sheet) {
+    private static Map<String, PictureData> getXlsxPicture(XSSFSheet sheet) {
         Map<String, PictureData> map = new HashMap<String, PictureData>();
         List<POIXMLDocumentPart> list = sheet.getRelations();
         for (POIXMLDocumentPart part : list) {
@@ -201,7 +203,7 @@ public class ExcelImageAndWords {
     }
 
     // write picture to disk
-    public static Map<String, String> printImg(Map<String, PictureData> sheetList) {
+    private static Map<String, String> printImg(Map<String, PictureData> sheetList) {
         Map<String, String> picMap = new HashMap<>();
         String picNameAndExt = null;
         try {
@@ -225,9 +227,11 @@ public class ExcelImageAndWords {
             }
             // }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}", picNameAndExt);
+            log.error("fail to find file: {}", picNameAndExt, e);
+            return null;
         } catch (IOException e) {
-            log.error("IOException: {} or {}", "out.write", "out.close");
+            log.error("IOException: {} or {}", "out.write", "out.close", e);
+            return null;
         }
         return picMap;
     }
