@@ -10,10 +10,10 @@ public interface UserMapper {
     @Select("<script> select user_id as userId,number,name from user where review_state='已审核'" +
             "<if test='userId != null and userId != \"\"'> " +
             "and user_id=#{userId}" +
-            "</if> "+
+            "</if> " +
             "<if test='number != null and number != \"\"'> " +
             "and number=#{number}" +
-            "</if> "+
+            "</if> " +
             "<if test='name != null and name != \"\"'> " +
             "and name like '%${name}%'" +
             "</if> " +

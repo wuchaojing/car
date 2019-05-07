@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 /**
- *  https://blog.csdn.net/ZZY1078689276/article/details/79677053
+ * https://blog.csdn.net/ZZY1078689276/article/details/79677053
  */
 @Slf4j
 public class JsonUtil {

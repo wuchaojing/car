@@ -15,6 +15,9 @@ public class SafeProblemForSearch {
     private String problemClassification;
     private String subdivisionType;
     private String rank;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date completionDeadline;
     private String auditHierarchy;
     private String repeatQuestion;
     private String completionStatus;
@@ -24,6 +27,12 @@ public class SafeProblemForSearch {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date proposeTimeMax;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date completionDeadlineMin;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date completionDeadlineMax;
 
 
 }

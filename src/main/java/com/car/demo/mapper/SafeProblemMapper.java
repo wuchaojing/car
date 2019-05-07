@@ -38,14 +38,23 @@ public interface SafeProblemMapper {
             "<if test='completionStatus == \"未完成\"'> " +
             "and completion_status not in ('4/4','6/6','完成')" +
             "</if> " +
-            "<if test='proposeTime != null and proposeTime != \"\"'> " +
-            "and propose_time >= #{proposeTime}" +
+            "<if test='proposeTime != null'> " +
+            "and propose_time = #{proposeTime}" +
             "</if> " +
-            "<if test='proposeTimeMin != null and proposeTimeMin != \"\"'> " +
+            "<if test='proposeTimeMin != null'> " +
             "and propose_time <![CDATA[>=]]> #{proposeTimeMin}" +
             "</if> " +
-            "<if test='proposeTimeMax != null and proposeTimeMax != \"\"'> " +
+            "<if test='proposeTimeMax != null'> " +
             "and propose_time <![CDATA[<=]]> #{proposeTimeMax}" +
+            "</if> " +
+            "<if test='completionDeadline != null'> " +
+            "and completion_deadline = #{completionDeadline}" +
+            "</if> " +
+            "<if test='completionDeadlineMin != null'> " +
+            "and completion_deadline <![CDATA[>=]]> #{completionDeadlineMin}" +
+            "</if> " +
+            "<if test='completionDeadlineMax != null'> " +
+            "and completion_deadline <![CDATA[<=]]> #{completionDeadlineMax}" +
             "</if> " +
             "</where>" +
             "</script>")

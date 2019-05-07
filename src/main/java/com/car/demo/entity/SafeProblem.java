@@ -22,7 +22,9 @@ public class SafeProblem {
     private String rectificationMeasures;
     private String responsibleArea;
     private String personLiable;
-    private String completionDeadline;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date completionDeadline;
     private String auditHierarchy;
     private String repeatQuestion;
     private String completionStatus;
