@@ -21,13 +21,12 @@ import java.util.*;
 public class ExcelImageAndWords {
 
     /**
-     *
      * @param filePath
-     * @param nowSameDate  a person's submitDate and recodeDate should be same
+     * @param nowSameDate a person's submitDate and recodeDate should be same
      * @param recordId
      * @return
      */
-    public static List<SafeProblem> getDataFromExcel(String filePath,Date nowSameDate,String recordId) {
+    public static List<SafeProblem> getDataFromExcel(String filePath, Date nowSameDate, String recordId) {
         List<SafeProblem> safeProblems = new ArrayList<>();
         try {
             // is excel?
@@ -124,7 +123,7 @@ public class ExcelImageAndWords {
 
                 cell = row.getCell((short) 12);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionDeadline(cell.getStringCellValue());
+                safeProblem.setCompletionDeadline(simpleDateFormat.parse(cell.getStringCellValue()));
 
                 cell = row.getCell((short) 13);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String

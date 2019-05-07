@@ -13,6 +13,7 @@ public class InteceptorConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns("/user/register")
                 .excludePathPatterns("/user/login")
+                .excludePathPatterns("/user/register_superior")
                 .excludePathPatterns("/safe_problem/audit")
                 .excludePathPatterns("/error");
         super.addInterceptors(registry);

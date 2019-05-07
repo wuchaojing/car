@@ -21,6 +21,12 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @GetMapping("register_superior")
+    @ResponseBody
+    public ResultInfo registerSuperior(User user) {//查出已经审核通过的userId和name(名字是模糊查询)【选上级id的时候用】(可条件查询)
+        return userService.getSuperior(user);
+    }
+
     @PostMapping("register")
     @ResponseBody
     public ResultInfo register(User user) {
@@ -84,33 +90,33 @@ public class UserController {
         return userService.update(user);
     }
 
-    @GetMapping("admin_search_by_condition") // 管理员可以根据条件查询用户（userId,number以及模糊查询用户名）【给其找回密码】
+    @GetMapping("admin_search_by_condition") // 管理员可以根据条件查询用户（userId,number以及模糊查询用户名，审核状态）【给其找回密码】
     @ResponseBody
     public ResultInfo searchByCondition(User user) {//login了审核的用户后方可使用
         return userService.searchByCondition(user);
     }
 
-    @PostMapping("admin_delete")
+    @PostMapping("admin_cancel")
     @ResponseBody
-    public ResultInfo delete(User user) {//login了审核的用户后方可使用
-        if(StringUtils.isEmpty(user.getUserId())){
+    public ResultInfo updateReviewStateToCancle(User user) {//login了审核的用户后方可使用
+        if (StringUtils.isEmpty(user.getUserId())) {
             return new ResultInfo(0, "请确保用户id不为空");
         }
-        return userService.delete(user);
+        return userService.updateReviewStateToCancle(user);
     }
 
     @PostMapping("update_itself_password") // 登录的就有这个权限
     @ResponseBody
-    public ResultInfo updatePassword(HttpSession session,String newPassword) {
-        User user=(User)session.getAttribute(ConstantUtil.CLIENT_ID);
-        if(user==null){
-            return new ResultInfo(0,"从session获取用户无效");
+    public ResultInfo updatePassword(HttpSession session, String newPassword) {
+        User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
+        if (user == null) {
+            return new ResultInfo(0, "从session获取用户无效");
         }
-        if(StringUtils.isEmpty(user.getUserId())){
-            return new ResultInfo(0,"该用户没有id");
+        if (StringUtils.isEmpty(user.getUserId())) {
+            return new ResultInfo(0, "该用户没有id");
         }
-        if(StringUtils.isEmpty(newPassword)){
-            return new ResultInfo(0,"新密码不能为空");
+        if (StringUtils.isEmpty(newPassword)) {
+            return new ResultInfo(0, "新密码不能为空");
         }
         user.setPassword(newPassword);
         return userService.updatePassword(user);

@@ -28,8 +28,8 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     private RecordMapper recordMapper;
 
     @Override
-    public ResultInfo searchByCondition(SafeProblem safeProblem) {
-        List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblem);
+    public ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch) {
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblemForSearch);
 //        if(safeProblems==null||safeProblems.size()==0){
 //            return new ResultInfo(1, "no result", null);
 //        }
