@@ -13,5 +13,5 @@ public interface SafeProblemService {
 
     ResultInfo insert(MultipartFile[] myfiles, User user);
 
-    ResultInfo totalAudit();
+    ResultInfo audit();
 }

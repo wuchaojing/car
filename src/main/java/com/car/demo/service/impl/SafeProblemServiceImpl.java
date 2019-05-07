@@ -13,7 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -41,7 +44,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             Date nowSameDate = new Date();//same Date
             //register record begin
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
-            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate,user.getUserId());
+            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate, user.getUserId());
             recordMapper.insert(record);
             //register record end
             for (MultipartFile myfile : myfiles) {
@@ -61,7 +64,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             }
         } catch (IOException e) {
             log.error("IOException: transferTo {} catch wrong", filePath);
-            return new ResultInfo(0, "filePath有误："+filePath);
+            return new ResultInfo(0, "filePath有误：" + filePath);
         }
 //        if(len==null||len<=0){
 //            return new ResultInfo(0,"insert_false",null);
@@ -71,60 +74,18 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     }
 
     @Override
-    public ResultInfo totalAudit() {
-        List<Object> result=new ArrayList<>();
-        Map<String, Table1Row> table1=new HashMap<>();
-        //Map<String,Integer> mapAuditAll=new HashMap<>();
-        Map<String,Integer> mapAuditAll_done=new HashMap<>();
-        List<AuditAll> auditAlls=safeProblemMapper.searchResponsibleAreaAndNumber();
-//        for(AuditAll auditAll:auditAlls){
-//            mapAuditAll.put(auditAll.getResponsibleArea(),auditAll.getNumber());//总的
-//        }
-        List<AuditAll> auditAlls_done=safeProblemMapper.searchResponsibleAreaAndNumberAndCompletionStatusDone();//完成的
-        for(AuditAll auditAll:auditAlls_done){
-            mapAuditAll_done.put(auditAll.getResponsibleArea(),auditAll.getNumber());
-        }
-        Integer fenmu=null;
-        Integer fenzi=null;
-        Table1Row table1Row=null;
-        for(AuditAll auditAll:auditAlls){//原来是遍历分子，但是分子可能没有；所以现在遍历分母，分母是0的话，就没有，我就在Table1Row默认是-1.0即没有完成率
-            fenmu=auditAll.getNumber();
-            fenzi=mapAuditAll_done.get(auditAll.getResponsibleArea());
-            table1Row =new Table1Row();
-            if(fenmu==null||fenmu==0){
-                table1Row.setComptetionRate(-1.0);//-1即因为分母是0
-            }else if(fenzi==null||fenzi==0){//分子没有（因为group by是0的不显示），或者是0
-                table1Row.setComptetionRate(0.0);
-            }else{
-                table1Row.setComptetionRate(Double.valueOf(fenzi)/fenmu);
-            }
-            table1.put(auditAll.getResponsibleArea(),table1Row);
-        }
-        //表一的柱状部分
-        List<Audit1> audit1s=safeProblemMapper.searchResponsibleAreaAndAuditHierarchyAndNumber();
-        List<Audit1> familyAudits=null;
-        for(Audit1 audit1:audit1s){
-            familyAudits=table1.get(audit1.getResponsibleArea()).getAudit1s();
-            familyAudits.add(audit1);
-        }
-        result.add(table1);
-        /*表2*/
-        List<Table2Row> table2=safeProblemMapper.searchStateJudgementAndNumber();
-        result.add(table2);
-        /*表3*/
-        Map<String,Table3Row> table3=new HashMap<>();
-        Table3Row table3Row=null;
-        List<Audit3> audit3s=safeProblemMapper.searchProblemClassificationAndRankAndNumber();
-        for(Audit3 audit3:audit3s){
-            if(table3.get(audit3.getProblemClassification())==null){//第一次是木有的
-                table3Row=new Table3Row();
-                table3Row.getAudit3s().add(audit3);
-                table3.put(audit3.getProblemClassification(),table3Row);
-            }else{
-                table3.get(audit3.getProblemClassification()).getAudit3s().add(audit3);
-            }
-        }
-        result.add(table3);
-        return new ResultInfo(1,result);
+    public ResultInfo audit() {
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
+
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
+
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
+
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
+
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+
+        return new ResultInfo(1, auditData);
+
     }
 }
