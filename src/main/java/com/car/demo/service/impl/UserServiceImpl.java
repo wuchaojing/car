@@ -19,6 +19,12 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
+    public ResultInfo getSuperior(User user) {
+        List<User> users=userMapper.searchUserIdAndName(user);
+        return new ResultInfo(1,users);
+    }
+
+    @Override
     public ResultInfo register(User user) {
         if (userMapper.selectByNumber(user) > 0) {
             return new ResultInfo(0, "该用户已经注册");

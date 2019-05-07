@@ -2,6 +2,7 @@ package com.car.demo.mapper;
 
 import com.car.demo.entity.Record;
 import com.car.demo.entity.SafeProblem;
+import com.car.demo.entity.SafeProblemForSearch;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -13,12 +14,42 @@ import java.util.Map;
 public interface SafeProblemMapper {
     @Select("<script> select problem_id as problemId,audit_aera as auditAera,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime,last_time as lastTime,record_id as recordId from safe_problem" +
             "<where> 1=1 " +
-            "<if test='problemId != null'> " +
-            "and problem_id = #{problemId}" +
+            "<if test='stateJudgement != null and stateJudgement != \"\"'> " +
+            "and state_judgement = #{stateJudgement}" +
+            "</if> " +
+            "<if test='problemClassification != null and problemClassification != \"\"'> " +
+            "and problem_classification = #{problemClassification}" +
+            "</if> " +
+            "<if test='subdivisionType != null and subdivisionType != \"\"'> " +
+            "and subdivision_type = #{subdivisionType}" +
+            "</if> " +
+            "<if test='rank != null and rank != \"\"'> " +
+            "and rank = #{rank}" +
+            "</if> " +
+            "<if test='auditHierarchy != null and auditHierarchy != \"\"'> " +
+            "and audit_hierarchy = #{auditHierarchy}" +
+            "</if> " +
+            "<if test='repeatQuestion != null and repeatQuestion != \"\"'> " +
+            "and repeat_question = #{repeatQuestion}" +
+            "</if> " +
+            "<if test='completionStatus == \"完成\"'> " +
+            "and completion_status in ('4/4','6/6','完成')" +
+            "</if> " +
+            "<if test='completionStatus == \"未完成\"'> " +
+            "and completion_status not in ('4/4','6/6','完成')" +
+            "</if> " +
+            "<if test='proposeTime != null and proposeTime != \"\"'> " +
+            "and propose_time >= #{proposeTime}" +
+            "</if> " +
+            "<if test='proposeTimeMin != null and proposeTimeMin != \"\"'> " +
+            "and propose_time <![CDATA[>=]]> #{proposeTimeMin}" +
+            "</if> " +
+            "<if test='proposeTimeMax != null and proposeTimeMax != \"\"'> " +
+            "and propose_time <![CDATA[<=]]> #{proposeTimeMax}" +
             "</if> " +
             "</where>" +
             "</script>")
-    List<SafeProblem> searchByCondition(SafeProblem safeProblem);
+    List<SafeProblem> searchByCondition(SafeProblemForSearch safeProblemForSearch);
 
     @Insert("<script> insert into safe_problem (problem_id,audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, last_time,record_id) values (" +
             "#{problemId},#{auditAera},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{lastTime},#{recordId})" +

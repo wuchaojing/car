@@ -21,6 +21,12 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @GetMapping("register_superior")
+    @ResponseBody
+    public ResultInfo registerSuperior(User user) {//查出已经审核通过的userId和name(名字是模糊查询)【选上级id的时候用】(可条件查询)
+        return userService.getSuperior(user);
+    }
+
     @PostMapping("register")
     @ResponseBody
     public ResultInfo register(User user) {

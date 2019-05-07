@@ -2,6 +2,7 @@ package com.car.demo.controller;
 
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
+import com.car.demo.entity.SafeProblemForSearch;
 import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ConstantUtil;
@@ -26,8 +27,8 @@ public class SafeProblemController {
 
     @GetMapping("search_by_condition")
     @ResponseBody
-    public ResultInfo searchByCondition(SafeProblem safeProblem) {//now only by id or null
-        return safeProblemService.searchByCondition(safeProblem);
+    public ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch) {//now only by id or null
+        return safeProblemService.searchByCondition(safeProblemForSearch);
     }
 
     @PostMapping("upload")

@@ -6,6 +6,8 @@ import com.car.demo.entity.User;
 import javax.servlet.http.HttpSession;
 
 public interface UserService {
+    ResultInfo getSuperior(User users);
+
     ResultInfo register(User user);
 
     ResultInfo login(User user);
