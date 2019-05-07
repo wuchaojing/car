@@ -28,3 +28,5 @@ public class ResultInfo {
         this.data = data;
     }
 }
+
+
