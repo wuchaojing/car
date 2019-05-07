@@ -7,10 +7,10 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-    @Select("<script> select user_id as userId,number,name from user where review_state='已审核'" +
-            "<if test='userId != null and userId != \"\"'> " +
-            "and user_id=#{userId}" +
-            "</if> " +
+    @Select("<script> select number,name from user where review_state='已审核'" +
+//            "<if test='userId != null and userId != \"\"'> " +
+//            "and user_id=#{userId}" +
+//            "</if> " +
             "<if test='number != null and number != \"\"'> " +
             "and number=#{number}" +
             "</if> " +
@@ -18,7 +18,7 @@ public interface UserMapper {
             "and name like '%${name}%'" +
             "</if> " +
             "</script>")
-    List<User> searchUserIdAndName(User user);
+    List<User> searchNumberAndName(User user);
 
     @Insert("insert into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
             "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime})")

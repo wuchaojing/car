@@ -96,7 +96,7 @@ public class UserController {
         return userService.searchByCondition(user);
     }
 
-    @PostMapping("admin_cancle")
+    @PostMapping("admin_cancel")
     @ResponseBody
     public ResultInfo updateReviewStateToCancle(User user) {//login了审核的用户后方可使用
         if (StringUtils.isEmpty(user.getUserId())) {

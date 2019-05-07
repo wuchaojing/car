@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultInfo getSuperior(User user) {
-        List<User> users = userMapper.searchUserIdAndName(user);
+        List<User> users = userMapper.searchNumberAndName(user);
         return new ResultInfo(1, users);
     }
 
