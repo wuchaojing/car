@@ -25,21 +25,15 @@ public class RecordServiceImpl implements RecordService {
     private SafeProblemMapper safeProblemMapper;
 
     @Override
-    public ResultInfo getRelativeRecords(User user) {//simplify: only userId
-//        user = userMapper.selectByUserId(user);//can get detail status;(avoid only userId)
-//        if (user == null) {//avoid userId is not true（也保证一下吧）
-//            return new ResultInfo(0, "请传入正确的userId");
-//        }
-        List<String> totalRelativeUserIds = getRelativeUserIds(user.getUserId(), new ArrayList<String>());
+    public ResultInfo getRelativeRecords(User user) {
+
+        List<String> totalRelativeUserIds = getRelativeUserIds(user.getUserId(), new ArrayList<>());
         List<Record> totalRelativeRecords = new ArrayList<>();
         List<Record> cur = null;
-        for (String userId : totalRelativeUserIds) {//at least one user
+        for (String userId : totalRelativeUserIds) {
             cur = recordMapper.searchRecordByUserId(userId);
-            //if(cur!=null) {//maybe null// can solve null
             totalRelativeRecords.addAll(cur);
-            //}
         }
-        //return new ResultInfo(1, "所有的其直接或间接下属(其只有id信息)", totalRelativeUserIds);
         return new ResultInfo(1, totalRelativeRecords);
     }
 
@@ -49,7 +43,7 @@ public class RecordServiceImpl implements RecordService {
         return new ResultInfo(1, safeProblems);
     }
 
-    public List<String> getRelativeUserIds(String userSuperiorId, List<String> list) {
+    private List<String> getRelativeUserIds(String userSuperiorId, List<String> list) {
         if (userSuperiorId == null) {//end: is null
             return null;
         }

@@ -64,7 +64,24 @@ public class UserController {
         return resultInfo;
     }
 
-    @GetMapping("admin_search_all") // 管理员只需要查看所有用户信息，不需要单独查看用户信息
+    @PostMapping("update_password") // 登录的就有这个权限
+    @ResponseBody
+    public ResultInfo updatePassword(HttpSession session, String newPassword) {
+        User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
+        if (user == null) {
+            return new ResultInfo(0, "用户未登录");
+        }
+        if (StringUtils.isEmpty(user.getUserId())) {
+            return new ResultInfo(0, "该选择用户");
+        }
+        if (StringUtils.isEmpty(newPassword)) {
+            return new ResultInfo(0, "新密码不能为空");
+        }
+        user.setPassword(newPassword);
+        return userService.updatePassword(user);
+    }
+
+    @GetMapping("admin_search_all")
     @ResponseBody
     public ResultInfo selectAll() {//login了审核的用户后方可使用
         return userService.selectAll();
@@ -90,35 +107,20 @@ public class UserController {
         return userService.update(user);
     }
 
-    @GetMapping("admin_search_by_condition") // 管理员可以根据条件查询用户（userId,number以及模糊查询用户名，审核状态）【给其找回密码】
+    @GetMapping("admin_search") // 管理员可以根据条件查询用户（userId,number以及模糊查询用户名，审核状态）【给其找回密码】
     @ResponseBody
-    public ResultInfo searchByCondition(User user) {//login了审核的用户后方可使用
-        return userService.searchByCondition(user);
+    public ResultInfo search(User user) {//login了审核的用户后方可使用
+        return userService.search(user);
     }
 
-    @PostMapping("admin_cancle")
+    @PostMapping("admin_delete")
     @ResponseBody
-    public ResultInfo updateReviewStateToCancle(User user) {//login了审核的用户后方可使用
+    public ResultInfo delete(User user) {//login了审核的用户后方可使用
         if (StringUtils.isEmpty(user.getUserId())) {
-            return new ResultInfo(0, "请确保用户id不为空");
+            return new ResultInfo(0, "请选择用户");
         }
-        return userService.updateReviewStateToCancle(user);
+        return userService.delete(user);
     }
 
-    @PostMapping("update_itself_password") // 登录的就有这个权限
-    @ResponseBody
-    public ResultInfo updatePassword(HttpSession session, String newPassword) {
-        User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
-        if (user == null) {
-            return new ResultInfo(0, "从session获取用户无效");
-        }
-        if (StringUtils.isEmpty(user.getUserId())) {
-            return new ResultInfo(0, "该用户没有id");
-        }
-        if (StringUtils.isEmpty(newPassword)) {
-            return new ResultInfo(0, "新密码不能为空");
-        }
-        user.setPassword(newPassword);
-        return userService.updatePassword(user);
-    }
+
 }

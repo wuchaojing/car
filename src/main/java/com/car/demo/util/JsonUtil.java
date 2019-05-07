@@ -25,7 +25,6 @@ public class JsonUtil {
             return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
         } catch (Exception e) {
             log.error("Parse Object to Json error", e);
-            e.printStackTrace();
             return null;
         }
     }
@@ -38,7 +37,6 @@ public class JsonUtil {
             return clazz.equals(String.class) ? (T) src : objectMapper.readValue(src, clazz);
         } catch (Exception e) {
             log.error("Parse Json to Object error", e);
-            e.printStackTrace();
             return null;
         }
     }

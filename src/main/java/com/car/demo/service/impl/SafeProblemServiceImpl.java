@@ -4,6 +4,7 @@ import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
+import com.car.demo.util.ConstantUtil;
 import com.car.demo.util.ExcelImageAndWords;
 import com.car.demo.util.MD5Util;
 import lombok.extern.slf4j.Slf4j;
@@ -30,47 +31,49 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     @Override
     public ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch) {
         List<SafeProblem> safeProblems = safeProblemMapper.searchByCondition(safeProblemForSearch);
-//        if(safeProblems==null||safeProblems.size()==0){
-//            return new ResultInfo(1, "no result", null);
-//        }
+
         return new ResultInfo(1, safeProblems);
     }
 
     @Override
-    public ResultInfo insert(MultipartFile[] myfiles, User user) {
+    public ResultInfo upload(MultipartFile[] myFiles, User user) {
         String filePath = null;
         try {
-            String uploadPath = "D:/car";
+            String uploadPath = ConstantUtil.UPLOAD_PATH;
             Date nowSameDate = new Date();//same Date
-            //register record begin
+
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
             Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate, user.getUserId());
             recordMapper.insert(record);
-            //register record end
-            for (MultipartFile myfile : myfiles) {
-                if (!myfile.isEmpty()) {
-                    //save excel begin
-                    String oldName = myfile.getOriginalFilename();
+
+            for (MultipartFile myFile : myFiles) {
+                if (!myFile.isEmpty()) {
+
+                    String oldName = myFile.getOriginalFilename();
                     UUID uuid = UUID.randomUUID();
                     String newName = uuid.toString() + oldName.substring(oldName.lastIndexOf("."));
+
                     filePath = uploadPath + "/" + newName;
-                    myfile.transferTo(new File(filePath));//io's package file
-                    //save excel end
+
+                    myFile.transferTo(new File(filePath));//io's package file
+
                     List<SafeProblem> safeProblems = ExcelImageAndWords.getDataFromExcel(filePath, nowSameDate, recordId);
+
+                    if (null == safeProblems) {
+                        return new ResultInfo(0,"上传失败，请检查文件是否规范");
+                    }
+
                     for (SafeProblem safeProblem : safeProblems) {
                         safeProblemMapper.insert(safeProblem);
                     }
                 }
             }
         } catch (IOException e) {
-            log.error("IOException: transferTo {} catch wrong", filePath);
-            return new ResultInfo(0, "filePath有误：" + filePath);
+            log.error("transferTo {} catch wrong", filePath, e);
+            return new ResultInfo(0, "上传失败，请重试");
         }
-//        if(len==null||len<=0){
-//            return new ResultInfo(0,"insert_false",null);
-//        }
-        return new ResultInfo(1);
 
+        return new ResultInfo(1);
     }
 
     @Override
