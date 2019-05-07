@@ -23,6 +23,7 @@ import java.util.UUID;
 public class SafeProblemServiceImpl implements SafeProblemService {
     @Resource
     private SafeProblemMapper safeProblemMapper;
+
     @Resource
     private RecordMapper recordMapper;
 
@@ -69,11 +70,12 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //            return new ResultInfo(0,"insert_false",null);
 //        }
         return new ResultInfo(1);
+
     }
 
     @Override
     public ResultInfo audit() {
-        List<Map<String, Object>> hierarchy = safeProblemMapper.searchFloorData();
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
 
         List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
 
