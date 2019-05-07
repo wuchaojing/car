@@ -29,16 +29,16 @@ public interface SafeProblemMapper {
             "where record_id=#{recordId}")
     List<SafeProblem> searchByRecordId(Record record);
 
-    @Select("select responsible_area as responsibleArea,audit_hierarchy as auditHierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
+    @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
     List<Map<String, Object>> searchHierarchy();
 
-    @Select("select responsible_area as responsibleArea,count(*)/(select count(*) from safe_problem) as repetitionRate from safe_problem where completion_status in ('4/4','6/6','完成') group by responsible_area order by responsible_area")
+    @Select("select responsible_area,sum(case when completion_status in ('4/4','6/6','完成') then 1 else 0 end)/count(*) as complete_ratio from safe_problem group by responsible_area order by responsible_area")
     List<Map<String, Object>> searchFloorCompleteRatio();
 
-    @Select("select problem_classification as problemClassification,rank,count(*) as number from safe_problem group by problem_classification,rank order by problem_classification")
+    @Select("select problem_classification,rank,count(*) as number from safe_problem group by problem_classification,rank order by problem_classification")
     List<Map<String, Object>> searchProblemType();
 
-    @Select("select state_judgement as stateJudgement,count(*) as number from safe_problem group by state_judgement order by state_judgement")
+    @Select("select state_judgement,count(*) as number from safe_problem group by state_judgement order by state_judgement")
     List<Map<String, Object>> searchCompanyAudit();
 
 }
