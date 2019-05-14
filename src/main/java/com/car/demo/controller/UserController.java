@@ -23,7 +23,7 @@ public class UserController {
 
     @GetMapping("register_superior")
     @ResponseBody
-    public ResultInfo registerSuperior(User user) {//查出已经审核通过的userId和name(名字是模糊查询)【选上级id的时候用】(可条件查询)
+    public ResultInfo registerSuperior(User user) {//查出已经审核通过的name(名字是模糊查询)【选上级id的时候用】(可条件查询)
         return userService.getSuperior(user);
     }
 
