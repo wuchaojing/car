@@ -14,7 +14,7 @@ public interface UserMapper {
             "</script>")
     List<User> searchNumberAndName(User user);
 
-    @Insert("upload into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
+    @Insert("insert into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
             "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime})")
     void insert(User user);
 
@@ -24,10 +24,10 @@ public interface UserMapper {
     @Select("select count(*) from user where number=#{number}")
     Integer selectByNumber(User user);
 
-    @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
+    @Update("update user set review_state=#{reviewState},update_time=#{updateTime} where user_id=#{userId}")
     void updateReviewState(User user);
 
-    @Update("update user set review_state = #{reviewState},superior_id = #{superiorId} where user_id = #{userId}")
+    @Update("update user set review_state = #{reviewState},superior_id = #{superiorId},update_time=#{updateTime} where user_id = #{userId}")
     void update(User user);
 
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user")
@@ -41,9 +41,6 @@ public interface UserMapper {
 
     @Select("<script> select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user " +
             "<where> 1=1 " +
-            "<if test='userId != null and userId != \"\"'> " +
-            "and user_id = #{userId}" +
-            "</if> " +
             "<if test='number != null and number != \"\"'> " +
             "and number = #{number}" +
             "</if> " +
@@ -57,9 +54,9 @@ public interface UserMapper {
             "</script>")
     List<User> searchByCondition(User user);
 
-    @Update("update user set review_state=#{reviewState} where user_id=#{userId}")
+    @Update("update user set review_state=#{reviewState},update_time=#{updateTime} where user_id=#{userId}")
     void update2Delete(User user);
 
-    @Update("update user set password=#{password} where user_id=#{userId}")
+    @Update("update user set password=#{password},update_time=#{updateTime} where user_id=#{userId}")
     void updatePassword(User user);
 }
