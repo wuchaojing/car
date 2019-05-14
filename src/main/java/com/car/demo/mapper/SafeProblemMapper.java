@@ -42,13 +42,13 @@ public interface SafeProblemMapper {
             "and create_time >= #{startTime}" +
             "</if> " +
             "<if test='endTime != null'> " +
-            "and create_time >= #{endTime}" +
+            "and create_time <![CDATA[<]]> #{endTime}" +
             "</if> " +
             "</where>" +
             "</script>")
     List<SafeProblem> searchByCondition(SafeProblemForSearch safeProblemForSearch);
 
-    @Insert("<script> upload into safe_problem (problem_id,audit_aera, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time,record_id) values (" +
+    @Insert("<script> insert into safe_problem (problem_id,audit_area, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, record_id) values (" +
             "#{problemId},#{auditArea},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{recordId})" +
             " </script>")
     void insert(SafeProblem safeProblem);
