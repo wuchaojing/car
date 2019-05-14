@@ -72,6 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResultInfo update(User user) {
+        user.setUpdateTime(new Date());
         userMapper.update(user);
         return new ResultInfo(1);
     }
@@ -85,12 +86,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultInfo delete(User user) {//伪删除，注销用户即可
         user.setReviewState("已注销");
+        user.setUpdateTime(new Date());
         userMapper.update2Delete(user);
         return new ResultInfo(1);
     }
 
     @Override
     public ResultInfo updatePassword(User user) {
+        user.setUpdateTime(new Date());
         userMapper.updatePassword(user);
         return new ResultInfo(1);
     }
