@@ -6,10 +6,7 @@ import com.car.demo.service.UserService;
 import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -29,7 +26,7 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseBody
-    public ResultInfo register(User user) {
+    public ResultInfo register(@RequestBody User user) {
         if (StringUtils.isEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
