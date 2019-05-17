@@ -92,8 +92,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultInfo updatePassword(User user) {
+    public ResultInfo updatePassword(User user,String oldPassword) {
         user.setUpdateTime(new Date());
+        Integer num=userMapper.selectCountByNumberAndPassword(user);
+        if(num==null||num==0){
+            return new ResultInfo(0,"用户旧密码不正确");
+        }
         userMapper.updatePassword(user);
         return new ResultInfo(1);
     }

@@ -63,7 +63,7 @@ public class UserController {
 
     @PostMapping("update_password") // 登录的就有这个权限
     @ResponseBody
-    public ResultInfo updatePassword(HttpSession session, String newPassword) {
+    public ResultInfo updatePassword(HttpSession session, String oldPassword, String newPassword) {
         User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
         if (user == null) {
             return new ResultInfo(0, "用户未登录");
@@ -71,11 +71,13 @@ public class UserController {
         if (StringUtils.isEmpty(user.getUserId())) {
             return new ResultInfo(0, "该选择用户");
         }
-        if (StringUtils.isEmpty(newPassword)) {
+        if (StringUtils.isEmpty(oldPassword)) {
+            return new ResultInfo(0, "旧密码不能为空");
+        }if (StringUtils.isEmpty(newPassword)) {
             return new ResultInfo(0, "新密码不能为空");
         }
         user.setPassword(newPassword);
-        return userService.updatePassword(user);
+        return userService.updatePassword(user,oldPassword);
     }
 
     @GetMapping("admin_search_all")
