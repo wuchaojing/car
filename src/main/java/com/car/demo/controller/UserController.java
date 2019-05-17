@@ -121,5 +121,11 @@ public class UserController {
         return userService.delete(user);
     }
 
+    @GetMapping("logout")
+    @ResponseBody
+    public ResultInfo logout(HttpSession session, User user) {
+        session.removeAttribute(ConstantUtil.CLIENT_ID);
+        return new ResultInfo(1);
+    }
 
 }
