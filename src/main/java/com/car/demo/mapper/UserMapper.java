@@ -21,6 +21,9 @@ public interface UserMapper {
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where number=#{number} and password=#{password}")
     User selectByNumberAndPassword(User user);
 
+    @Select("select count(user_id) from user where number=#{number} and password=#{password} and review_state<>'已注销'")
+    Integer selectCountByNumberAndPassword(User user);
+
     @Select("select count(*) from user where number=#{number}")
     Integer selectByNumber(User user);
 
@@ -30,7 +33,7 @@ public interface UserMapper {
     @Update("update user set review_state = #{reviewState},superior_id = #{superiorId},update_time=#{updateTime} where user_id = #{userId}")
     void update(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user")
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user where review_state<>'已注销'")
     List<User> selectAll();
 
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where user_id=#{userId}")

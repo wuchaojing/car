@@ -6,10 +6,7 @@ import com.car.demo.service.UserService;
 import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -29,7 +26,7 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseBody
-    public ResultInfo register(User user) {
+    public ResultInfo register(@RequestBody User user) {
         if (StringUtils.isEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
@@ -66,7 +63,7 @@ public class UserController {
 
     @PostMapping("update_password") // 登录的就有这个权限
     @ResponseBody
-    public ResultInfo updatePassword(HttpSession session, String newPassword) {
+    public ResultInfo updatePassword(HttpSession session, String oldPassword, String newPassword) {
         User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
         if (user == null) {
             return new ResultInfo(0, "用户未登录");
@@ -74,11 +71,13 @@ public class UserController {
         if (StringUtils.isEmpty(user.getUserId())) {
             return new ResultInfo(0, "该选择用户");
         }
-        if (StringUtils.isEmpty(newPassword)) {
+        if (StringUtils.isEmpty(oldPassword)) {
+            return new ResultInfo(0, "旧密码不能为空");
+        }if (StringUtils.isEmpty(newPassword)) {
             return new ResultInfo(0, "新密码不能为空");
         }
         user.setPassword(newPassword);
-        return userService.updatePassword(user);
+        return userService.updatePassword(user,oldPassword);
     }
 
     @GetMapping("admin_search_all")
@@ -122,5 +121,11 @@ public class UserController {
         return userService.delete(user);
     }
 
+    @GetMapping("logout")
+    @ResponseBody
+    public ResultInfo logout(HttpSession session, User user) {
+        session.removeAttribute(ConstantUtil.CLIENT_ID);
+        return new ResultInfo(1);
+    }
 
 }

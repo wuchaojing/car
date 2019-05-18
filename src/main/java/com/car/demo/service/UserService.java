@@ -20,5 +20,5 @@ public interface UserService {
 
     ResultInfo delete(User user);
 
-    ResultInfo updatePassword(User user);
+    ResultInfo updatePassword(User user,String oldPassword);
 }
