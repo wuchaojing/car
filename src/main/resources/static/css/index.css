@@ -96,6 +96,7 @@ html,body {
   width: 377px;
   height: 141px;
   overflow-y: auto;
+    overflow-x: auto;
   z-index: 2;
 }
 .higher-content {

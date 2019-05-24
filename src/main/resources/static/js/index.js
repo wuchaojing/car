@@ -1,4 +1,6 @@
 //组件
+sessionStorage.removeItem('user')
+sessionStorage.removeItem('recordId')
 Vue.prototype.$axios = axios;
 var vm = new Vue({
   el: '#app',
@@ -24,11 +26,18 @@ var vm = new Vue({
                       .then(function (response) {
                           var code = response.data.code
                           var msg = response.data.msg
+                          var data = response.data.data
                           if (code != 1) {
                               alert(msg)
                           } else {
-                              alert('登录成功'+code)
-                              location.href = 'index.html'
+                              sessionStorage.setItem('user',JSON.stringify(data))
+                              if(data.name == 'admin')
+                                location.href = 'managerIndex.html'
+                              else if(data.name == 'audit') {
+                                  location.href = 'pageView.html'
+                              }else {
+                                  location.href = 'userIndex.html'
+                              }
                           }
                       })
               }
@@ -45,8 +54,7 @@ var vm = new Vue({
                   password: '',
                   password2:'',
                   number: '',
-                  position: []
-
+                  position: [],
               }
           },
           created: function () {
@@ -55,13 +63,12 @@ var vm = new Vue({
                   .then(function (response) {
                       // console.log(1)
                       var code = response.data.code
-                      console.log(code)
                       var msg = response.data.data
-                      console.log(msg)
                       if (code != 1) {
                           alert(msg)
                       } else {
                           me.position = msg
+                          console.log(msg)
                       }
                   })
           },
@@ -80,7 +87,10 @@ var vm = new Vue({
                   var position = []
                   for (var i = 0; i < this.position.length; i++) {
                       if (this.position[i].name.indexOf(name) !== -1) {
-                          position.push(this.position[i])
+                          var msg = {name:''}
+                          // console.log(this.position[i].name)
+                          msg.name = this.position[i].name +'(' + this.position[i].number+')'
+                          position.push(msg)
                       }
                   }
                   return position
@@ -90,9 +100,16 @@ var vm = new Vue({
                       alert('两次密码不一致')
                       return ;
                   }else {
-                      var id
+                      var start
+                      for(var j=0;j<this.higherName.length;j++) {
+                          if(this.higherName[j]=='('){
+                              start = j
+                              break;
+                          }
+                      }
+                      var number = this.higherName.slice(start+1,this.higherName.length-1);
                       for(var i=0;i<this.position.length;i++) {
-                          if(this.position[i].name == this.higherName){
+                          if(this.position[i].number == number){
                               id = this.position[i].userId
                               break;
                           }
@@ -100,11 +117,13 @@ var vm = new Vue({
                       console.log(id)
 
                       var data = {name:this.name,password:this.password,number:this.number,superiorId:id}
-                      console.log(data)
                       this.$axios({
                           method:'post',
                           url:'http://localhost:8080/user/register',
-                          data:JSON.stringify(data)
+                          data:JSON.stringify(data),
+                          headers:{
+                              'Content-Type':'application/json'
+                          }
                       }).then(function(response){
                           var code = response.data.code
                           var msg = response.data.msg

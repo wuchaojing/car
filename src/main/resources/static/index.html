@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
-  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/index.css">
   <script src="lib/vue-2.4.0.js"></script>
   <script src="lib/axios.js"></script>
 </head>
@@ -47,7 +47,7 @@
               上级:&nbsp;&nbsp;<input type="text" placeholder="上级" name='higher-name' autocomplete="off" v-model="higherName" @click='show' v-model="higherName">
               
               <div class="higher-namearea" v-show='flag'>
-                <div class="higher-content" v-for="item in search(higherName)" @click='showIn(item.name)'>{{item.name}}</div>    
+                <div class="higher-content" v-for="item in search(higherName)" @click='showIn(item.name)'>{{item.name}}</div>
               </div>
               <input type="submit" value='注册' @click.prevent="sendMsg">
             </form>

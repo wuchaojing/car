@@ -12,6 +12,8 @@ import java.util.List;
 public interface SafeProblemService {
     ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch);
 
+    ResultInfo searchByThisMonth();
+
     ResultInfo upload(MultipartFile[] myFiles, User user);
 
     ResultInfo audit();

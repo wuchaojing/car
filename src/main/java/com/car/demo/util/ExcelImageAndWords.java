@@ -150,13 +150,13 @@ public class ExcelImageAndWords {
 
             }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}", filePath,e);
+            log.error("FileNotFoundException: {}", filePath, e);
             return null;
         } catch (IOException e) {
-            log.error("IOException: new HSSFWorkbook or XSSFWorkbook",e);
+            log.error("IOException: new HSSFWorkbook or XSSFWorkbook", e);
             return null;
         } catch (ParseException e) {
-            log.error("ParseException: parse excel Time yyyy-MM-dd error",e);
+            log.error("ParseException: parse excel Time yyyy-MM-dd error", e);
             return null;
         }
         return safeProblems;
@@ -216,12 +216,12 @@ public class ExcelImageAndWords {
                 // get picture type
                 String ext = pic.suggestFileExtension();
                 picNameAndExt = picName + "." + ext;
-                picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap
+                picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap\\\ConstantUtil.PIC_PATH+
                 byte[] data = pic.getData();
                 // get picture save position
                 FileOutputStream out = null;
-                out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picNameAndExt);
-                log.info("picture save position：" + "D:/photo_xingyi_excel2/{}", picNameAndExt);
+                out = new FileOutputStream(ConstantUtil.PIC_PATH + picNameAndExt);
+                log.info("picture save position：" + ConstantUtil.PIC_PATH + "/{}", picNameAndExt);
                 out.write(data);
                 out.close();
             }
