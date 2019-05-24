@@ -40,7 +40,7 @@ public class UserController {
         }
 
         if (StringUtils.isEmpty(user.getSuperiorId())) {
-            return new ResultInfo(0, "请选择上级");
+            user.setSuperiorId("");
         }
 
         return userService.register(user);
@@ -73,11 +73,12 @@ public class UserController {
         }
         if (StringUtils.isEmpty(oldPassword)) {
             return new ResultInfo(0, "旧密码不能为空");
-        }if (StringUtils.isEmpty(newPassword)) {
+        }
+        if (StringUtils.isEmpty(newPassword)) {
             return new ResultInfo(0, "新密码不能为空");
         }
-        user.setPassword(newPassword);
-        return userService.updatePassword(user,oldPassword);
+        user.setPassword(oldPassword);
+        return userService.updatePassword(user, newPassword);
     }
 
     @GetMapping("admin_search_all")
@@ -89,7 +90,7 @@ public class UserController {
 
     @PostMapping("admin_update") // 只有管理员有这个权限
     @ResponseBody
-    public ResultInfo update(User user) {
+    public ResultInfo update(@RequestBody User user) {
 
         if (StringUtils.isEmpty(user.getUserId())) {
             return new ResultInfo(0, "请选择用户");

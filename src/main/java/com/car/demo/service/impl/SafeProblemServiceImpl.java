@@ -14,10 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,6 +34,22 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     }
 
     @Override
+    public ResultInfo searchByThisMonth() {
+        SafeProblemForSearch safeProblemForSearch=new SafeProblemForSearch();
+        //获取当前月第一天：
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, 0);
+        c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        safeProblemForSearch.setStartTime(c.getTime());
+        //获取当前月最后一天
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        safeProblemForSearch.setEndTime(ca.getTime());
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByThisMonth(safeProblemForSearch);
+        return new ResultInfo(1, safeProblems);
+    }
+
+    @Override
     public ResultInfo upload(MultipartFile[] myFiles, User user) {
         String filePath = null;
         try {
@@ -43,8 +57,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
             Date nowSameDate = new Date();//same Date
 
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
-            Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate, user.getUserId());
-            recordMapper.insert(record);
+
 
             for (MultipartFile myFile : myFiles) {
                 if (!myFile.isEmpty()) {
@@ -60,12 +73,14 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                     List<SafeProblem> safeProblems = ExcelImageAndWords.getDataFromExcel(filePath, nowSameDate, recordId);
 
                     if (null == safeProblems) {
-                        return new ResultInfo(0,"上传失败，请检查文件是否规范");
+                        return new ResultInfo(0, "上传失败，请检查文件是否规范");
                     }
 
                     for (SafeProblem safeProblem : safeProblems) {
                         safeProblemMapper.insert(safeProblem);
                     }
+                    Record record = new Record(recordId, user.getNumber(), user.getName(), nowSameDate, user.getUserId());
+                    recordMapper.insert(record);
                 }
             }
         } catch (IOException e) {

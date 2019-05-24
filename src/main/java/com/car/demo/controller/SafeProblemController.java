@@ -29,6 +29,12 @@ public class SafeProblemController {
         return safeProblemService.searchByCondition(safeProblemForSearch);
     }
 
+    @GetMapping("search_this_month")
+    @ResponseBody
+    public ResultInfo searchByThisMonth() {
+        return safeProblemService.searchByThisMonth();
+    }
+
     @PostMapping("upload")
     @ResponseBody
     public ResultInfo insert(HttpSession session, MultipartFile[] myFiles) {
