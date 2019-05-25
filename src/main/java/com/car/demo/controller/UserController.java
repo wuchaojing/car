@@ -40,7 +40,7 @@ public class UserController {
         }
 
         if (StringUtils.isEmpty(user.getSuperiorId())) {
-            return new ResultInfo(0, "请选择上级");
+            user.setSuperiorId("");
         }
 
         return userService.register(user);
