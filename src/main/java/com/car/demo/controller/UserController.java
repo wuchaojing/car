@@ -100,9 +100,9 @@ public class UserController {
             return new ResultInfo(0, "请选择审核状态");
         }
 
-        if (StringUtils.isEmpty(user.getSuperiorId())) {//无上级也传值
-            return new ResultInfo(0, "请选择该用户上级");
-        }
+//        if (StringUtils.isEmpty(user.getSuperiorId())) {//无上级也传值
+//            return new ResultInfo(0, "请选择该用户上级");
+//        }
 
         return userService.update(user);
     }

@@ -116,7 +116,7 @@
           <input type="button" value="（写入时间后需要点击）搜索" @click.prevent="getTime()">
         <input type="button" value="导出" @click="go" class="export">
       </div>
-      <div style='width:100%; height:420px; overflow-y:auto;'>
+      <div style='width:100%; height:450px; overflow-y:auto;'>
         <table border="1" cellspacing='0' align="center" id="dataTable">
           <thead>
             <tr>
@@ -162,8 +162,8 @@
               <td align="center">{{item.auditHierarchy}}</td>
               <td align="center">{{item.repeatQuestion}}</td>
               <td align="center">{{item.completionStatus}}</td>
-              <td align="center" v-if="item.finishphoto">
-                  <img :src="'http://localhost:8080/'+item.finishphoto" alt="">
+              <td align="center" v-if="item.finishPhoto">
+                  <img :src="'http://localhost:8080/'+item.finishPhoto" alt="">
               </td>
               <td align="center" v-else>
 
@@ -179,7 +179,7 @@
       <input type="button" class="toggle" value="默认层级问题，请切换" @click="flag=!flag">
       <div class="cengji" v-if="flag">
         <div class="cengjiAll" style="overflow:auto;">
-          各层级审计总数：
+          各层级审计总数
           <br>
           <br>
           <br>
@@ -187,7 +187,7 @@
           <div v-for="item in hierarchy"><span>{{item.responsible_area}}</span><span>{{item.audit_hierarchy}}</span><span>{{item.number}}</span></div>
         </div>
         <div class="cengjiLv" style="overflow:auto;">
-            各层级审计完成率：
+            各层级审计完成率
             <br>
             <br>
             <br>
@@ -206,7 +206,7 @@
               <div v-for="item in problemType"><span>{{item.problem_classification}}</span><span>{{item.rank}}</span><span>{{item.number}}</span></div>
             </div>
             <div class="cengjiLv" style="overflow:auto;">
-                公司级统计：
+                公司级统计
                 <br>
                 <br>
                 <br>

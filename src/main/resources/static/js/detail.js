@@ -1,6 +1,5 @@
 var user = JSON.parse(sessionStorage.getItem('user'))
 if(!user) {
-    alert('请先登录！')
     location.href = 'index.html'
 }
 var vm = new Vue({
@@ -54,8 +53,9 @@ var vm = new Vue({
                         location.href = 'index.html'
                     }
                 }else {
-                    sessionStorage.removeItem('recordId')
+                    // sessionStorage.removeItem('recordId')
                     me.msg = data
+                    console.log(data)
                 }
             })
     }

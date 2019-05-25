@@ -1,6 +1,5 @@
 var user = JSON.parse(sessionStorage.getItem('user'))
-if(!user) {
-    alert('请先登录！')
+if(!user || (user.name == 'audit') || (user.name == 'admin')) {
     location.href = 'index.html'
 }
 var vm = new Vue({

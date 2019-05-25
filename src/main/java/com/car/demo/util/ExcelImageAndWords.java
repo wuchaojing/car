@@ -8,10 +8,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -39,15 +36,13 @@ public class ExcelImageAndWords {
             // get absolute stream
             fis = new FileInputStream(filePath);
             if (filePath.endsWith(".xls")) {
-                // 2003 excel endWith .xls
                 wookbook = new HSSFWorkbook(fis);// getWorkBook
             } else if (filePath.endsWith(".xlsx")) {
-                // 2007 excel excel endWith .xlsx
-                fis = new FileInputStream(filePath);
                 wookbook = new XSSFWorkbook(fis);// getWorkBook
             }
             Map<String, PictureData> maplist = null;
             Map<String, String> picMap = null;
+            assert wookbook != null;
             sheet = wookbook.getSheetAt(0);
             // 07 or 03 getPicture
             if (filePath.endsWith(".xls")) {
@@ -59,16 +54,9 @@ public class ExcelImageAndWords {
             if (null == picMap) {
                 return null;
             }
-            // getWorkSheet
-            // GetRowHead
             Row rowHead = sheet.getRow(0);
-            // getTotalColumnLen
             int len = rowHead.getPhysicalNumberOfCells();
-            // getTotalRowLen
             int totalRowNum = sheet.getLastRowNum();
-            // get attribute
-            String temp = "";
-            // getAllStatus
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
             for (int i = 2; i <= totalRowNum; i++) {
                 // get row[i] object【the 0,1 is no use】
@@ -158,6 +146,9 @@ public class ExcelImageAndWords {
         } catch (ParseException e) {
             log.error("ParseException: parse excel Time yyyy-MM-dd error", e);
             return null;
+        } catch (Exception e) {
+            log.error("file format error",e);
+            return null;
         }
         return safeProblems;
     }
@@ -220,12 +211,17 @@ public class ExcelImageAndWords {
                 byte[] data = pic.getData();
                 // get picture save position
                 FileOutputStream out = null;
-                out = new FileOutputStream(ConstantUtil.PIC_PATH + picNameAndExt);
-                log.info("picture save position：" + ConstantUtil.PIC_PATH + "/{}", picNameAndExt);
+
+                String picPath = ConstantUtil.PIC_PATH + picNameAndExt;
+                out = new FileOutputStream(picPath);
+                log.info("picture save position：{}", picPath);
                 out.write(data);
                 out.close();
+
+                // 图片上传到服务器
+                File file = new File(picPath);
+                uploadFileRemote(file);
             }
-            // }
         } catch (FileNotFoundException e) {
             log.error("fail to find file: {}", picNameAndExt, e);
             return null;
@@ -234,5 +230,17 @@ public class ExcelImageAndWords {
             return null;
         }
         return picMap;
+    }
+
+    private static void uploadFileRemote(File tmpFile) {
+        try {
+            String[] shPath = new String[]{"/Users/wuchaojing/shanke/forum/src/main/resources/shell/upload.sh", tmpFile.getPath()};
+            Process ps = Runtime.getRuntime().exec(shPath);
+            ps.waitFor();
+        } catch (Exception e) {
+            log.error("fail to exec scp.sh", e);
+        } finally {
+            tmpFile.delete();
+        }
     }
 }

@@ -18,6 +18,6 @@ public interface RecordMapper {
     @Select("select record_id as recordId,number,name,commit_time as commitTime from record where number=#{number}")
     List<Record> searchRecordByUserNumber(User user);
 
-    @Select("select record_id as recordId,number,name,commit_time as commitTime from record where user_id=#{userId}")
+    @Select("select record_id as recordId,number,name,commit_time as commitTime from record where user_id=#{userId} order by commit_time desc")
     List<Record> searchRecordByUserId(@Param("userId") String userId);
 }

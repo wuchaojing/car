@@ -1,6 +1,9 @@
 var user = JSON.parse(sessionStorage.getItem('user'))
 if(!user) {
-    alert('请先登录！')
+    location.href = 'index.html'
+}
+if(user.name != 'audit') {
+    alert('非管理员,请使用管理员登录！')
     location.href = 'index.html'
 }
 var problem = {
@@ -219,6 +222,9 @@ var problem = {
         go: function () {
             var msg = this.search()
             var dataName = window.prompt('请输入名字')
+            if(dataName == null) {
+                return ;
+            }
             if(!dataName){
                 alert('请输入名字')
                 return ;
@@ -316,7 +322,7 @@ var problem = {
             }
             var me = this
             var start = this.startTime + '+00:00:00'
-            var end = this.startTime + '+23:59:59'
+            var end = this.endTime + '+23:59:59'
             axios.get('http://localhost:8080/safe_problem/search?startTime='+ start + '&endTime='+end)
                 .then(function(response){
                     var code = response.data.code
@@ -362,6 +368,9 @@ var zong = {
                   var data = response.data.data
                   me.hierarchy = data.hierarchy
                   me.hierarchyCompleteRatio = data.hierarchyCompleteRatio
+                  for(var i=0;i<me.hierarchyCompleteRatio.length;i++) {
+                      me.hierarchyCompleteRatio[i].complete_ratio = me.hierarchyCompleteRatio[i].complete_ratio*100 + '%'
+                  }
                   me.problemType = data.problemType
                   me.companyAudit = data.companyAudit
               }
