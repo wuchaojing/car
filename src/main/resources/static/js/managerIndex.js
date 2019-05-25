@@ -1,6 +1,9 @@
 var user = JSON.parse(sessionStorage.getItem('user'))
 if(!user) {
-    alert('请先登录！')
+    location.href = 'index.html'
+}
+if(user.name != 'admin') {
+    alert('非管理员,请使用管理员登录！')
     location.href = 'index.html'
 }
 var vm = new Vue({
@@ -21,6 +24,8 @@ var vm = new Vue({
   methods: {
       search: function () {
           var position = []
+          var msg2 = {name:'无'}
+          position.push(msg2)
           for (var i = 0; i < this.position.length; i++) {
               if (this.position[i].name.indexOf(name) !== -1) {
                   var msg = {name:''}
@@ -53,8 +58,10 @@ var vm = new Vue({
                 var msg = response.data.msg
                 if(code!=1) {
                     alert(msg)
+                    if(msg=='need login') {
+                        location.href = 'index.html'
+                    }
                 }else {
-                    alert('修改成功')
                     me.flag = false
                 }
           })
@@ -76,8 +83,10 @@ var vm = new Vue({
                   var msg = response.data.msg
                   if(code!=1) {
                       alert(msg)
+                      if(msg=='need login') {
+                          location.href = 'index.html'
+                      }
                   }else {
-                      alert('删除成功')
                       me.msg.splice(index,1)
                   }
 
@@ -90,18 +99,22 @@ var vm = new Vue({
               return ;
           }
           var suId
-          var start
-          for(var j=0;j<msg.length;j++) {
-            if(msg[j]=='('){
-                start = j
-                break;
-            }
-          }
-          var number = msg.slice(start+1,msg.length-1);
-          for(var i=0;i<this.position.length;i++) {
-              if(this.position[i].number == number){
-                  suId = this.position[i].userId
-                  break;
+          if(msg=='无') {
+              suId = ''
+          }else {
+              var start
+              for(var j=0;j<msg.length;j++) {
+                  if(msg[j]=='('){
+                      start = j
+                      break;
+                  }
+              }
+              var number = msg.slice(start+1,msg.length-1);
+              for(var i=0;i<this.position.length;i++) {
+                  if(this.position[i].number == number){
+                      suId = this.position[i].userId
+                      break;
+                  }
               }
           }
           var data =  {
@@ -126,9 +139,11 @@ var vm = new Vue({
                       if(msg=='need login') {
                           location.href = 'index.html'
                       }
-                  }else {
-                      alert('修改成功！')
                   }
+                  // else {
+                  //     //直接删除这一行就行
+                  //     alert('修改成功！')
+                  // }
               })
 
       }
@@ -138,11 +153,6 @@ var vm = new Vue({
 
       axios.get('http://localhost:8080/user/admin_search_all')
           .then(function(response) {
-              if(user.name != 'admin') {
-                  alert('非管理员,请使用管理员登录！')
-                  location.href = 'index.html'
-                  return;
-              }
               var code = response.data.code
               var msg = response.data.data
               if(code!=1) {
@@ -171,6 +181,11 @@ var vm = new Vue({
                                           msg[i].msgAndNumber = msgAndNumber
                                           flag = true
                                       }
+                                  }
+                              }
+                              for(var i=0;i<msg.length;i++) {
+                                  if(!msg[i].msgAndNumber) {
+                                      msg[i].msgAndNumber = '无'
                                   }
                               }
                               me.msg = msg
