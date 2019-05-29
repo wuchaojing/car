@@ -215,10 +215,10 @@ var problem = {
     },
   methods: {
         searchGo:function(){
+            this.subdivisionType = ''
             var arr =  this.leiwenti[''+this.problemClassification+'']
             this.leimsg = arr
         },
-
         go: function () {
             var msg = this.search()
             var dataName = window.prompt('请输入名字')
