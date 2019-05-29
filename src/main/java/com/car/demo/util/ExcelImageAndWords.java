@@ -55,7 +55,6 @@ public class ExcelImageAndWords {
                 return null;
             }
             Row rowHead = sheet.getRow(0);
-            int len = rowHead.getPhysicalNumberOfCells();
             int totalRowNum = sheet.getLastRowNum();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
             for (int i = 2; i <= totalRowNum; i++) {
@@ -147,7 +146,7 @@ public class ExcelImageAndWords {
             log.error("ParseException: parse excel Time yyyy-MM-dd error", e);
             return null;
         } catch (Exception e) {
-            log.error("file format error",e);
+            log.error("file format error", e);
             return null;
         }
         return safeProblems;
@@ -218,9 +217,11 @@ public class ExcelImageAndWords {
                 out.write(data);
                 out.close();
 
-                // 图片上传到服务器
-                File file = new File(picPath);
-                uploadFileRemote(file);
+                new Thread(() -> {
+                    // 图片上传到服务器
+                    File file = new File(picPath);
+                    uploadFileRemote(file);
+                }).start();
             }
         } catch (FileNotFoundException e) {
             log.error("fail to find file: {}", picNameAndExt, e);
@@ -234,7 +235,7 @@ public class ExcelImageAndWords {
 
     private static void uploadFileRemote(File tmpFile) {
         try {
-            String[] shPath = new String[]{"/Users/wuchaojing/shanke/forum/src/main/resources/shell/upload.sh", tmpFile.getPath()};
+            String[] shPath = new String[]{"/Users/wuchaojing/developer/car/src/main/resources/shell/upload.sh", tmpFile.getPath()};
             Process ps = Runtime.getRuntime().exec(shPath);
             ps.waitFor();
         } catch (Exception e) {

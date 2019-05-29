@@ -2,94 +2,95 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="css/managerIndex.css">
-  <link rel="stylesheet" href="css/multiplex.css">
-  <script src="lib/vue-2.4.0.js"></script>
-  <script src="lib/axios.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/managerIndex.css">
+    <link rel="stylesheet" href="css/multiplex.css">
+    <script src="lib/vue-2.4.0.js"></script>
+    <script src="lib/axios.js"></script>
 </head>
 
 <body>
-  <div class="main-title">
+<div class="main-title">
     欢迎使用汽车安全问题审计软件
-  </div>
-  <div id="app">
-      <div class="welcome">
-          欢迎您, <span>{{userName}}</span>
-          <button class="repassword" @click="flag=!flag">修改密码</button>
-          <button class="exit" @click="exit">退出</button>
-        </div>
-        <div class="pass-box" v-show="flag">
-          之前密码:<br>
-          <input type="password" v-model="oldValue">
-          新密码:<br>
-          <input type="password" v-model="newValue">
-          确认新密码:<br>
-            <button class="flag" @click.prevent="flag=!flag">x</button>
-          <input type="password" v-model="newValue2">
-          <input type="button" value="提交" @click="repass">
-        </div>
+</div>
+<div id="app">
+    <div class="welcome">
+        欢迎您, <span>{{userName}}</span>
+        <button class="repassword" @click="flag=!flag">修改密码</button>
+        <button class="exit" @click="exit">退出</button>
+    </div>
+    <div class="pass-box" v-show="flag">
+        之前密码:<br>
+        <input type="password" v-model="oldValue">
+        新密码:<br>
+        <input type="password" v-model="newValue">
+        确认新密码:<br>
+        <button class="flag" @click.prevent="flag=!flag">x</button>
+        <input type="password" v-model="newValue2">
+        <input type="button" value="提交" @click="repass">
+    </div>
     <!-- 左侧导航栏 -->
     <div class="left" ref='left'>
-      <!-- 拆分成组件 -->
-      <a class="uploadFile">用户界面</a>
+        <!-- 拆分成组件 -->
+        <a class="uploadFile">用户界面</a>
     </div>
     <div class="right" ref='right'>
-      <div class="right-main">
-        <div class="top">
-          名字: <input type="text" v-model="sname">
-          编号: <input type="text" v-model="snumber">
-          审核状态:
-          <select v-model="sshenhe">
-              <option value=""></option>
-            <option value="已审核">已审核</option>
-            <option value="未审核">未审核</option>
-          </select>
-        </div>
-        <div class="userMessage" style="height: 400px;overflow-y: auto">
-          <table border="1" cellspacing='0' align="center">
-            <thead>
-              <tr>
-                <th>序号</th>
-                <th>编号</th>
-                <th>姓名</th>
-                <th>注册时间</th>
-                <th>上级名称</th>
-                <th>审核状态</th>
-                <th>管理</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item,index) in searchGo()">
-                <td align="center">{{index+1}}</td>
-                <td align="center">{{item.number}}</td>
-                <td align="center">{{item.name}}<br></td>
-                <td align="center">{{item.createTime}}</td>
-                <td align="center">
-                  <select v-model="item.msgAndNumber">
-                      <option v-for="another in search()" >{{another.name}}</option>
-                  </select>
-                </td>
-                <td align="center">
-                  <select v-model="item.reviewState">
+        <div class="right-main">
+            <div class="top">
+                名字: <input type="text" v-model="sname">
+                编号: <input type="text" v-model="snumber">
+                审核状态:
+                <select v-model="sshenhe">
+                    <option value=""></option>
                     <option value="已审核">已审核</option>
                     <option value="未审核">未审核</option>
-                  </select>
-                </td>
-                <td align="center" ><a href="#" style="color:green" @click="update(item.userId,item.reviewState,item.msgAndNumber)">确认</a>
-                    <a href="#" style="color:red" @click="del(item.userId,index)">删除</a></td>
-              </tr>
-            </tbody>
-          </table>
+                </select>
+            </div>
+            <div class="userMessage" style="height: 400px;overflow-y: auto">
+                <table border="1" cellspacing='0' align="center">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>编号</th>
+                        <th>姓名</th>
+                        <th>注册时间</th>
+                        <th>上级名称</th>
+                        <th>审核状态</th>
+                        <th>管理</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in searchGo()">
+                        <td align="center">{{index+1}}</td>
+                        <td align="center">{{item.number}}</td>
+                        <td align="center">{{item.name}}<br></td>
+                        <td align="center">{{item.createTime}}</td>
+                        <td align="center">
+                            <select v-model="item.msgAndNumber">
+                                <option v-for="another in search()">{{another.name}}</option>
+                            </select>
+                        </td>
+                        <td align="center">
+                            <select v-model="item.reviewState">
+                                <option value="已审核">已审核</option>
+                                <option value="未审核">未审核</option>
+                            </select>
+                        </td>
+                        <td align="center"><a href="#" style="color:green"
+                                              @click="update(item.userId,item.reviewState,item.msgAndNumber)">确认</a>
+                            <a href="#" style="color:red" @click="del(item.userId,index)">删除</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- 提交记录组件 -->
-  <script src="js/managerIndex.js"></script>
+</div>
+<!-- 提交记录组件 -->
+<script src="js/managerIndex.js"></script>
 </body>
 
 </html>
