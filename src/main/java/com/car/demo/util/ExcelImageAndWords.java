@@ -147,7 +147,7 @@ public class ExcelImageAndWords {
             log.error("ParseException: parse excel Time yyyy-MM-dd error", e);
             return null;
         } catch (Exception e) {
-            log.error("file format error",e);
+            log.error("file format error", e);
             return null;
         }
         return safeProblems;
@@ -234,7 +234,7 @@ public class ExcelImageAndWords {
 
     private static void uploadFileRemote(File tmpFile) {
         try {
-            String[] shPath = new String[]{"/Users/wuchaojing/shanke/forum/src/main/resources/shell/upload.sh", tmpFile.getPath()};
+            String[] shPath = new String[]{"/Users/wuchaojing/developer/car/src/main/resources/shell/upload.sh", tmpFile.getPath()};
             Process ps = Runtime.getRuntime().exec(shPath);
             ps.waitFor();
         } catch (Exception e) {

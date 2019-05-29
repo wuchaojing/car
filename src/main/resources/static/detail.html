@@ -2,105 +2,105 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="css/multiplex.css">
-  <link rel="stylesheet" href="css/detail.css">
-  <script src='lib/vue-2.4.0.js'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/multiplex.css">
+    <link rel="stylesheet" href="css/detail.css">
+    <script src='lib/vue-2.4.0.js'></script>
     <script src="lib/axios.js"></script>
 </head>
 
 <body>
-  <div class="main-title">
+<div class="main-title">
     欢迎使用汽车安全问题审计软件
-  </div>
-  <div id="app">
-      <div class="welcome">
-          欢迎您, <span>{{userName}}</span>
-          <button class="repassword" @click="flag=!flag">修改密码</button>
-          <button class="exit" @click="exit">退出</button>
-      </div>
-      <div class="pass-box" v-show="flag">
-          之前密码:<br>
-          <input type="password" v-model="oldValue">
-          新密码:<br>
-          <input type="password" v-model="newValue">
-          确认新密码:<br>
-          <input type="password" v-model="newValue2">
-          <button class="flag" @click.prevent="flag=!flag">x</button>
-          <input type="button" value="提交" @click="repass">
-      </div>
+</div>
+<div id="app">
+    <div class="welcome">
+        欢迎您, <span>{{userName}}</span>
+        <button class="repassword" @click="flag=!flag">修改密码</button>
+        <button class="exit" @click="exit">退出</button>
+    </div>
+    <div class="pass-box" v-show="flag">
+        之前密码:<br>
+        <input type="password" v-model="oldValue">
+        新密码:<br>
+        <input type="password" v-model="newValue">
+        确认新密码:<br>
+        <input type="password" v-model="newValue2">
+        <button class="flag" @click.prevent="flag=!flag">x</button>
+        <input type="button" value="提交" @click="repass">
+    </div>
     <div class="left" ref='left'>
-      <!-- 拆分成组件 -->
-      <div class="left-title">欢迎使用</div>
-      <a href="#">详情页面</a>
+        <!-- 拆分成组件 -->
+        <div class="left-title">欢迎使用</div>
+        <a href="#">详情页面</a>
     </div>
     <div class="right" ref='right'>
-      <!-- 这是右侧顶部,还没有内容 空余出一部分  等后续添加-->
-      <div class="right-main">
-<!--        <div class="top">-->
-<!--        </div>-->
-        <div style='width:100%; height:500px; overflow-y:auto;'>
-          <table border="1" cellspacing='0' align="center">
-            <thead>
-              <tr>
-                <th>序号</th>
-                <th>审计区域</th>
-                <th>提出时间</th>
-                <th>问题描述</th>
-                <th>图片</th>
-                <th>状态判断</th>
-                <th>问题分类</th>
-                <th>细分类型</th>
-                <th>等级</th>
-                <th>整改措施</th>
-                <th>责任区域</th>
-                <th>责任人</th>
-                <th>完成期限</th>
-                <th>审计层级</th>
-                <th>是否重复问题</th>
-                <th>完成状态</th>
-                <th>完成照片</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item,index) in msg">
-                <td align="center">{{index+1}}</td>
-                <td align="center">{{item.auditArea}}</td>
-                <td align="center">{{item.proposeTime}}</td>
-                <td align="center">{{item.problemDescription}}</td>
-                  <td align="center" v-if="item.photo">
-                      <img :src="'http://localhost:8080/'+item.photo" alt="">
-                  </td>
-                  <td align="center" v-else>
+        <!-- 这是右侧顶部,还没有内容 空余出一部分  等后续添加-->
+        <div class="right-main">
+            <!--        <div class="top">-->
+            <!--        </div>-->
+            <div style='width:100%; height:550px; overflow-y:auto;'>
+                <table border="1" cellspacing='0' align="center">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>审计区域</th>
+                        <th>提出时间</th>
+                        <th>问题描述</th>
+                        <th>图片</th>
+                        <th>状态判断</th>
+                        <th>问题分类</th>
+                        <th>细分类型</th>
+                        <th>等级</th>
+                        <th>整改措施</th>
+                        <th>责任区域</th>
+                        <th>责任人</th>
+                        <th>完成期限</th>
+                        <th>审计层级</th>
+                        <th>是否重复问题</th>
+                        <th>完成状态</th>
+                        <th>完成照片</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in msg">
+                        <td align="center">{{index+1}}</td>
+                        <td align="center">{{item.auditArea}}</td>
+                        <td align="center">{{item.proposeTime}}</td>
+                        <td align="center">{{item.problemDescription}}</td>
+                        <td align="center" v-if="item.photo">
+                            <img :src="'http://60.205.187.142:9999/forum/'+item.photo" alt="">
+                        </td>
+                        <td align="center" v-else>
 
-                  </td>
-                  <td align="center">{{item.stateJudgement}}</td>
-                  <td align="center">{{item.problemClassification}}</td>
-                  <td align="center">{{item.subdivisionType}}</td>
-                  <td align="center">{{item.rank}}</td>
-                  <td align="center">{{item.rectificationMeasures}}</td>
-                  <td align="center">{{item.responsibleArea}}</td>
-                  <td align="center">{{item.personLiable}}</td>
-                  <td align="center">{{item.completionDeadline}}</td>
-                  <td align="center">{{item.auditHierarchy}}</td>
-                  <td align="center">{{item.repeatQuestion}}</td>
-                  <td align="center">{{item.completionStatus}}</td>
-                  <td align="center" v-if="item.finishPhoto">
-                      <img :src="'http://localhost:8080/'+item.finishPhoto" alt="">
-                  </td>
-                  <td align="center" v-else>
+                        </td>
+                        <td align="center">{{item.stateJudgement}}</td>
+                        <td align="center">{{item.problemClassification}}</td>
+                        <td align="center">{{item.subdivisionType}}</td>
+                        <td align="center">{{item.rank}}</td>
+                        <td align="center">{{item.rectificationMeasures}}</td>
+                        <td align="center">{{item.responsibleArea}}</td>
+                        <td align="center">{{item.personLiable}}</td>
+                        <td align="center">{{item.completionDeadline}}</td>
+                        <td align="center">{{item.auditHierarchy}}</td>
+                        <td align="center">{{item.repeatQuestion}}</td>
+                        <td align="center">{{item.completionStatus}}</td>
+                        <td align="center" v-if="item.finishPhoto">
+                            <img :src="'http://60.205.187.142:9999/forum/'+item.finishPhoto" alt="">
+                        </td>
+                        <td align="center" v-else>
 
-                  </td>
-              </tr>
-            </tbody>
-          </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
 </body>
 <script src="js/detail.js"></script>
