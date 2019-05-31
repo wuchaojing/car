@@ -251,12 +251,12 @@ var problem = {
             var dataAdd = []
             for (var i = 0; i < msg.length; i++) {
                 if (msg[i].photo) {
-                    msg[i].pho = 'http://60.205.187.142:9999/forum/' + msg[i].photo
+                    msg[i].pho = 'http://qiniu.snroom.com/@' + msg[i].photo
                 } else {
                     msg[i].pho = ''
                 }
                 if (msg[i].finishPhoto) {
-                    msg[i].finish = 'http://60.205.187.142:9999/forum/' + msg[i].finishPhoto
+                    msg[i].finish = 'http://qiniu.snroom.com/@' + msg[i].finishPhoto
                 } else {
                     msg[i].finish = ''
                 }

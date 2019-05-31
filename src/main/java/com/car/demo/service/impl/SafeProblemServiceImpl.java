@@ -58,7 +58,6 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
             String recordId = MD5Util.str2MD5(UUID.randomUUID().toString());
 
-
             for (MultipartFile myFile : myFiles) {
                 if (!myFile.isEmpty()) {
 
@@ -68,7 +67,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
                     filePath = uploadPath + "/" + newName;
 
-                    myFile.transferTo(new File(filePath));//io's package file
+                    myFile.transferTo(new File(filePath));
 
                     List<SafeProblem> safeProblems = ExcelImageAndWords.getDataFromExcel(filePath, nowSameDate, recordId);
 

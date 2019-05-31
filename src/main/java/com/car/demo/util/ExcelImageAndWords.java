@@ -1,5 +1,6 @@
 package com.car.demo.util;
 
+import com.car.demo.common.QiniuStorage;
 import com.car.demo.entity.SafeProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;
@@ -8,7 +9,9 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -16,12 +19,6 @@ import java.util.*;
 @Slf4j
 public class ExcelImageAndWords {
 
-    /**
-     * @param filePath
-     * @param nowSameDate a person's submitDate and recodeDate should be same
-     * @param recordId
-     * @return
-     */
     public static List<SafeProblem> getDataFromExcel(String filePath, Date nowSameDate, String recordId) {
         List<SafeProblem> safeProblems = new ArrayList<>();
         try {
@@ -195,53 +192,16 @@ public class ExcelImageAndWords {
     // write picture to disk
     private static Map<String, String> printImg(Map<String, PictureData> sheetList) {
         Map<String, String> picMap = new HashMap<>();
-        String picNameAndExt = null;
-        try {
-            // for (Map<String, PictureData> map : sheetList) {
-            for (String key : sheetList.keySet()) {
-                // get picture stream
-                PictureData pic = sheetList.get(key);
-                // get picture index
-                String picName = UUID.randomUUID().toString();//UUID to identity
-                // get picture type
-                String ext = pic.suggestFileExtension();
-                picNameAndExt = picName + "." + ext;
-                picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap\\\ConstantUtil.PIC_PATH+
-                byte[] data = pic.getData();
-                // get picture save position
-                FileOutputStream out = null;
+        for (String key : sheetList.keySet()) {
+            PictureData pic = sheetList.get(key);
 
-                String picPath = ConstantUtil.PIC_PATH + picNameAndExt;
-                out = new FileOutputStream(picPath);
-                log.info("picture save position：{}", picPath);
-                out.write(data);
-                out.close();
+            byte[] data = pic.getData();
 
-                new Thread(() -> {
-                    // 图片上传到服务器
-                    File file = new File(picPath);
-                    uploadFileRemote(file);
-                }).start();
-            }
-        } catch (FileNotFoundException e) {
-            log.error("fail to find file: {}", picNameAndExt, e);
-            return null;
-        } catch (IOException e) {
-            log.error("IOException: {} or {}", "out.write", "out.close", e);
-            return null;
+            String picName = QiniuStorage.uploadImage(data);
+
+            picMap.put(key, picName);
         }
         return picMap;
     }
 
-    private static void uploadFileRemote(File tmpFile) {
-        try {
-            String[] shPath = new String[]{"/Users/wuchaojing/developer/car/src/main/resources/shell/upload.sh", tmpFile.getPath()};
-            Process ps = Runtime.getRuntime().exec(shPath);
-            ps.waitFor();
-        } catch (Exception e) {
-            log.error("fail to exec scp.sh", e);
-        } finally {
-            tmpFile.delete();
-        }
-    }
 }

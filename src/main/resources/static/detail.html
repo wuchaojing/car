@@ -72,7 +72,7 @@
                         <td align="center">{{item.proposeTime}}</td>
                         <td align="center">{{item.problemDescription}}</td>
                         <td align="center" v-if="item.photo">
-                            <img :src="'http://60.205.187.142:9999/forum/'+item.photo" alt="">
+                            <img :src="'http://qiniu.snroom.com/@'+item.photo" alt="">
                         </td>
                         <td align="center" v-else>
 
@@ -89,7 +89,7 @@
                         <td align="center">{{item.repeatQuestion}}</td>
                         <td align="center">{{item.completionStatus}}</td>
                         <td align="center" v-if="item.finishPhoto">
-                            <img :src="'http://60.205.187.142:9999/forum/'+item.finishPhoto" alt="">
+                            <img :src="'http://qiniu.snroom.com/@'+item.finishPhoto" alt="">
                         </td>
                         <td align="center" v-else>
 

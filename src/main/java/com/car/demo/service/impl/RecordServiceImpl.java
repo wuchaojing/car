@@ -44,6 +44,7 @@ public class RecordServiceImpl implements RecordService {
     }
 
     private List<String> getRelativeUserIds(String userSuperiorId, List<String> list) {
+        System.out.println("-----------");
         if (userSuperiorId == null) {//end: is null
             return null;
         }
@@ -54,5 +55,4 @@ public class RecordServiceImpl implements RecordService {
         }
         return list;
     }
-
 }
