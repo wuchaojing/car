@@ -43,6 +43,9 @@ public class UserController {
             user.setSuperiorId("");
         }
 
+        if(user.getSuperiorId().equals(user.getUserId())){//避免死循环
+            return new ResultInfo(0, "上级不可以是自己");
+        }
         return userService.register(user);
     }
 
@@ -104,6 +107,9 @@ public class UserController {
 //            return new ResultInfo(0, "请选择该用户上级");
 //        }
 
+        if(user.getSuperiorId().equals(user.getUserId())){
+            return new ResultInfo(0,"其上级不是是其自己");
+        }
         return userService.update(user);
     }
 
