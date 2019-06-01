@@ -1,9 +1,7 @@
-package com.car.demo.common;
+package com.car.demo.qiniu;
 
 
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
-import java.io.File;
 
 /**
  * 七牛云存储管理器

@@ -1,4 +1,4 @@
-package com.car.demo.common;
+package com.car.demo.qiniu;
 
 import java.util.Arrays;
 import org.springframework.util.Assert;

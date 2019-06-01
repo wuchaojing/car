@@ -40,10 +40,10 @@ public interface SafeProblemMapper {
             "and completion_status not in ('4/4','6/6','完成')" +
             "</if> " +
             "<if test='startTime != null'> " +
-            "and create_time >= #{startTime}" +
+            "and propose_time >= #{startTime}" +
             "</if> " +
             "<if test='endTime != null'> " +
-            "and create_time <![CDATA[<]]> #{endTime}" +
+            "and propose_time <![CDATA[<]]> #{endTime}" +
             "</if> " +
             "</where>" +
             "</script>")
@@ -52,10 +52,10 @@ public interface SafeProblemMapper {
     @Select("<script> select audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem" +
             "<where> 1=1 " +
             "<if test='startTime != null'> " +
-            "and create_time >= #{startTime}" +
+            "and propose_time >= #{startTime}" +
             "</if> " +
             "<if test='endTime != null'> " +
-            "and create_time <![CDATA[<]]> #{endTime}" +
+            "and propose_time <![CDATA[<]]> #{endTime}" +
             "</if> " +
             "</where>" +
             "</script>")

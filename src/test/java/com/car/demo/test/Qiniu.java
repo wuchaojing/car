@@ -1,7 +1,7 @@
 package com.car.demo.test;
 
-import com.car.demo.common.CommonUtil;
-import com.car.demo.common.QiniuStorage;
+import com.car.demo.qiniu.CommonUtil;
+import com.car.demo.qiniu.QiniuStorage;
 
 import java.io.File;
 

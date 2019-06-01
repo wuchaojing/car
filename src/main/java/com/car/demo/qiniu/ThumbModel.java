@@ -1,4 +1,4 @@
-package com.car.demo.common;
+package com.car.demo.qiniu;
 
 /**
  * 文件的缩略图及其模式字符串定义

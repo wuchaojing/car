@@ -1,6 +1,6 @@
 package com.car.demo.util;
 
-import com.car.demo.common.QiniuStorage;
+import com.car.demo.qiniu.QiniuStorage;
 import com.car.demo.entity.SafeProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;

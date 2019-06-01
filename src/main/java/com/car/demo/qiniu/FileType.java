@@ -1,4 +1,4 @@
-package com.car.demo.common;
+package com.car.demo.qiniu;
 
 /**
  * 定义文件类型及其对应魔数
