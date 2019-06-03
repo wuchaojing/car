@@ -35,7 +35,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo searchByThisMonth() {
-        SafeProblemForSearch safeProblemForSearch=new SafeProblemForSearch();
+        SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, 0);
@@ -106,14 +106,14 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     }
 
-    public ResultInfo update(SafeProblem safeProblem){
+    public ResultInfo update(SafeProblem safeProblem) {
         safeProblemMapper.update(safeProblem);
         return new ResultInfo(1);
     }
 
     @Override
     public ResultInfo searchById(String problemId) {
-        SafeProblem safeProblem=safeProblemMapper.searchById(problemId);
-        return new ResultInfo(1,safeProblem);
+        SafeProblem safeProblem = safeProblemMapper.searchById(problemId);
+        return new ResultInfo(1, safeProblem);
     }
 }

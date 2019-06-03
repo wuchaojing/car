@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultInfo selectPart(User user) {
         List<User> list = new ArrayList<>();
-        getRelativeUsers(user,list);
+        getRelativeUsers(user, list);
         return new ResultInfo(1, list);
 
     }

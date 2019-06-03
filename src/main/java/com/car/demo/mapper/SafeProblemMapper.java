@@ -104,9 +104,9 @@ public interface SafeProblemMapper {
             "<if test='s.endTime != null'> " +
             "and propose_time <![CDATA[<]]> #{s.endTime}" +
             "</if> " +
-            "</where>"+
+            "</where>" +
             "</script> ")
-    List<SafeProblem> searchByRecordIdsAndCondition(@Param("recordIds") String recordIds,@Param("s") SafeProblemForSearch safeProblemForSearch);
+    List<SafeProblem> searchByRecordIdsAndCondition(@Param("recordIds") String recordIds, @Param("s") SafeProblemForSearch safeProblemForSearch);
 
     @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
     List<Map<String, Object>> searchHierarchy();

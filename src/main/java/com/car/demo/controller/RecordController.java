@@ -55,6 +55,6 @@ public class RecordController {
         if (StringUtils.isEmpty(recordIds)) {
             return new ResultInfo(0, "请至少选择一条提交记录");
         }
-        return recordService.getSafeProblemByRecordIdsAndCondition(recordIds,safeProblemForSearch);
+        return recordService.getSafeProblemByRecordIdsAndCondition(recordIds, safeProblemForSearch);
     }
 }

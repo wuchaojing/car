@@ -67,8 +67,8 @@ public class SafeProblemController {
     @GetMapping("search_one")
     @ResponseBody
     public ResultInfo searchById(String problemId) {
-        if(StringUtils.isEmpty(problemId)){
-            return new ResultInfo(0,"请选择一条要修改的报表");
+        if (StringUtils.isEmpty(problemId)) {
+            return new ResultInfo(0, "请选择一条要修改的报表");
         }
         return safeProblemService.searchById(problemId);
     }

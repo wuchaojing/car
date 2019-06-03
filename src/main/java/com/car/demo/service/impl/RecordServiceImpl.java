@@ -40,13 +40,13 @@ public class RecordServiceImpl implements RecordService {
         return new ResultInfo(1, safeProblems);
     }
 
-    public ResultInfo getSafeProblemByRecordIds(String recordIds){
+    public ResultInfo getSafeProblemByRecordIds(String recordIds) {
         List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIds(recordIds);
         return new ResultInfo(1, safeProblems);
     }
 
-    public ResultInfo getSafeProblemByRecordIdsAndCondition(String recordIds, SafeProblemForSearch safeProblemForSearch){
-        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIdsAndCondition(recordIds,safeProblemForSearch);
+    public ResultInfo getSafeProblemByRecordIdsAndCondition(String recordIds, SafeProblemForSearch safeProblemForSearch) {
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIdsAndCondition(recordIds, safeProblemForSearch);
         return new ResultInfo(1, safeProblems);
     }
 
