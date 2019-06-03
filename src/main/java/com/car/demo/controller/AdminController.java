@@ -180,4 +180,43 @@ public class AdminController {
         return adminService.deleteStateJudgement(stateJudgementId);
     }
     //=====================================================================5
+
+    @GetMapping("subdivision_type")
+    public ResultInfo searchSubdivisionType(String problemClassificationId) {
+        if(StringUtils.isEmpty(problemClassificationId)){
+            return new ResultInfo(0, "需先选定一个问题分类");
+        }
+        return adminService.searchSubdivisionType(problemClassificationId);
+    }
+
+    @PostMapping("subdivision_type_insert")
+    public ResultInfo insertSubdivisionType(String subdivisionTypeName,String problemClassificationId) {
+        if (StringUtils.isEmpty(subdivisionTypeName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        if(StringUtils.isEmpty(problemClassificationId)){
+            return new ResultInfo(0, "需先选定一个问题分类");
+        }
+        return adminService.insertSubdivisionType(subdivisionTypeName,problemClassificationId);
+    }
+
+    @PostMapping("subdivision_type_update")
+    public ResultInfo updateSubdivisionType(String subdivisionTypeId, String subdivisionTypeName) {
+        if (StringUtils.isEmpty(subdivisionTypeId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        if (StringUtils.isEmpty(subdivisionTypeName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        return adminService.updateSubdivisionType(subdivisionTypeId, subdivisionTypeName);
+    }
+
+    @PostMapping("subdivision_type_delete")
+    public ResultInfo deleteSubdivisionType(String subdivisionTypeId) {
+        if (StringUtils.isEmpty(subdivisionTypeId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        return adminService.deleteSubdivisionType(subdivisionTypeId);
+    }
+    //=====================================================================6
 }

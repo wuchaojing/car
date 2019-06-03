@@ -47,4 +47,13 @@ public interface AdminService {
 
     ResultInfo deleteStateJudgement(String stateJudgementId);
     //======================================================================5
+
+    ResultInfo searchSubdivisionType(String problemClassificationId);
+
+    ResultInfo insertSubdivisionType(String subdivisionTypeName,String problemClassificationId);
+
+    ResultInfo updateSubdivisionType(String subdivisionTypeId, String subdivisionTypeName);
+
+    ResultInfo deleteSubdivisionType(String subdivisionTypeId);
+    //======================================================================6
 }

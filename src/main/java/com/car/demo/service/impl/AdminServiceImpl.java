@@ -1,5 +1,6 @@
 package com.car.demo.service.impl;
 
+import com.car.demo.entity.AdminData;
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.mapper.AdminMapper;
 import com.car.demo.service.AdminService;
@@ -16,7 +17,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultInfo searchAuditHierarchy() {
-        List<String> list = adminMapper.searchAuditHierarchy();
+        List<AdminData> list = adminMapper.searchAuditHierarchy();
         return new ResultInfo(1, list);
     }
 
@@ -41,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultInfo searchCompletionStatus() {
-        List<String> list = adminMapper.searchCompletionStatus();
+        List<AdminData> list = adminMapper.searchCompletionStatus();
         return new ResultInfo(1, list);
     }
 
@@ -66,7 +67,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultInfo searchProblemClassification() {
-        List<String> list = adminMapper.searchProblemClassification();
+        List<AdminData> list = adminMapper.searchProblemClassification();
         return new ResultInfo(1, list);
     }
 
@@ -85,13 +86,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public ResultInfo deleteProblemClassification(String problemClassificationId) {
         adminMapper.deleteProblemClassification(problemClassificationId);
+        adminMapper.deleteSubdivisionTypesByProblemClassificationId(problemClassificationId);//删掉孩子们
         return new ResultInfo(1);
     }
     //=====================================================================3
 
     @Override
     public ResultInfo searchRank() {
-        List<String> list = adminMapper.searchRank();
+        List<AdminData> list = adminMapper.searchRank();
         return new ResultInfo(1, list);
     }
 
@@ -116,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResultInfo searchStateJudgement() {
-        List<String> list = adminMapper.searchStateJudgement();
+        List<AdminData> list = adminMapper.searchStateJudgement();
         return new ResultInfo(1, list);
     }
 
@@ -138,4 +140,29 @@ public class AdminServiceImpl implements AdminService {
         return new ResultInfo(1);
     }
     //=====================================================================5
+
+    @Override
+    public ResultInfo searchSubdivisionType(String problemClassificationId) {
+        List<AdminData> list = adminMapper.searchSubdivisionType(problemClassificationId);
+        return new ResultInfo(1, list);
+    }
+
+    @Override
+    public ResultInfo insertSubdivisionType(String subdivisionTypeName,String problemClassificationId) {
+        adminMapper.insertSubdivisionType(UUID.randomUUID().toString(), subdivisionTypeName,problemClassificationId);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updateSubdivisionType(String subdivisionTypeId, String subdivisionTypeName) {
+        adminMapper.updateSubdivisionType(subdivisionTypeId, subdivisionTypeName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo deleteSubdivisionType(String subdivisionTypeId) {
+        adminMapper.deleteSubdivisionType(subdivisionTypeId);
+        return new ResultInfo(1);
+    }
+    //=====================================================================6
 }
