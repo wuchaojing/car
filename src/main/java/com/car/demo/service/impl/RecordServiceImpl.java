@@ -34,12 +34,6 @@ public class RecordServiceImpl implements RecordService {
         return new ResultInfo(1, totalRelativeRecords);
     }
 
-    @Override
-    public ResultInfo getSafeProblemByRecordId(Record record) {
-        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordId(record);
-        return new ResultInfo(1, safeProblems);
-    }
-
     public ResultInfo getSafeProblemByRecordIds(String recordIds) {
         List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIds(recordIds);
         return new ResultInfo(1, safeProblems);

@@ -31,14 +31,7 @@ public class RecordController {
         return recordService.getRelativeRecords(user);
     }
 
-    @GetMapping("safe_problems")
-    @ResponseBody
-    public ResultInfo getSafeProblemByRecordId(Record record) {
-        if (StringUtils.isEmpty(record.getRecordId())) {
-            return new ResultInfo(0, "请选择提交记录");
-        }
-        return recordService.getSafeProblemByRecordId(record);
-    }
+
 
     @GetMapping("safe_problems_batch")
     @ResponseBody

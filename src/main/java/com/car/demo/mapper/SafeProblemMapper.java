@@ -64,15 +64,13 @@ public interface SafeProblemMapper {
             " </script>")
     void insert(SafeProblem safeProblem);
 
-    @Select("select audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
-            "where record_id=#{recordId}")
-    List<SafeProblem> searchByRecordId(Record record);
+    
 
     @Select("select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
             "where record_id in (${recordIds})")
     List<SafeProblem> searchByRecordIds(@Param("recordIds") String recordIds);
 
-    @Select("<script> select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
+    @Select("<script> select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,create_time as createTime from safe_problem " +
             "<where> record_id in (${recordIds}) " +
             "<if test='s.stateJudgement != null and s.stateJudgement != \"\"'> " +
             "and state_judgement = #{s.stateJudgement}" +

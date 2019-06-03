@@ -8,8 +8,6 @@ import com.car.demo.entity.User;
 public interface RecordService {
     ResultInfo getRelativeRecords(User user);
 
-    ResultInfo getSafeProblemByRecordId(Record record);
-
     ResultInfo getSafeProblemByRecordIds(String recordIds);
 
     ResultInfo getSafeProblemByRecordIdsAndCondition(String recordIds, SafeProblemForSearch safeProblemForSearch);
