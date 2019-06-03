@@ -42,6 +42,9 @@ public interface UserMapper {
     @Select("select user_id as userId from user where superior_id=#{userSuperiorId}")
     List<String> selectSonsIdBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
 
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where superior_id=#{userSuperiorId}")
+    List<User> selectSonsBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
+
     @Select("<script> select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user " +
             "<where> 1=1 " +
             "<if test='number != null and number != \"\"'> " +

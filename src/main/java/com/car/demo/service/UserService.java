@@ -16,6 +16,8 @@ public interface UserService {
 
     ResultInfo selectAll();
 
+    ResultInfo selectPart(User user);
+
     ResultInfo search(User user);
 
     ResultInfo delete(User user);

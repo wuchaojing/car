@@ -1,11 +1,13 @@
 package com.car.demo.controller;
 
 import com.car.demo.entity.ResultInfo;
+import com.car.demo.entity.SafeProblem;
 import com.car.demo.entity.SafeProblemForSearch;
 import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -56,5 +58,19 @@ public class SafeProblemController {
         return safeProblemService.audit();
     }
 
+    @PostMapping("update")
+    @ResponseBody
+    public ResultInfo update(SafeProblem safeProblem) {
+        return safeProblemService.update(safeProblem);
+    }
+
+    @GetMapping("search_one")
+    @ResponseBody
+    public ResultInfo searchById(String problemId) {
+        if(StringUtils.isEmpty(problemId)){
+            return new ResultInfo(0,"请选择一条要修改的报表");
+        }
+        return safeProblemService.searchById(problemId);
+    }
 
 }

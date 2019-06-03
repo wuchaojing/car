@@ -8,6 +8,7 @@ import com.car.demo.util.MD5Util;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
         Date date = new Date();
         user.setCreateTime(date);
         user.setUpdateTime(date);
-        user.setReviewState("未审核");
+        user.setReviewState("已审核");//user.setReviewState("未审核");
         userMapper.insert(user);
         return new ResultInfo(1);
 
@@ -68,6 +69,28 @@ public class UserServiceImpl implements UserService {
         List<User> list = userMapper.selectAll();
         return new ResultInfo(1, list);
 
+    }
+
+    @Override
+    public ResultInfo selectPart(User user) {
+        List<User> list = new ArrayList<>();
+        getRelativeUsers(user,list);
+        return new ResultInfo(1, list);
+
+    }
+
+    private List<User> getRelativeUsers(User superiorUser, List<User> list) {
+        System.out.println("-----------");
+        if (superiorUser == null) {//end: is null
+            return null;
+        }
+        //list.add(superiorUser);//add this【若需要自己，则取消这行，注释隔一行】
+        List<User> curs = userMapper.selectSonsBySuperiorId(superiorUser.getUserId());
+        list.addAll(curs);//【只要下属的】
+        for (User user : curs) {
+            getRelativeUsers(user, list);//into his every son
+        }
+        return list;
     }
 
     @Override

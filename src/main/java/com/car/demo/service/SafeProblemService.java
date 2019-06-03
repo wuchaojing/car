@@ -17,4 +17,8 @@ public interface SafeProblemService {
     ResultInfo upload(MultipartFile[] myFiles, User user);
 
     ResultInfo audit();
+
+    ResultInfo update(SafeProblem safeProblem);
+
+    ResultInfo searchById(String problemId);
 }

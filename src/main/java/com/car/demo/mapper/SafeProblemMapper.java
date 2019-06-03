@@ -1,12 +1,10 @@
 package com.car.demo.mapper;
 
 import com.car.demo.entity.Record;
+import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.SafeProblem;
 import com.car.demo.entity.SafeProblemForSearch;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 import java.util.Map;
@@ -70,6 +68,46 @@ public interface SafeProblemMapper {
             "where record_id=#{recordId}")
     List<SafeProblem> searchByRecordId(Record record);
 
+    @Select("select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
+            "where record_id in (${recordIds})")
+    List<SafeProblem> searchByRecordIds(@Param("recordIds") String recordIds);
+
+    @Select("<script> select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
+            "<where> record_id in (${recordIds}) " +
+            "<if test='s.stateJudgement != null and s.stateJudgement != \"\"'> " +
+            "and state_judgement = #{s.stateJudgement}" +
+            "</if> " +
+            "<if test='s.problemClassification != null and s.problemClassification != \"\"'> " +
+            "and problem_classification = #{s.problemClassification}" +
+            "</if> " +
+            "<if test='s.subdivisionType != null and s.subdivisionType != \"\"'> " +
+            "and subdivision_type = #{s.subdivisionType}" +
+            "</if> " +
+            "<if test='s.rank != null and s.rank != \"\"'> " +
+            "and rank = #{s.rank}" +
+            "</if> " +
+            "<if test='s.auditHierarchy != null and s.auditHierarchy != \"\"'> " +
+            "and audit_hierarchy = #{s.auditHierarchy}" +
+            "</if> " +
+            "<if test='s.repeatQuestion != null and s.repeatQuestion != \"\"'> " +
+            "and repeat_question = #{s.repeatQuestion}" +
+            "</if> " +
+            "<if test='s.completionStatus == \"完成\"'> " +
+            "and completion_status in ('4/4','6/6','完成')" +
+            "</if> " +
+            "<if test='s.completionStatus == \"未完成\"'> " +
+            "and completion_status not in ('4/4','6/6','完成')" +
+            "</if> " +
+            "<if test='s.startTime != null'> " +
+            "and propose_time >= #{s.startTime}" +
+            "</if> " +
+            "<if test='s.endTime != null'> " +
+            "and propose_time <![CDATA[<]]> #{s.endTime}" +
+            "</if> " +
+            "</where>"+
+            "</script> ")
+    List<SafeProblem> searchByRecordIdsAndCondition(@Param("recordIds") String recordIds,@Param("s") SafeProblemForSearch safeProblemForSearch);
+
     @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
     List<Map<String, Object>> searchHierarchy();
 
@@ -82,5 +120,13 @@ public interface SafeProblemMapper {
     @Select("select state_judgement,count(*) as number from safe_problem group by state_judgement order by state_judgement")
     List<Map<String, Object>> searchCompanyAudit();
 
+    @Update("update safe_problem " +
+            "set audit_area=#{auditArea},propose_time=#{proposeTime},problem_description=#{problemDescription},state_judgement=#{stateJudgement},problem_classification=#{problemClassification},subdivision_type=#{subdivisionType},rank=#{rank},rectification_measures=#{rectificationMeasures},responsible_area=#{responsibleArea},person_liable=#{personLiable},completion_deadline=#{completionDeadline},audit_hierarchy=#{auditHierarchy},repeat_question=#{repeatQuestion},completion_status=#{completionStatus} " +
+            "where problem_id=#{problemId}")
+    void update(SafeProblem safeProblem);
+
+    @Select("select problem_id as problemId,audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
+            "where problem_id=#{problemId}")
+    SafeProblem searchById(@Param("problemId") String problemId);
 }
 

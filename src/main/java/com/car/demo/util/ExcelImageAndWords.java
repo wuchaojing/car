@@ -68,7 +68,7 @@ public class ExcelImageAndWords {
 
                 cell = row.getCell((short) 2);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
+                safeProblem.setProposeTime(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
 
                 cell = row.getCell((short) 3);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
@@ -108,7 +108,7 @@ public class ExcelImageAndWords {
 
                 cell = row.getCell((short) 12);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionDeadline(simpleDateFormat.parse(cell.getStringCellValue()));
+                safeProblem.setCompletionDeadline(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
 
                 cell = row.getCell((short) 13);
                 cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String

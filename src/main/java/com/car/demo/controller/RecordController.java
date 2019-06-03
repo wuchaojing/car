@@ -2,6 +2,7 @@ package com.car.demo.controller;
 
 import com.car.demo.entity.Record;
 import com.car.demo.entity.ResultInfo;
+import com.car.demo.entity.SafeProblemForSearch;
 import com.car.demo.entity.User;
 import com.car.demo.service.RecordService;
 import com.car.demo.util.ConstantUtil;
@@ -37,5 +38,23 @@ public class RecordController {
             return new ResultInfo(0, "请选择提交记录");
         }
         return recordService.getSafeProblemByRecordId(record);
+    }
+
+    @GetMapping("safe_problems_batch")
+    @ResponseBody
+    public ResultInfo getSafeProblemByRecordIds(String recordIds) {//格式 '','',''
+        if (StringUtils.isEmpty(recordIds)) {
+            return new ResultInfo(0, "请至少选择一条提交记录");
+        }
+        return recordService.getSafeProblemByRecordIds(recordIds);
+    }
+
+    @GetMapping("safe_problems_batch_search")
+    @ResponseBody
+    public ResultInfo getSafeProblemByRecordIdsAndCondition(String recordIds, SafeProblemForSearch safeProblemForSearch) {//格式 '','',''  另外加上了查询
+        if (StringUtils.isEmpty(recordIds)) {
+            return new ResultInfo(0, "请至少选择一条提交记录");
+        }
+        return recordService.getSafeProblemByRecordIdsAndCondition(recordIds,safeProblemForSearch);
     }
 }

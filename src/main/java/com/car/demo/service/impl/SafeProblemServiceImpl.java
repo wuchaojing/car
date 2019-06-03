@@ -105,4 +105,15 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         return new ResultInfo(1, auditData);
 
     }
+
+    public ResultInfo update(SafeProblem safeProblem){
+        safeProblemMapper.update(safeProblem);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo searchById(String problemId) {
+        SafeProblem safeProblem=safeProblemMapper.searchById(problemId);
+        return new ResultInfo(1,safeProblem);
+    }
 }
