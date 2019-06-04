@@ -64,7 +64,6 @@ public interface SafeProblemMapper {
             " </script>")
     void insert(SafeProblem safeProblem);
 
-    
 
     @Select("select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
             "where record_id in (${recordIds})")
@@ -91,10 +90,10 @@ public interface SafeProblemMapper {
             "and repeat_question = #{s.repeatQuestion}" +
             "</if> " +
             "<if test='s.completionStatus == \"完成\"'> " +
-            "and completion_status in ('4/4','6/6','完成')" +
+            "and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.completionStatus == \"未完成\"'> " +
-            "and completion_status not in ('4/4','6/6','完成')" +
+            "and completion_status not in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.startTime != null'> " +
             "and propose_time >= #{s.startTime}" +
