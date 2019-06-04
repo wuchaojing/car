@@ -21,6 +21,14 @@ public class AdminController {
         return adminService.searchAuditHierarchy();
     }
 
+    @GetMapping("audit_hierarchy_id")
+    public ResultInfo searchAuditHierarchyById(String auditHierarchyId) {
+        if(StringUtils.isEmpty(auditHierarchyId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchAuditHierarchyById(auditHierarchyId);
+    }
+
     @PostMapping("audit_hierarchy_insert")
     public ResultInfo insertAuditHierarchy(String auditHierarchyName) {
         if (StringUtils.isEmpty(auditHierarchyName)) {
@@ -52,6 +60,14 @@ public class AdminController {
     @GetMapping("completion_status")
     public ResultInfo searchCompletionStatus() {
         return adminService.searchCompletionStatus();
+    }
+
+    @GetMapping("completion_status_id")
+    public ResultInfo searchCompletionStatusById(String completionStatusId) {
+        if(StringUtils.isEmpty(completionStatusId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchCompletionStatusById(completionStatusId);
     }
 
     @PostMapping("completion_status_insert")
@@ -87,6 +103,14 @@ public class AdminController {
         return adminService.searchProblemClassification();
     }
 
+    @GetMapping("problem_classification_id")
+    public ResultInfo searchProblemClassificationById(String problemClassificationId) {
+        if(StringUtils.isEmpty(problemClassificationId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchProblemClassificationById(problemClassificationId);
+    }
+
     @PostMapping("problem_classification_insert")
     public ResultInfo insertProblemClassification(String problemClassificationName) {
         if (StringUtils.isEmpty(problemClassificationName)) {
@@ -120,6 +144,14 @@ public class AdminController {
         return adminService.searchRank();
     }
 
+    @GetMapping("rank_id")
+    public ResultInfo searchRankById(String rankId) {
+        if(StringUtils.isEmpty(rankId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchRankById(rankId);
+    }
+
     @PostMapping("rank_insert")
     public ResultInfo insertRank(String rankName) {
         if (StringUtils.isEmpty(rankName)) {
@@ -151,6 +183,14 @@ public class AdminController {
     @GetMapping("state_judgement")
     public ResultInfo searchStateJudgement() {
         return adminService.searchStateJudgement();
+    }
+
+    @GetMapping("state_judgement_id")
+    public ResultInfo searchStateJudgementById(String stateJudgementId) {
+        if(StringUtils.isEmpty(stateJudgementId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchStateJudgementById(stateJudgementId);
     }
 
     @PostMapping("state_judgement_insert")
@@ -189,6 +229,14 @@ public class AdminController {
         return adminService.searchSubdivisionType(problemClassificationId);
     }
 
+    @GetMapping("subdivision_type_id")
+    public ResultInfo searchSubdivisionTypeById(String subdivisionTypeId) {
+        if(StringUtils.isEmpty(subdivisionTypeId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchSubdivisionTypeById(subdivisionTypeId);
+    }
+
     @PostMapping("subdivision_type_insert")
     public ResultInfo insertSubdivisionType(String subdivisionTypeName,String problemClassificationId) {
         if (StringUtils.isEmpty(subdivisionTypeName)) {
@@ -219,4 +267,45 @@ public class AdminController {
         return adminService.deleteSubdivisionType(subdivisionTypeId);
     }
     //=====================================================================6
+
+    @GetMapping("responsible_area")
+    public ResultInfo searchResponsibleArea() {
+        return adminService.searchResponsibleArea();
+    }
+
+    @GetMapping("responsible_area_id")
+    public ResultInfo searchResponsibleAreaById(String responsibleAreaId) {
+        if(StringUtils.isEmpty(responsibleAreaId)){
+            return new ResultInfo(0,"请选择一条");
+        }
+        return adminService.searchResponsibleAreaById(responsibleAreaId);
+    }
+
+    @PostMapping("responsible_area_insert")
+    public ResultInfo insertResponsibleArea(String responsibleAreaName) {
+        if (StringUtils.isEmpty(responsibleAreaName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        return adminService.insertResponsibleArea(responsibleAreaName);
+    }
+
+    @PostMapping("responsible_area_update")
+    public ResultInfo updateResponsibleArea(String responsibleAreaId, String responsibleAreaName) {
+        if (StringUtils.isEmpty(responsibleAreaId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        if (StringUtils.isEmpty(responsibleAreaName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        return adminService.updateResponsibleArea(responsibleAreaId, responsibleAreaName);
+    }
+
+    @PostMapping("responsible_area_delete")
+    public ResultInfo deleteResponsibleArea(String responsibleAreaId) {
+        if (StringUtils.isEmpty(responsibleAreaId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        return adminService.deleteResponsibleArea(responsibleAreaId);
+    }
+    //=====================================================================7
 }

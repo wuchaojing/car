@@ -38,6 +38,12 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.deleteAuditHierarchy(auditHierarchyId);
         return new ResultInfo(1);
     }
+
+    @Override
+    public ResultInfo searchAuditHierarchyById(String auditHierarchyId) {
+        AdminData adminData=adminMapper.searchAuditHierarchyById(auditHierarchyId);
+        return new ResultInfo(1,adminData);
+    }
     //=====================================================================1
 
     @Override
@@ -62,6 +68,12 @@ public class AdminServiceImpl implements AdminService {
     public ResultInfo deleteCompletionStatus(String completionStatusId) {
         adminMapper.deleteCompletionStatus(completionStatusId);
         return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo searchCompletionStatusById(String completionStatusId) {
+        AdminData adminData=adminMapper.searchCompletionStatusById(completionStatusId);
+        return new ResultInfo(1,adminData);
     }
     //=====================================================================2
 
@@ -89,6 +101,12 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.deleteSubdivisionTypesByProblemClassificationId(problemClassificationId);//删掉孩子们
         return new ResultInfo(1);
     }
+
+    @Override
+    public ResultInfo searchProblemClassificationById(String problemClassificationId) {
+        AdminData adminData=adminMapper.searchProblemClassificationById(problemClassificationId);
+        return new ResultInfo(1,adminData);
+    }
     //=====================================================================3
 
     @Override
@@ -113,6 +131,12 @@ public class AdminServiceImpl implements AdminService {
     public ResultInfo deleteRank(String rankId) {
         adminMapper.deleteRank(rankId);
         return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo searchRankById(String rankId) {
+        AdminData adminData=adminMapper.searchRankById(rankId);
+        return new ResultInfo(1,adminData);
     }
     //=====================================================================4
 
@@ -139,6 +163,12 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.deleteStateJudgement(stateJudgementId);
         return new ResultInfo(1);
     }
+
+    @Override
+    public ResultInfo searchStateJudgementById(String stateJudgementId) {
+        AdminData adminData=adminMapper.searchStateJudgementById(stateJudgementId);
+        return new ResultInfo(1,adminData);
+    }
     //=====================================================================5
 
     @Override
@@ -164,5 +194,42 @@ public class AdminServiceImpl implements AdminService {
         adminMapper.deleteSubdivisionType(subdivisionTypeId);
         return new ResultInfo(1);
     }
+
+    @Override
+    public ResultInfo searchSubdivisionTypeById(String subdivisionTypeId) {
+        AdminData adminData=adminMapper.searchSubdivisionTypeById(subdivisionTypeId);
+        return new ResultInfo(1,adminData);
+    }
     //=====================================================================6
+
+    @Override
+    public ResultInfo searchResponsibleArea() {
+        List<AdminData> list = adminMapper.searchResponsibleArea();
+        return new ResultInfo(1, list);
+    }
+
+    @Override
+    public ResultInfo insertResponsibleArea(String responsibleAreaName) {
+        adminMapper.insertResponsibleArea(UUID.randomUUID().toString(), responsibleAreaName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updateResponsibleArea(String responsibleAreaId, String responsibleAreaName) {
+        adminMapper.updateResponsibleArea(responsibleAreaId, responsibleAreaName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo deleteResponsibleArea(String responsibleAreaId) {
+        adminMapper.deleteResponsibleArea(responsibleAreaId);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo searchResponsibleAreaById(String responsibleAreaId) {
+        AdminData adminData=adminMapper.searchResponsibleAreaById(responsibleAreaId);
+        return new ResultInfo(1,adminData);
+    }
+    //=====================================================================7
 }
