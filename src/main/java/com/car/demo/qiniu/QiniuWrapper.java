@@ -1,19 +1,5 @@
 package com.car.demo.qiniu;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
-
-import com.qiniu.util.StringMap;
-import com.qiniu.util.UrlSafeBase64;
-import org.apache.commons.fileupload.disk.DiskFileItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -21,7 +7,16 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
+import com.qiniu.util.UrlSafeBase64;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * 七牛SDK的包装类，以便于业务使用
@@ -147,7 +142,7 @@ public class QiniuWrapper {
     public static String upload(byte[] data, String key, boolean update) {
         try {
             String token = update ? auth.uploadToken(bucketName, key) : auth.uploadToken(bucketName);
-            Response response = uploadManager.put(data, getFullKey(data, key), token);
+            Response response = uploadManager.put(data, key, token);
             DefaultPutRet ret = response.jsonToObject(DefaultPutRet.class);
             return ret.key;
         } catch (QiniuException e) {

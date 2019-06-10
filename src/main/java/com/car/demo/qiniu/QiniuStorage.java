@@ -20,6 +20,12 @@ public class QiniuStorage {
         return key;
     }
 
+    public static String uploadFile(byte[] buff, String fileType) {
+        String key = QiniuKeyGenerator.generateKey();
+        key = QiniuWrapper.upload(buff, key + "." + fileType, false);
+        return key;
+    }
+
     /**
      * 上传单张图片；返回上传图片的url，此url会过期，切记不要存储在数据库中；
      *
