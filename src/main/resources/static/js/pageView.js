@@ -20,25 +20,18 @@ var problem = {
             completionStatus: '',
             startTime: '',
             endTime: '',
-            // lei:[
-            //     '',
-            //     '不安全行为',
-            //     '化学品安全',
-            //     '交通安全',
-            //     '环境保护',
-            //     '消防安全',
-            //     '用电安全',
-            //     '能量锁定',
-            //     '有限空间',
-            //     '危险隔离区',
-            //     '高处作业',
-            //     '机械安全',
-            //     '职业健康',
-            //     '目视化信息',
-            //     '作业现场及5S',
-            //     '管理缺失'
-            // ],
-            leiwenti: {
+            responsibleArea: '',
+            auditHierarchy: '',
+
+            //下边的是ajax获取的信息
+            stateJudgements: [],
+            auditHierarchys: [],
+            ranks: [],
+            problemClassifications:[],
+            ids:[],
+            responsibleAreas:[],
+            completionStatuses: [],
+              /*  leiwenti: {
                 '': '',
                 '不安全行为': [
                     '',
@@ -172,8 +165,8 @@ var problem = {
                     '未经培训',
                     '其他'
                 ]
-            },
-            leimsg: ''
+            },*/
+            leimsg: []
         }
     },
     created: function () {
@@ -181,11 +174,11 @@ var problem = {
         var date = new Date()
         var year = date.getFullYear()
         var month = date.getMonth() + 1
-        if (month == 1 || 3 || 5 || 7) {
+        if (month == 1 ||month == 3 ||month == 5 ||month == 7) {
             this.startTime = year + '-0' + month + '-01'
             this.endTime = year + '-0' + month + '-31'
         }
-        else if (month = 10 || 12) {
+        else if (month == 10 ||month == 12) {
             this.startTime = year + '-' + month + '-01'
             this.endTime = year + '-' + month + '-31'
         }
@@ -212,12 +205,138 @@ var problem = {
                     me.msg = data
                 }
             })
+        axios.get('http://localhost:8080/admin/state_judgement')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.stateJudgements.push(data[i].name)
+                    }
+                }
+            })
+        axios.get('http://localhost:8080/admin/rank')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.ranks.push(data[i].name)
+                    }
+                }
+            })
+        axios.get('http://localhost:8080/admin/problem_classification')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.problemClassifications.push(data[i].name)
+                        me.ids.push(data[i].id)
+                    }
+                }
+            })
+        axios.get('http://localhost:8080/admin/responsible_area')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.responsibleAreas.push(data[i].name)
+                    }
+                }
+            })
+        axios.get('http://localhost:8080/admin/audit_hierarchy')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.auditHierarchys.push(data[i].name)
+                    }
+                }
+            })
+        /*axios.get('http://localhost:8080/admin/rank')
+            .then(function(response){
+                var code = response.data.code
+                var msg = response.data.msg
+                if (code != 1) {
+                    if (msg == 'need login') {
+                        location.href = 'index.html'
+                    }
+                } else {
+                    var data = response.data.data
+                    for(var i=0;i<data.length;i++)
+                    {
+                        me.problemClassifications.push(data[i].name)
+                    }
+                }
+            })*/
     },
     methods: {
         searchGo: function () {
-            this.subdivisionType = ''
-            var arr = this.leiwenti['' + this.problemClassification + '']
-            this.leimsg = arr
+            var id;
+            var me = this;
+            if(this.problemClassification == ''){
+                this.subdivisionType = ''
+                this.leimsg = ''
+            }else {
+                for(var i=0;i<this.problemClassifications.length;i++) {
+                    if(this.problemClassifications[i]==this.problemClassification){
+                        id = this.ids[i]
+                        break;
+                    }
+                }
+                me.leimsg = []
+                axios.get('http://localhost:8080/admin/subdivision_type?problemClassificationId='+id)
+                    .then(function(response){
+                       var code = response.data.code
+                       var msg = response.data.msg
+                       if (code != 1) {
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                var data = response.data.data
+                                for(var i=0;i<data.length;i++)
+                                {
+                                    me.leimsg.push(data[i].name)
+                                }
+                            }
+                        })
+
+            }
+
         },
         go: function () {
             var msg = this.search()
@@ -288,7 +407,7 @@ var problem = {
             var msg = []
             for (var i = 0; i < this.msg.length; i++) {
                 var flag = true
-                if (this.msg[i].stateJudgement.indexOf(this.stateJudgement) != -1 && this.msg[i].problemClassification.indexOf(this.problemClassification) != -1 && this.msg[i].rank.indexOf(this.rank) != -1 && this.msg[i].auditHierarchy.indexOf(this.auditHierarchy) != -1 && this.msg[i].repeatQuestion.indexOf(this.repeatQuestion) != -1) {
+                if (this.msg[i].stateJudgement.indexOf(this.stateJudgement) != -1 && this.msg[i].problemClassification.indexOf(this.problemClassification) != -1 && this.msg[i].rank.indexOf(this.rank) != -1 && this.msg[i].auditHierarchy.indexOf(this.auditHierarchy) != -1 && this.msg[i].repeatQuestion.indexOf(this.repeatQuestion) != -1 &&this.msg[i].responsibleArea.indexOf(this.responsibleArea)!= -1) {
                     if (this.subdivisionType == '其他') {
                         for (var j = 0; j < this.leimsg.length - 1; j++) {
                             if (this.leimsg[j].indexOf(this.msg[i].subdivisionType) != -1) {
@@ -362,7 +481,6 @@ var problem = {
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg
-                    console.log(code)
                     if (code != 1) {
                         alert(msg)
                         if (msg == 'need login') {

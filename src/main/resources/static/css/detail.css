@@ -3,9 +3,16 @@ div.left a{
 }
 .top {
   margin-top: 80px;
-  width: 100%;
+  width: 1098px;
   height: 70px;
   padding-left: 50px;
+}
+.top select {
+    margin-top: 10px;
+    margin-right: 25px;
+}
+.xifen {
+    width: 200px;
 }
 table {
   width: 2000px;
