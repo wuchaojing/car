@@ -39,6 +39,13 @@ public class UserController {
             return new ResultInfo(0, "请输入密码");
         }
 
+        if (StringUtils.isEmpty(user.getLevel())) {
+            return new ResultInfo(0, "请输入级别");
+        }
+
+        if (StringUtils.isEmpty(user.getDetail())) {
+            return new ResultInfo(0, "请输入具体级别");
+        }
         User userWillParent = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
 
         if (userWillParent == null || StringUtils.isEmpty(userWillParent.getUserId())) {
@@ -101,23 +108,20 @@ public class UserController {
     }
 
 
-//    @PostMapping("admin_update") // 只有管理员有这个权限
-//    @ResponseBody
-//    public ResultInfo update(@RequestBody User user) {
-//
-//        if (StringUtils.isEmpty(user.getUserId())) {
-//            return new ResultInfo(0, "请选择用户");
-//        }
-//
-//        if (StringUtils.isEmpty(user.getReviewState())) {
-//            return new ResultInfo(0, "请选择审核状态");
-//        }
-//
-//        if (user.getSuperiorId().equals(user.getUserId())) {
-//            return new ResultInfo(0, "上级不能选自己");
-//        }
-//        return userService.update(user);
-//    }
+    @PostMapping("admin_update") // 【修改具体分区】
+    @ResponseBody
+    public ResultInfo update(@RequestBody User user) {
+
+        if (StringUtils.isEmpty(user.getUserId())) {
+            return new ResultInfo(0, "请选择用户");
+        }
+
+        if (StringUtils.isEmpty(user.getDetail())) {
+            return new ResultInfo(0, "请输入具体级别分区");
+        }
+
+        return userService.update(user);
+    }
 
     @GetMapping("admin_search") // 管理员可以根据条件查询用户（userId,number以及模糊查询用户名，审核状态）【给其找回密码】
     @ResponseBody
