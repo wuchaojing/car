@@ -125,5 +125,14 @@ public interface SafeProblemMapper {
     @Select("select problem_id as problemId,audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
             "where problem_id=#{problemId}")
     SafeProblem searchById(@Param("problemId") String problemId);
+
+    @Select("select responsible_area,rank,count(*) as number from safe_problem where audit_hierarchy='公司级' group by responsible_area,rank order by responsible_area")
+    List<Map<String, Object>> searchCompanyAuditByMonth();
+
+    @Select("select responsible_area,rank,count(*) as number from safe_problem group by responsible_area,rank order by responsible_area")
+    List<Map<String, Object>> searchAuditByMonth();
+
+    @Select("select problem_classification,count(problem_id)/(select count(*) from safe_problem where audit_hierarchy='公司级') as complete_ratio from safe_problem where audit_hierarchy='公司级' group by problem_classification order by problem_classification")
+    List<Map<String, Object>> searchCompanyProblemTypeByMonth();
 }
 

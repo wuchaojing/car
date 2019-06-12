@@ -41,15 +41,21 @@
 </div>
     <template id="zuzhi">
         <div class="right" ref="right">
-            <div class="right-main">
+            <div class="right-main" style="text-align: center;">
+                <input type="button" value="换一批" @click="show()" style="width: 150px;height: 50px;margin-top: 10px;background: green;">
                 <div v-show="showFlag" class="showGo">
-                    <div v-show="updateFlag" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
-                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniu()">x</button>
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
                         <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
-                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendA()">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
                     </div>
                     <div>
-                        <input type="button" value="添加">
+                        <input type="button" value="添加" @click="addA('状态判断')">
                         <div style="height:380px;width:100%;overflow: auto;">
                             <table border="1" cellspacing='0' align="center" >
                                 <thead>
@@ -62,8 +68,8 @@
                                 <tr v-for="item in statement">
                                     <td>{{item.name}}</td>
                                     <td>
-                                        <a @click.prevent="updateA(item.name,item.id)" style="color: green;">修改</a>
-                                        <a href="" style="color: red;">删除</a>
+                                        <a @click.prevent="updateA('状态判断',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('状态判断',item.id)" style="color: red;">删除</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -71,10 +77,126 @@
                         </div>
                     </div>
                     <div>
-                        <input type="button" value="添加">
+                        <input type="button" value="添加" @click="addA('等级')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>等级</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in rank">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('等级',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('等级',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="right">
-                        <input type="button" value="添加" >
+                        <input type="button" value="添加" @click="addA('审计层级')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>审计层级</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in auditHierarchy">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('审计层级',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('审计层级',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div v-show="!showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('责任区域')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>责任区域</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in responsibleArea">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('责任区域',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('责任区域',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('问题分类')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>问题分类</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in problemClassification">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('问题分类',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('问题分类',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <input type="button" value="添加" @click="addA('细分类型')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>细分类型</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in auditHierarchy">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('细分类型',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('细分类型',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

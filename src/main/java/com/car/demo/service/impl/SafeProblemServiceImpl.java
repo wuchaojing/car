@@ -92,16 +92,18 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo audit() {
-        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
-
-        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
-
-        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
-
-        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
-
-        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
-
+//        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
+//
+//        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
+//
+//        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
+//
+//        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
+        List<Map<String, Object>> companyAudit=safeProblemMapper.searchCompanyAuditByMonth();
+        List<Map<String, Object>> audit=safeProblemMapper.searchAuditByMonth();
+        List<Map<String, Object>> companyProblemType=safeProblemMapper.searchCompanyProblemTypeByMonth();
+        //AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+        AuditDataNew auditData=new AuditDataNew(companyAudit,audit,companyProblemType);
         return new ResultInfo(1, auditData);
 
     }

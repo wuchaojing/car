@@ -6,6 +6,28 @@ if (user.name != 'admin') {
     alert('非管理员,请使用管理员登录！')
     location.href = 'index.html'
 }
+function ajaxPost(url,data) {
+    axios({
+        method: 'post',
+        url: url,
+        data: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function (response) {
+        var code = response.data.code
+        var msg = response.data.msg
+        if (code != 1) {
+            alert(msg)
+            if(msg == 'need login') {
+                location.href = 'index.html'
+            }
+        } else {
+            sessionStorage.setItem('comName','zuzhi')
+            location.href = 'managerIndex.html'
+        }
+    })
+}
 var theFlag = 'manager'
 var vm = new Vue({
     el: '#app',
@@ -18,7 +40,7 @@ var vm = new Vue({
         comName: 'manager'
     },
     created: function() {
-        this.comName = theFlag
+        this.comName = sessionStorage.getItem('comName') || 'manager'
     },
     methods:{
         repass: function () {
@@ -52,57 +74,157 @@ var vm = new Vue({
             data:function(){
                 return {
                     showFlag: true,
-                    updateFlag: false,
+                    updateFlag1: false,
+                    AddFlag1: false,
                     content:'',
-                    statement:'',
+                    addContent:'',
                     id:'',
+                    msgFlag:'',
+                    rank:'',
+                    statement:'',
+                    problemClassification:'',
+                    auditHierarchy:'',
+                    responsibleArea: '',
                 }
             },
             methods: {
-                anniu:function(){
-                    this.updateFlag = !this.updateFlag
+                show:function(){
+                    this. showFlag = !this.showFlag
                 },
-                updateA:function(name,id) {
+                //ajax封装为一个方法
+                anniuUpdate:function(){
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                anniuAdd:function(){
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                updateA:function(flag,name,id) {
+                    this.msgFlag = flag
                     this.content = name;
                     this.id = id;
-                    this.updateFlag = !this.updateFlag
+                    this.updateFlag1 = !this.updateFlag1
                 },
-                sendA: function() {
+                addA: function(flag){
+                    this.msgFlag = flag
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                deleteA: function(flag,id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    if(flag=='状态判断'){
+                        var data = {
+                            stateJudgementId: id
+                        }
+                        ajaxPost("http://localhost:8080/admin/state_judgement_delete",JSON.stringify(data))
+                    }else if(flag == '等级') {
+                        var data = {
+                            rankId: id
+                        }
+                        ajaxPost('http://localhost:8080/admin/rank_delete',JSON.stringify(data))
+                    }else if(flag == '审计层级') {
+                        var data = {
+                            auditHierarchyId: id
+                        }
+                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_delete',JSON.stringify(data))
+                    }else if(flag == '责任区域') {
+                        var data = {
+                            responsibleAreaId: id
+                        }
+                        ajaxPost('http://localhost:8080/admin/responsible_area_delete',JSON.stringify(data))
+                    }else if(flag == '问题分类') {
+                        var data = {
+                            problemClassificationId: id
+                        }
+                        ajaxPost('http://localhost:8080/admin/problem_classification_delete',JSON.stringify(data))
+                    }else if(flag == '细分类型') {
+                        var data = {
+                            stateJudgementId: id
+                        }
+                    }
+
+                },
+                sendUpdate: function() {
                     var a = window.confirm('确认修改?')
                     if (!a) {
                         return;
                     }
-                    var data = {
-                        stateJudgementName: this.content,
-                        stateJudgementId: this.id
+                    if(this.msgFlag=='状态判断'){
+                        var data = {
+                            stateJudgementName: this.content,
+                            stateJudgementId: this.id
+                        }
+                        ajaxPost("http://localhost:8080/admin/state_judgement_update",JSON.stringify(data))
+                    }else if(this.msgFlag == '等级') {
+                        var data = {
+                            rankName: this.content,
+                            rankId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/rank_update',JSON.stringify(data))
+                    }else if(this.msgFlag == '审计层级') {
+                        var data = {
+                            auditHierarchyName: this.content,
+                            auditHierarchyId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_update',JSON.stringify(data))
+                    }else if(this.msgFlag == '责任区域') {
+                        var data = {
+                            responsibleAreaName: this.content,
+                            responsibleAreaId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/responsible_area_update',JSON.stringify(data))
+                    }else if(this.msgFlag == '问题分类') {
+                        var data = {
+                            problemClassificationName: this.content,
+                            problemClassificationId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/problem_classification_update',JSON.stringify(data))
+                    }else if(this.msgFlag == '细分类型') {
+
                     }
-                    console.log(data)
-                    axios({
-                        method: 'post',
-                        url: 'http://localhost:8080/admin/state_judgement_update',
-                        data: JSON.stringify(data),
-                        headers: {
-                            'Content-Type': 'application/json'
+
+
+                },
+                sendAdd:function() {
+                    var a = window.confirm('确认添加?')
+                    if (!a) {
+                        return;
+                    }
+
+                    if(this.msgFlag=='状态判断'){
+                        var data = {
+                            stateJudgementName: this.addContent,
                         }
-                    }).then(function (response) {
-                        var code = response.data.code
-                        var msg = response.data.msg
-                        if (code != 1) {
-                            alert(msg)
-                            if(msg == 'need login') {
-                                location.href = 'index.html'
-                            }
-                        } else {
-                            theFlag = 'zuzhi'
-                            location.href = 'managerIndex.html'
+                        ajaxPost("http://localhost:8080/admin/state_judgement_insert",JSON.stringify(data))
+                    }else if(this.msgFlag == '等级') {
+                        var data = {
+                            rankName: this.addContent,
                         }
-                    })
+                        ajaxPost('http://localhost:8080/admin/rank_insert',JSON.stringify(data))
+                    }else if(this.msgFlag == '审计层级') {
+                        var data = {
+                            auditHierarchyName: this.addContent,
+                        }
+                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_insert',JSON.stringify(data))
+                    }else if(this.msgFlag == '责任区域') {
+                        var data = {
+                            responsibleAreaName: this.addContent,
+                        }
+                        ajaxPost('http://localhost:8080/admin/responsible_area_insert',JSON.stringify(data))
+                    }else if(this.msgFlag == '问题分类') {
+                        var data = {
+                            problemClassificationName: this.addContent,
+                        }
+                        ajaxPost('http://localhost:8080/admin/problem_classification_insert',JSON.stringify(data))
+                    }else if(this.msgFlag == '细分类型') {
+
+                    }
                 }
             },
             created: function() {
                 var me = this;
-                var me = this
-                axios.get('http://localhost:8080/admin/state_judgement')
+                axios.get("http://localhost:8080/admin/state_judgement")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -112,7 +234,59 @@ var vm = new Vue({
                                 location.href = 'index.html'
                             }
                         } else {
-                            me.statement = response.data.data
+                            me.statement =  response.data.data
+                        }
+                    })
+                axios.get("http://localhost:8080/admin/rank")
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.rank =  response.data.data
+                        }
+                    })
+                axios.get("http://localhost:8080/admin/problem_classification")
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.problemClassification =  response.data.data
+                        }
+                    })
+                axios.get("http://localhost:8080/admin/audit_hierarchy")
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.auditHierarchy =  response.data.data
+                        }
+                    })
+                axios.get("http://localhost:8080/admin/responsible_area")
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.responsibleArea =  response.data.data
                         }
                     })
             }
@@ -178,9 +352,11 @@ var vm = new Vue({
                             }
 
                         })
+                    sessionStorage.setItem('comName','manager')
                 },
                 //更新操作
                 update: function (id, reviewState, msg) {
+                    sessionStorage.setItem('comName','manager')
                     var a = window.confirm('确认更新?')
                     if (!a) {
                         return;

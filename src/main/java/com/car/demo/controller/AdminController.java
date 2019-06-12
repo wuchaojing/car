@@ -20,8 +20,7 @@ public class AdminController {
     }
 
     @GetMapping("audit_hierarchy_id")
-    public ResultInfo searchAuditHierarchyById(@RequestBody Map<String, String> params) {
-        String auditHierarchyId=params.get("auditHierarchyId");
+    public ResultInfo searchAuditHierarchyById(String auditHierarchyId) {
         if (StringUtils.isEmpty(auditHierarchyId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -30,7 +29,7 @@ public class AdminController {
 
     @PostMapping("audit_hierarchy_insert")
     public ResultInfo insertAuditHierarchy(@RequestBody Map<String, String> params) {
-        String auditHierarchyName=params.get("aurditHierachyName");
+        String auditHierarchyName=params.get("auditHierarchyName");
         if (StringUtils.isEmpty(auditHierarchyName)) {
             return new ResultInfo(0, "输入的名不能为空");
         }
@@ -66,8 +65,7 @@ public class AdminController {
     }
 
     @GetMapping("completion_status_id")
-    public ResultInfo searchCompletionStatusById(@RequestBody Map<String, String> params) {
-        String completionStatusId=params.get("completionStatusId");
+    public ResultInfo searchCompletionStatusById(String completionStatusId) {
         if (StringUtils.isEmpty(completionStatusId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -112,8 +110,7 @@ public class AdminController {
     }
 
     @GetMapping("problem_classification_id")
-    public ResultInfo searchProblemClassificationById(@RequestBody Map<String, String> params) {
-        String problemClassificationId=params.get("problemClassificationId");
+    public ResultInfo searchProblemClassificationById(String problemClassificationId) {
         if (StringUtils.isEmpty(problemClassificationId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -158,8 +155,7 @@ public class AdminController {
     }
 
     @GetMapping("rank_id")
-    public ResultInfo searchRankById(@RequestBody Map<String, String> params) {
-        String rankId=params.get("rankId");
+    public ResultInfo searchRankById(String rankId) {
         if (StringUtils.isEmpty(rankId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -204,8 +200,7 @@ public class AdminController {
     }
 
     @GetMapping("state_judgement_id")
-    public ResultInfo searchStateJudgementById(@RequestBody Map<String, String> params) {
-        String stateJudgementId=params.get("stateJudgementId");
+    public ResultInfo searchStateJudgementById(String stateJudgementId) {
         if (StringUtils.isEmpty(stateJudgementId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -247,8 +242,7 @@ public class AdminController {
     //=====================================================================5
 
     @GetMapping("subdivision_type")
-    public ResultInfo searchSubdivisionType(@RequestBody Map<String, String> params) {
-        String problemClassificationId=params.get("problemClassificationId");
+    public ResultInfo searchSubdivisionType(String problemClassificationId) {
         if (StringUtils.isEmpty(problemClassificationId)) {
             return new ResultInfo(0, "需先选定一个问题分类");
         }
@@ -256,8 +250,7 @@ public class AdminController {
     }
 
     @GetMapping("subdivision_type_id")
-    public ResultInfo searchSubdivisionTypeById(@RequestBody Map<String, String> params) {
-        String subdivisionTypeId=params.get("subdivisionTypeId");
+    public ResultInfo searchSubdivisionTypeById(String subdivisionTypeId) {
         if (StringUtils.isEmpty(subdivisionTypeId)) {
             return new ResultInfo(0, "请选择一条");
         }
@@ -265,10 +258,9 @@ public class AdminController {
     }
 
     @PostMapping("subdivision_type_insert")
-    public ResultInfo insertSubdivisionType(@RequestBody Map<String, String> params) {
-        String problemClassificationId=params.get("problemClassificationId");
+    public ResultInfo insertSubdivisionType(String problemClassificationId,String subdivisionTypeName) {
 
-        String subdivisionTypeName=params.get("subdivisionTypeName");
+//        String subdivisionTypeName=params.get("subdivisionTypeName");
         if (StringUtils.isEmpty(subdivisionTypeName)) {
             return new ResultInfo(0, "输入的名不能为空");
         }
@@ -307,8 +299,7 @@ public class AdminController {
     }
 
     @GetMapping("responsible_area_id")
-    public ResultInfo searchResponsibleAreaById(@RequestBody Map<String, String> params) {
-        String responsibleAreaId=params.get("responsibleAreaId");
+    public ResultInfo searchResponsibleAreaById(String responsibleAreaId) {
         if (StringUtils.isEmpty(responsibleAreaId)) {
             return new ResultInfo(0, "请选择一条");
         }

@@ -203,6 +203,7 @@ var problem = {
                 } else {
                     var data = response.data.data
                     me.msg = data
+                    console.log(me.msg)
                 }
             })
         axios.get('http://localhost:8080/admin/state_judgement')
@@ -404,9 +405,16 @@ var problem = {
             export2Excel(tHeader, tbody, dataName + '.xlsx')
         },
         search: function () {
+            /*console.log(this.msg[0].stateJudgement ,this.stateJudgement )
+            console.log(this.msg[0].problemClassification ,this.problemClassification )
+            console.log(this.msg[0].rank ,this.rank )
+            console.log(this.msg[0].auditHierarchy ,this.auditHierarchy )
+            console.log(this.msg[0].repeatQuestion ,this.repeatQuestion )
+            console.log(this.msg[0].responsibleArea ,this.responsibleArea )*/
             var msg = []
             for (var i = 0; i < this.msg.length; i++) {
                 var flag = true
+
                 if (this.msg[i].stateJudgement.indexOf(this.stateJudgement) != -1 && this.msg[i].problemClassification.indexOf(this.problemClassification) != -1 && this.msg[i].rank.indexOf(this.rank) != -1 && this.msg[i].auditHierarchy.indexOf(this.auditHierarchy) != -1 && this.msg[i].repeatQuestion.indexOf(this.repeatQuestion) != -1 &&this.msg[i].responsibleArea.indexOf(this.responsibleArea)!= -1) {
                     if (this.subdivisionType == '其他') {
                         for (var j = 0; j < this.leimsg.length - 1; j++) {
@@ -488,7 +496,6 @@ var problem = {
                         }
                     } else {
                         var data = response.data.data
-                        console.log(data)
                         me.msg = data
                     }
                 })

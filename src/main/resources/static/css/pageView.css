@@ -9,7 +9,8 @@ div.left .router-link-active {
   background-color: #282A32
 }
 div.top{
-    width: 1098px;
+    width: 100%;
+    margin-left: 0;
 }
 .zong {
   text-align: center;
