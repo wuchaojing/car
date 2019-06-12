@@ -99,9 +99,19 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
 //
 //        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
-        List<Map<String, Object>> companyAudit=safeProblemMapper.searchCompanyAuditByMonth();
-        List<Map<String, Object>> audit=safeProblemMapper.searchAuditByMonth();
-        List<Map<String, Object>> companyProblemType=safeProblemMapper.searchCompanyProblemTypeByMonth();
+        SafeProblemForSearch safeProblemForSearch=new SafeProblemForSearch();//为了日期
+        //获取当前月第一天：
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, 0);
+        c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
+        safeProblemForSearch.setStartTime(c.getTime());
+        //获取当前月最后一天
+        Calendar ca = Calendar.getInstance();
+        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
+        safeProblemForSearch.setEndTime(ca.getTime());
+        List<Map<String, Object>> companyAudit=safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> audit=safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> companyProblemType=safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
         //AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
         AuditDataNew auditData=new AuditDataNew(companyAudit,audit,companyProblemType);
         return new ResultInfo(1, auditData);
