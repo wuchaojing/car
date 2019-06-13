@@ -55,6 +55,23 @@ public class SafeProblemController {
         return safeProblemService.audit();
     }
 
+    @GetMapping("audit_year_month")
+    @ResponseBody
+    public ResultInfo audit(Integer year, Integer month) {//前端传来需要保证是数字
+        if (year == null) {
+            return new ResultInfo(0, "请输入具体的年");
+        }
+        if (month == null) {
+            return new ResultInfo(0, "请输入具体的月");
+        }
+
+        if (month > 12 || month < 1) {
+            return new ResultInfo(0, "输入的月不符合规范");
+        }
+
+        return safeProblemService.audit(year, month);
+    }
+
     @PostMapping("update")
     @ResponseBody
     public ResultInfo update(@RequestBody SafeProblem safeProblem) {

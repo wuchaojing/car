@@ -41,7 +41,7 @@ public interface SafeProblemMapper {
             "and propose_time >= #{startTime}" +
             "</if> " +
             "<if test='endTime != null'> " +
-            "and propose_time <![CDATA[<]]> #{endTime}" +
+            "and propose_time <![CDATA[<=]]> #{endTime}" +
             "</if> " +
             "</where>" +
             "</script>")
@@ -53,7 +53,7 @@ public interface SafeProblemMapper {
             "and propose_time >= #{startTime}" +
             "</if> " +
             "<if test='endTime != null'> " +
-            "and propose_time <![CDATA[<]]> #{endTime}" +
+            "and propose_time <![CDATA[<=]]> #{endTime}" +
             "</if> " +
             "</where>" +
             "</script>")
@@ -99,7 +99,7 @@ public interface SafeProblemMapper {
             "and propose_time >= #{s.startTime}" +
             "</if> " +
             "<if test='s.endTime != null'> " +
-            "and propose_time <![CDATA[<]]> #{s.endTime}" +
+            "and propose_time <![CDATA[<=]]> #{s.endTime}" +
             "</if> " +
             "</where>" +
             "</script> ")
@@ -126,13 +126,13 @@ public interface SafeProblemMapper {
             "where problem_id=#{problemId}")
     SafeProblem searchById(@Param("problemId") String problemId);
 
-    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
+    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
     List<Map<String, Object>> searchCompanyAuditByMonth(SafeProblemForSearch safeProblemForSearch);
 
-    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem  where propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
+    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem  where propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
     List<Map<String, Object>> searchAuditByMonth(SafeProblemForSearch safeProblemForSearch);
 
-    @Select("<script> select problem_classification,count(problem_id)/(select count(*) from safe_problem where audit_hierarchy='公司级' and propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime}) as complete_ratio from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<]]> #{endTime}  and  propose_time >= #{startTime} group by problem_classification order by problem_classification  </script> ")
+    @Select("<script> select problem_classification,count(problem_id)/(select count(*) from safe_problem where audit_hierarchy='公司级' and propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime}) as complete_ratio from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<=]]> #{endTime}  and  propose_time >= #{startTime} group by problem_classification order by problem_classification  </script> ")
     List<Map<String, Object>> searchCompanyProblemTypeByMonth(SafeProblemForSearch safeProblemForSearch);
 }
 
