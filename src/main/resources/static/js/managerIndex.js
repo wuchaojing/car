@@ -23,7 +23,7 @@ function ajaxPost(url,data) {
                 location.href = 'index.html'
             }
         } else {
-            sessionStorage.setItem('comName','zuzhi')
+
             location.href = 'managerIndex.html'
         }
     })
@@ -69,6 +69,171 @@ var vm = new Vue({
         },
     },
     components: {
+        wendang:{
+            template: '#wendang',
+            data:function(){
+                return {
+                    showFlag: true,
+                    updateFlag1: false,
+                    AddFlag1: false,
+                    AddFlag2: false,
+                    content:'',
+                    addContent:'',
+                    id:'',
+                    msgFlag:'',
+                    category:'',
+                    secondCategory:'',
+                    writeCategory:''
+                }
+            },
+            methods: {
+                searchSecond:function(){
+                    var me = this;
+                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.secondCategory =  response.data.data
+                            }
+                        })
+                },
+                show:function(){
+                    this. showFlag = !this.showFlag
+                },
+                //ajax封装为一个方法
+                anniuUpdate:function(){
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                anniuAdd:function(){
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                anniuAddB:function(){
+                    this.AddFlag2 = !this.AddFlag2
+                },
+                updateA:function(flag,name,id) {
+                    this.msgFlag = flag
+                    this.content = name;
+                    this.id = id;
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                addA: function(flag){
+                    this.msgFlag = flag
+                    if(this.AddFlag2==true)
+                        this.AddFlag2 = !this.AddFlag2
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                addB: function(flag){
+                    this.msgFlag = flag
+                    if(this.AddFlag1==true)
+                        this.AddFlag1 = !this.AddFlag1
+                    this.AddFlag2 = !this.AddFlag2
+                },
+                deleteA: function(flag,id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    if(flag=='一级目录'){
+                        var data = {
+                            categoryId: id
+                        }
+                        axios.get("http://localhost:8080/doc/admin_delete_category?categoryId="+id)
+                            .then(function (response) {
+                                var code = response.data.code
+                                var msg = response.data.msg
+                                if (code != 1) {
+                                    if (msg == 'need login') {
+                                        alert(msg)
+                                        location.href = 'index.html'
+                                    }
+                                } else {
+                                    sessionStorage.setItem('comName','wendang')
+                                    location.href = 'managerIndex.html'
+                                }
+                            })
+                    }else if(flag == '二级目录') {
+                        axios.get("http://localhost:8080/doc/admin_delete_secondCategory?secondCategoryId="+id)
+                            .then(function (response) {
+                                var code = response.data.code
+                                var msg = response.data.msg
+                                if (code != 1) {
+                                    if (msg == 'need login') {
+                                        alert(msg)
+
+                                        location.href = 'index.html'
+                                    }
+                                } else {
+                                    sessionStorage.setItem('comName','wendang')
+                                    location.href = 'managerIndex.html'
+                                }
+                            })
+                    }
+                },
+               /* sendUpdate: function() {
+                    var a = window.confirm('确认修改?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='一级目录'){
+                        var data = {
+                            stateJudgementName: this.content,
+                            stateJudgementId: this.id
+                        }
+                        ajaxPost("http://localhost:8080/admin/state_judgement_update",JSON.stringify(data))
+                    }else if(this.msgFlag == '等级') {
+                        var data = {
+                            rankName: this.content,
+                            rankId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/rank_update',JSON.stringify(data))
+                    }
+
+                },*/
+                sendAdd:function() {
+                    sessionStorage.setItem('comName','wendang')
+                    var a = window.confirm('确认添加?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='一级目录'){
+                        var data = {
+                            categoryName: this.addContent,
+                        }
+                        ajaxPost("http://localhost:8080/doc/admin_add_category",JSON.stringify(data))
+                    }else if(this.msgFlag == '二级目录') {
+                        var data = {
+                            categoryId:this.writeCategory,
+                            secondCategoryName: this.addContent
+                        }
+                        ajaxPost('http://localhost:8080/doc/admin_add_secondCategory\n',JSON.stringify(data))
+                    }
+                }
+            },
+            created: function() {
+                var me = this;
+                axios.get('http://localhost:8080/doc/get_category')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.category =  response.data.data
+                        }
+                    })
+
+            }
+
+        },
         zuzhi:{
             template: '#zuzhi',
             data:function(){
@@ -109,6 +274,7 @@ var vm = new Vue({
                     this.AddFlag1 = !this.AddFlag1
                 },
                 deleteA: function(flag,id) {
+                    sessionStorage.setItem('comName','zuzhi')
                     var a = window.confirm('确认删除?')
                     if (!a) {
                         return;
@@ -146,6 +312,7 @@ var vm = new Vue({
 
                 },
                 sendUpdate: function() {
+                    sessionStorage.setItem('comName','zuzhi')
                     var a = window.confirm('确认修改?')
                     if (!a) {
                         return;
@@ -187,6 +354,7 @@ var vm = new Vue({
 
                 },
                 sendAdd:function() {
+                    sessionStorage.setItem('comName','zuzhi')
                     var a = window.confirm('确认添加?')
                     if (!a) {
                         return;
