@@ -7,18 +7,18 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
-    @Select("<script> select user_id as userId,number,name from user where review_state='已审核' and number not in('admin','audit')" +
+    @Select("<script> select user_id as userId,number,name,level,detail from user where review_state='已审核' and number not in('admin','audit')" +
             "<if test='name != null and name != \"\"'> " +
             "and name like '%${name}%'" +
             "</if> " +
             "</script>")
     List<User> searchNumberAndName(User user);
 
-    @Insert("insert into user (user_id, number, name, password, superior_id, review_state, create_time, update_time) values (" +
-            "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime})")
+    @Insert("insert into user (user_id, number, name, password, superior_id, review_state, create_time, update_time, level, detail) values (" +
+            "#{userId},#{number},#{name},#{password},#{superiorId},#{reviewState},#{createTime},#{updateTime},#{level},#{detail})")
     void insert(User user);
 
-    @Select("select user_id as userId,number,name,superior_id as superiorId,review_state as reviewState from user where number=#{number} and password=#{password}")
+    @Select("select user_id as userId,number,name,superior_id as superiorId,review_state as reviewState,level,detail from user where number=#{number} and password=#{password}")
     User selectByNumberAndPassword(User user);
 
     @Select("select count(user_id) from user where number=#{number} and password=#{password} and review_state<>'已注销'")
@@ -30,10 +30,10 @@ public interface UserMapper {
     @Update("update user set review_state=#{reviewState},update_time=#{updateTime} where user_id=#{userId}")
     void updateReviewState(User user);
 
-    @Update("update user set review_state = #{reviewState},superior_id = #{superiorId},update_time=#{updateTime} where user_id = #{userId}")
+    @Update("update user set level = #{level},update_time=#{updateTime} where user_id = #{userId}")
     void update(User user);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user where review_state<>'已注销' and user_id !='admin'")
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,level,detail from user where review_state<>'已注销' and user_id !='admin'")
     List<User> selectAll();
 
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where user_id=#{userId}")
@@ -42,10 +42,10 @@ public interface UserMapper {
     @Select("select user_id as userId from user where superior_id=#{userSuperiorId}")
     List<String> selectSonsIdBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
 
-    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState from user where superior_id=#{userSuperiorId}")
+    @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,level,detail from user where superior_id=#{userSuperiorId}")
     List<User> selectSonsBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
 
-    @Select("<script> select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime from user " +
+    @Select("<script> select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,level,detail from user " +
             "<where> 1=1 " +
             "<if test='number != null and number != \"\"'> " +
             "and number = #{number}" +

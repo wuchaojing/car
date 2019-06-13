@@ -18,6 +18,9 @@ public interface AdminMapper {
 
     @Delete("delete from audit_hierarchy where id=#{id}")
     void deleteAuditHierarchy(@Param("id") String auditHierarchyId);
+
+    @Select("select id,name from audit_hierarchy where id=#{id}")
+    AdminData searchAuditHierarchyById(@Param("id") String auditHierarchyId);
     //==================================================================1
 
     @Select("select id,name from completion_status")
@@ -31,6 +34,9 @@ public interface AdminMapper {
 
     @Delete("delete from completion_status where id=#{id}")
     void deleteCompletionStatus(@Param("id") String completionStatusId);
+
+    @Select("select id,name from completion_status where id=#{id}")
+    AdminData searchCompletionStatusById(@Param("id") String completionStatusId);
     //==================================================================2
 
     @Select("select id,name from problem_classification")
@@ -44,6 +50,9 @@ public interface AdminMapper {
 
     @Delete("delete from problem_classification where id=#{id}")
     void deleteProblemClassification(@Param("id") String problemClassificationId);
+
+    @Select("select id,name from problem_classification where id=#{id}")
+    AdminData searchProblemClassificationById(@Param("id") String problemClassificationId);
     //==================================================================3
 
     @Select("select id,name from rank")
@@ -57,6 +66,9 @@ public interface AdminMapper {
 
     @Delete("delete from rank where id=#{id}")
     void deleteRank(@Param("id") String rankId);
+
+    @Select("select id,name from rank where id=#{id}")
+    AdminData searchRankById(@Param("id") String rankId);
     //==================================================================4
 
     @Select("select id,name from state_judgement")
@@ -70,6 +82,9 @@ public interface AdminMapper {
 
     @Delete("delete from state_judgement where id=#{id}")
     void deleteStateJudgement(@Param("id") String stateJudgementId);
+
+    @Select("select id,name from state_judgement where id=#{id}")
+    AdminData searchStateJudgementById(@Param("id") String stateJudgementId);
     //==================================================================5
 
     @Select("select id,name from subdivision_type where pc_id=#{pId}")
@@ -86,5 +101,24 @@ public interface AdminMapper {
 
     @Delete("delete from subdivision_type where pc_id=#{pId}")
     void deleteSubdivisionTypesByProblemClassificationId(@Param("pId") String problemClassificationId);
-    //==================================================================5
+
+    @Select("select id,name from subdivision_type where id=#{id}")
+    AdminData searchSubdivisionTypeById(@Param("id") String subdivisionTypeId);
+    //==================================================================6
+
+    @Select("select id,name from responsible_area")
+    List<AdminData> searchResponsibleArea();
+
+    @Insert("insert into responsible_area values(#{id},#{name})")
+    void insertResponsibleArea(@Param("id") String responsibleAreaId, @Param("name") String responsibleAreaName);
+
+    @Update("update responsible_area set name=#{name} where id=#{id}")
+    void updateResponsibleArea(@Param("id") String responsibleAreaId, @Param("name") String responsibleAreaName);
+
+    @Delete("delete from responsible_area where id=#{id}")
+    void deleteResponsibleArea(@Param("id") String responsibleAreaId);
+
+    @Select("select id,name from responsible_area where id=#{id}")
+    AdminData searchResponsibleAreaById(@Param("id") String responsibleAreaId);
+    //==================================================================1
 }

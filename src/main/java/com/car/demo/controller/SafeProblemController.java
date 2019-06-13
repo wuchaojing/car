@@ -8,11 +8,8 @@ import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -60,7 +57,7 @@ public class SafeProblemController {
 
     @PostMapping("update")
     @ResponseBody
-    public ResultInfo update(SafeProblem safeProblem) {
+    public ResultInfo update(@RequestBody SafeProblem safeProblem) {
         return safeProblemService.update(safeProblem);
     }
 

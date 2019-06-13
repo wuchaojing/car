@@ -32,10 +32,10 @@ public interface SafeProblemMapper {
             "and repeat_question = #{repeatQuestion}" +
             "</if> " +
             "<if test='completionStatus == \"完成\"'> " +
-            "and completion_status in ('4/4','6/6','完成')" +
+            "and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='completionStatus == \"未完成\"'> " +
-            "and completion_status not in ('4/4','6/6','完成')" +
+            "and completion_status not  in ( select name from completion_status )" +
             "</if> " +
             "<if test='startTime != null'> " +
             "and propose_time >= #{startTime}" +
@@ -64,7 +64,6 @@ public interface SafeProblemMapper {
             " </script>")
     void insert(SafeProblem safeProblem);
 
-    
 
     @Select("select problem_id as problemId, audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
             "where record_id in (${recordIds})")
@@ -91,10 +90,10 @@ public interface SafeProblemMapper {
             "and repeat_question = #{s.repeatQuestion}" +
             "</if> " +
             "<if test='s.completionStatus == \"完成\"'> " +
-            "and completion_status in ('4/4','6/6','完成')" +
+            "and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.completionStatus == \"未完成\"'> " +
-            "and completion_status not in ('4/4','6/6','完成')" +
+            "and completion_status not in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.startTime != null'> " +
             "and propose_time >= #{s.startTime}" +
@@ -109,7 +108,7 @@ public interface SafeProblemMapper {
     @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
     List<Map<String, Object>> searchHierarchy();
 
-    @Select("select responsible_area,sum(case when completion_status in ('4/4','6/6','完成') then 1 else 0 end)/count(*) as complete_ratio from safe_problem group by responsible_area order by responsible_area")
+    @Select("select responsible_area,sum(case when completion_status  in ( select name from completion_status ) then 1 else 0 end)/count(*) as complete_ratio from safe_problem group by responsible_area order by responsible_area")
     List<Map<String, Object>> searchFloorCompleteRatio();
 
     @Select("select problem_classification,rank,count(*) as number from safe_problem group by problem_classification,rank order by problem_classification")
@@ -126,5 +125,14 @@ public interface SafeProblemMapper {
     @Select("select problem_id as problemId,audit_area as auditArea,propose_time as proposeTime,problem_description as problemDescription,photo,state_judgement as stateJudgement,problem_classification as problemClassification,subdivision_type as subdivisionType,rank,rectification_measures as rectificationMeasures,responsible_area as responsibleArea,person_liable as personLiable,completion_deadline as completionDeadline,audit_hierarchy as auditHierarchy,repeat_question as repeatQuestion,completion_status as completionStatus,finish_photo as finishPhoto,create_time as createTime from safe_problem " +
             "where problem_id=#{problemId}")
     SafeProblem searchById(@Param("problemId") String problemId);
+
+    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
+    List<Map<String, Object>> searchCompanyAuditByMonth(SafeProblemForSearch safeProblemForSearch);
+
+    @Select("<script> select responsible_area,rank,count(*) as number from safe_problem  where propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,rank order by responsible_area </script> ")
+    List<Map<String, Object>> searchAuditByMonth(SafeProblemForSearch safeProblemForSearch);
+
+    @Select("<script> select problem_classification,count(problem_id)/(select count(*) from safe_problem where audit_hierarchy='公司级' and propose_time <![CDATA[<]]> #{endTime} and propose_time >= #{startTime}) as complete_ratio from safe_problem where audit_hierarchy='公司级'  and propose_time <![CDATA[<]]> #{endTime}  and  propose_time >= #{startTime} group by problem_classification order by problem_classification  </script> ")
+    List<Map<String, Object>> searchCompanyProblemTypeByMonth(SafeProblemForSearch safeProblemForSearch);
 }
 

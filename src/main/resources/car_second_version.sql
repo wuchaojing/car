@@ -11,7 +11,7 @@
  Target Server Version : 50173
  File Encoding         : 65001
 
- Date: 03/06/2019 14:32:57
+ Date: 04/06/2019 09:35:34
 */
 
 SET NAMES utf8mb4;
@@ -132,6 +132,41 @@ INSERT INTO `record` VALUES ('77cf79a980252bd3ff6122deb4db71da', '111', '111', '
 INSERT INTO `record` VALUES ('78451f7379da7399faecd36d5928487b', '111', '111', '2019-05-31 09:17:01', '8faa3fc1528cac842cb67f11ea0a7875');
 INSERT INTO `record` VALUES ('bb56dc289c9dc736922f11b130532a58', '111', '111', '2019-05-31 09:07:39', '8faa3fc1528cac842cb67f11ea0a7875');
 INSERT INTO `record` VALUES ('fb07549a1d8d07c2ec1b5d653fbccd2b', '112', '112', '2019-05-31 08:35:08', '86e9343b57ad7114c61ee3b73f5b1af3');
+
+-- ----------------------------
+-- Table structure for responsible_area
+-- ----------------------------
+DROP TABLE IF EXISTS `responsible_area`;
+CREATE TABLE `responsible_area`  (
+  `id` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = MyISAM CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of responsible_area
+-- ----------------------------
+INSERT INTO `responsible_area` VALUES ('7a0316a2-f04c-46ae-9d2a-9b528bb67f45', '总装车间');
+INSERT INTO `responsible_area` VALUES ('7fe0b2c6-b368-46e3-9894-43754dd08222', '涂装车间');
+INSERT INTO `responsible_area` VALUES ('ede64b1a-97c9-4fac-838e-307b2b9ad2c3', '车身车间');
+INSERT INTO `responsible_area` VALUES ('f991925a-29af-4bf3-9950-2014156f6b79', '冲压车间');
+INSERT INTO `responsible_area` VALUES ('6c39ee83-5b62-4122-9b0e-80bf8ee273d9', '发动机工厂');
+INSERT INTO `responsible_area` VALUES ('93f7c715-292c-448c-97a9-99363b784546', '维修车间');
+INSERT INTO `responsible_area` VALUES ('cda6fead-053c-4efe-af55-f60e57d177d0', '采购及供应链管理科');
+INSERT INTO `responsible_area` VALUES ('c67f78ef-40f5-48d3-9ead-2bf3dc2dbee6', '质量科');
+INSERT INTO `responsible_area` VALUES ('8a52c4ee-a026-4504-9713-4634bf77b362', 'KD车间');
+INSERT INTO `responsible_area` VALUES ('b80fa9b7-c5aa-4f40-9815-70345a40b682', '销售公司售后配件科');
+INSERT INTO `responsible_area` VALUES ('61712630-0cc3-453b-9ab6-d5b3ba73bc8e', '销售公司整车物流科');
+INSERT INTO `responsible_area` VALUES ('30b50f69-ddbc-47e6-9940-780ccab56658', '党群工作科');
+INSERT INTO `responsible_area` VALUES ('2968d97e-7eab-443f-b9e1-e2251828d66d', '财务科');
+INSERT INTO `responsible_area` VALUES ('0a3a8818-ad85-4982-a757-0e3297dbad65', '技术工程科');
+INSERT INTO `responsible_area` VALUES ('1bdadce1-6abf-4e22-9f06-a5eda0dbd1dd', '信息系统与服务科');
+INSERT INTO `responsible_area` VALUES ('89afbd97-a165-47a9-91cc-f50e369eacf4', '人力资源科');
+INSERT INTO `responsible_area` VALUES ('19e7bac7-8396-48ab-8679-29c9cd59cd2e', '兴菱公司');
+INSERT INTO `responsible_area` VALUES ('fd0ce58e-fdd0-4f2a-8ad9-0dcd71863f51', '总科办');
+INSERT INTO `responsible_area` VALUES ('d7129272-5123-44da-a01c-4c4d276213e1', '安全科');
+INSERT INTO `responsible_area` VALUES ('af5ecc9b-6346-4a0e-bf19-ee196d8ed651', '生产计划科');
+INSERT INTO `responsible_area` VALUES ('', '新能源');
 
 -- ----------------------------
 -- Table structure for safe_problem
@@ -278,7 +313,7 @@ CREATE TABLE `subdivision_type`  (
 -- ----------------------------
 -- Records of subdivision_type
 -- ----------------------------
-INSERT INTO `subdivision_type` VALUES ('8cc4b2b0-c0c7-4490-aed2-d101eb8ecaf5', '驾驶车辆超速\r\n', '149dff35-73a7-4656-a82f-dc93d8833ea2');
+INSERT INTO `subdivision_type` VALUES ('8cc4b2b0-c0c7-4490-aed2-d101eb8ecaf5', '驾驶车辆超速', '149dff35-73a7-4656-a82f-dc93d8833ea2');
 INSERT INTO `subdivision_type` VALUES ('6c07d700-606d-44ea-8842-02f4d72dcccf', '驾驶车辆不系安全带', '149dff35-73a7-4656-a82f-dc93d8833ea2');
 INSERT INTO `subdivision_type` VALUES ('198ca527-066e-400e-a227-44e92d411eeb', '违章停车', '149dff35-73a7-4656-a82f-dc93d8833ea2');
 INSERT INTO `subdivision_type` VALUES ('4a57ace3-5020-41c3-8770-5f2f0f66ff79', '不按要求使用手机', '149dff35-73a7-4656-a82f-dc93d8833ea2');
@@ -303,7 +338,6 @@ INSERT INTO `subdivision_type` VALUES ('cb1aec88-ee9a-4305-8745-8a7edf1f8bf3', '
 INSERT INTO `subdivision_type` VALUES ('c4544404-45f3-4fd5-a83f-91f75cb89d65', '危废包装破损', '7e35f3fe-9dd1-4c47-866f-913fc6c5818f');
 INSERT INTO `subdivision_type` VALUES ('1a056a19-2fa1-4be1-a740-c2e05b7c99c1', '危险废物包装容器未张贴对应标识', '7e35f3fe-9dd1-4c47-866f-913fc6c5818f');
 INSERT INTO `subdivision_type` VALUES ('509049db-6eb3-49e0-bda3-ec538043a858', '其他', '7e35f3fe-9dd1-4c47-866f-913fc6c5818f');
-INSERT INTO `subdivision_type` VALUES ('', NULL, '7e35f3fe-9dd1-4c47-866f-913fc6c5818f');
 INSERT INTO `subdivision_type` VALUES ('a9553a66-3b70-4009-9e76-5d0baffa9b96', '灭火器未点检，周围放杂物', 'dbd6428d-d36a-44d0-98ef-1d6b7416aa0e');
 INSERT INTO `subdivision_type` VALUES ('62083615-fac0-44be-ba9c-e713b25fe871', '应急照明损坏', 'dbd6428d-d36a-44d0-98ef-1d6b7416aa0e');
 INSERT INTO `subdivision_type` VALUES ('094bdf62-f668-43ca-800a-961aaf849212', '安全通道堵塞', 'dbd6428d-d36a-44d0-98ef-1d6b7416aa0e');

@@ -10,6 +10,8 @@ public interface AdminService {
     ResultInfo updateAuditHierarchy(String auditHierarchyId, String auditHierarchyName);
 
     ResultInfo deleteAuditHierarchy(String auditHierarchyId);
+
+    ResultInfo searchAuditHierarchyById(String auditHierarchyId);
     //======================================================================1
 
     ResultInfo searchCompletionStatus();
@@ -19,6 +21,8 @@ public interface AdminService {
     ResultInfo updateCompletionStatus(String completionStatusId, String completionStatusName);
 
     ResultInfo deleteCompletionStatus(String completionStatusId);
+
+    ResultInfo searchCompletionStatusById(String completionStatusId);
     //======================================================================2
 
     ResultInfo searchProblemClassification();
@@ -28,6 +32,8 @@ public interface AdminService {
     ResultInfo updateProblemClassification(String problemClassificationId, String problemClassificationName);
 
     ResultInfo deleteProblemClassification(String problemClassificationId);
+
+    ResultInfo searchProblemClassificationById(String problemClassificationId);
     //======================================================================3
 
     ResultInfo searchRank();
@@ -37,6 +43,8 @@ public interface AdminService {
     ResultInfo updateRank(String rankId, String rankName);
 
     ResultInfo deleteRank(String rankId);
+
+    ResultInfo searchRankById(String rankId);
     //======================================================================4
 
     ResultInfo searchStateJudgement();
@@ -46,6 +54,8 @@ public interface AdminService {
     ResultInfo updateStateJudgement(String stateJudgementId, String stateJudgementName);
 
     ResultInfo deleteStateJudgement(String stateJudgementId);
+
+    ResultInfo searchStateJudgementById(String stateJudgementId);
     //======================================================================5
 
     ResultInfo searchSubdivisionType(String problemClassificationId);
@@ -55,5 +65,18 @@ public interface AdminService {
     ResultInfo updateSubdivisionType(String subdivisionTypeId, String subdivisionTypeName);
 
     ResultInfo deleteSubdivisionType(String subdivisionTypeId);
+
+    ResultInfo searchSubdivisionTypeById(String subdivisionTypeId);
     //======================================================================6
+
+    ResultInfo searchResponsibleArea();
+
+    ResultInfo insertResponsibleArea(String responsibleAreaName);
+
+    ResultInfo updateResponsibleArea(String responsibleAreaId, String responsibleAreaName);
+
+    ResultInfo deleteResponsibleArea(String responsibleAreaId);
+
+    ResultInfo searchResponsibleAreaById(String responsibleAreaId);
+    //======================================================================7
 }

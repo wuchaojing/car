@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 @RequestMapping("doc")
@@ -38,7 +39,8 @@ public class DocumentController {
 
     @PostMapping("admin_add_category")
     @ResponseBody
-    public ResultInfo addCategory(String categoryName) {
+    public ResultInfo addCategory(@RequestBody Map<String, String> params) {
+        String categoryName = params.get("categoryName");
         if (StringUtils.isEmpty(categoryName)) {
             return new ResultInfo(0, "请输入一级目录名字");
         }
@@ -56,7 +58,9 @@ public class DocumentController {
 
     @PostMapping("admin_add_secondCategory")
     @ResponseBody
-    public ResultInfo addSecondCategory(String secondCategoryName, String categoryId) {
+    public ResultInfo addSecondCategory(@RequestBody Map<String, String> params) {
+        String secondCategoryName = params.get("secondCategoryName");
+        String categoryId = params.get("categoryId");
         if (StringUtils.isEmpty(secondCategoryName)) {
             return new ResultInfo(0, "请输入二级目录名字");
         }
@@ -117,5 +121,4 @@ public class DocumentController {
         }
         return documentService.delDoc(docId);
     }
-
 }

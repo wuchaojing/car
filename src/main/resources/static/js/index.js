@@ -35,7 +35,7 @@ var vm = new Vue({
                                 else if (data.name == 'audit') {
                                     location.href = 'pageView.html'
                                 } else {
-                                    location.href = 'userIndex.html'
+                                    location.href = 'userIndexManage.html'
                                 }
                             }
                         })
