@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #app {
+            width: 800px;
+            margin: 0 auto;
+            font-size: 20px;
+            text-align: center;
+            color: #111;
+        }
+        input,select {
+            width: 700px;
+            height: 30px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            border: 2px solid red;
+        }
+        input {
+            width: 680px;
+            padding-left: 20px;
+        }
+        input[type='submit'] {
+            width: 710px;
+            height: 35px;
+            border: none;
+            background-color: green;
+            cursor: pointer;
+        }
+        textarea {
+            width: 660px;
+            height: 120px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            padding: 20px;
+            font-size: 18px;
+            color: black;
+            border: 2px solid red;
+        }
+    </style>
+    <script src='lib/vue-2.4.0.js'></script>
+    <script src="lib/axios.js"></script>
+</head>
+<body>
+<div id="app">
+    <label for="">
+        审计区域
+        <br/>
+        <input type="text" v-model="auditArea">
+        <br/>
+    </label>
+    <label for="">
+        提出时间
+        <br/>
+        <input type="date" v-model="proposeTime">
+        <br/>
+    </label>
+    <label for="">
+        问题描述 <br/>
+        <textarea cols="30" rows="10" :value="problemDescription" ref="pro"></textarea>
+        <br/>
+    </label>
+    <label for="">
+        状态判断 <br/>
+        <select v-model="stateJudgement">
+            <option value="静态隐患类">静态隐患类</option>
+            <option value="不安全行为类">不安全行为类</option>
+            <option value="管理执行类">管理执行类</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        问题分类 <br/>
+        <select v-model="problemClassification" @change="searchGo()">
+            <option v-for="item in problemClassifications" :value="item">{{item}}</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        细分类型 <br/>
+        <select v-model="subdivisionType" class="xifen">
+            <option v-for='item in leimsg' :value="item">{{item}}</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        等级 <br/>
+        <select v-model="rank">
+            <option v-for="item in ranks"  :value="item">{{item}}</option>
+        </select >
+        <br/>
+    </label>
+    <label for="">
+        整改措施 <br/>
+        <textarea name="" id="" cols="30" rows="10" :value="rectificationMeasures" ref="recti"></textarea>
+        <br/>
+    </label>
+    <label for="">
+        责任区域 <br/>
+        <select v-model="responsibleArea" >
+            <option v-for="item in responsibleAreas"  :value="item">{{item}}</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        责任人 <br/>
+        <input type="text" v-model="personLiable">
+        <br/>
+    </label>
+    <label for="">
+        完成期限 <br/>
+        <input type="date" v-model="completionDeadline">
+        <br/>
+    </label>
+    <label for="">
+        审计层级 <br/>
+        <select v-model="auditHierarchy">
+            <option v-for='item in auditHierarchys' :value="item">{{item}}</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        是否重复问题 <br/>
+        <select v-model="repeatQuestion">
+            <option value="是">是</option>
+            <option value="否">否</option>
+        </select>
+        <br/>
+    </label>
+    <label for="">
+        完成状态 <br/>
+        <input type="text" v-model="completionStatus">
+        <!--<select v-model="completionStatus">
+            <option v-for="item in completionStatuses"  :value="item">{{item}}</option>
+        </select>-->
+        <br/>
+    </label>
+    <label for="">
+        <input type="submit" value='更新' @click.prevent="updateMsg">
+    </label>
+</div>
+<script>
+    var problemId = sessionStorage.getItem('problemId')
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            flag:true,
+            auditArea:"",
+            proposeTime:"",
+            problemDescription:"",
+            stateJudgement: "",
+            problemClassification: "",
+            subdivisionType: "",
+            rank: "",
+            rectificationMeasures:'',
+            responsibleArea:'',
+            personLiable:'',
+            completionDeadline:"",
+            auditHierarchy: "",
+            repeatQuestion: "",
+            completionStatus: "",
+            stateJudgements: [],
+            auditHierarchys: [],
+            ranks: [],
+            problemClassifications:[],
+            ids:[],
+            responsibleAreas:[],
+            completionStatuses: [],
+            leimsg: ''
+        },
+        created: function() {
+            var me = this
+            axios.get('http://localhost:8080/admin/state_judgement')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.stateJudgements.push(data[i].name)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/admin/rank')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.ranks.push(data[i].name)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/admin/problem_classification')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.problemClassifications.push(data[i].name)
+                            me.ids.push(data[i].id)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/admin/responsible_area')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.responsibleAreas.push(data[i].name)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/admin/audit_hierarchy')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.auditHierarchys.push(data[i].name)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/admin/completion_status')
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        for(var i=0;i<data.length;i++)
+                        {
+                            me.completionStatuses.push(data[i].name)
+                        }
+                    }
+                })
+            axios.get('http://localhost:8080/safe_problem/search_one?problemId='+problemId)
+                .then(function(response){
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        me.auditArea = data.auditArea;
+                        me.proposeTime = data.proposeTime;
+                        me.problemDescription = data.problemDescription;
+                        me.stateJudgement = data.stateJudgement;
+                        me.problemClassification = data.problemClassification;
+                        me.rank = data.rank;
+                        me.rectificationMeasures = data.rectificationMeasures;
+                        me.responsibleArea = data.responsibleArea;
+                        me.personLiable = data.personLiable;
+                        me.completionDeadline = data.completionDeadline;
+                        me.auditHierarchy = data.auditHierarchy;
+                        me.repeatQuestion = data.repeatQuestion;
+                        me.completionStatus = data.completionStatus;
+                        me.searchGo(data)
+                    }
+                })
+        },
+        methods:  {
+            updateMsg: function() {
+                var data = {
+                    auditArea: this.auditArea,
+                    proposeTime: this.proposeTime,
+                    problemDescription: this.$refs.pro.value,
+                    stateJudgement: this.stateJudgement,
+                    problemClassification: this.problemClassification,
+                    subdivisionType: this.subdivisionType,
+                    rank:this.rank,
+                    rectificationMeasures: this.$refs.recti.value,
+                    responsibleArea: this.responsibleArea,
+                    personLiable: this.personLiable,
+                    completionDeadline: this.completionDeadline,
+                    auditHierarchy: this.auditHierarchy,
+                    repeatQuestion: this.repeatQuestion,
+                    completionStatus: this.completionStatus,
+                    problemId: problemId
+                }
+                console.log(data)
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:8080/safe_problem/update',
+                    data: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (response) {
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        alert(msg)
+                        if(msg=='need login'){
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        alert('更新成功')
+                        location.href = 'detail.html'
+                    }
+                })
+
+            },
+            searchGo: function (datago) {
+                if(datago!=undefined) {
+                    var id;
+                    var me = this;
+                    for(var i=0;i<this.problemClassifications.length;i++) {
+                            if(this.problemClassifications[i]==datago.problemClassification){
+                                id = this.ids[i]
+                                break;
+                            }
+                    }
+                    me.leimsg = []
+                    axios.get('http://localhost:8080/admin/subdivision_type?problemClassificationId='+id)
+                        .then(function(response){
+                                var code = response.data.code
+                                var msg = response.data.msg
+                                if (code != 1) {
+                                    if (msg == 'need login') {
+                                        location.href = 'index.html'
+                                    }
+                                } else {
+                                    var data = response.data.data
+                                    for(var i=0;i<data.length;i++)
+                                    {
+                                        me.leimsg.push(data[i].name)
+                                    }
+                                    me.subdivisionType = datago.subdivisionType
+                                }
+
+                        })
+                }
+                else {
+                    var id;
+                    var me = this;
+                    if(this.problemClassification == ''){
+                        this.subdivisionType = ''
+                        this.leimsg = ''
+                    }else {
+                        for(var i=0;i<this.problemClassifications.length;i++) {
+                            if(this.problemClassifications[i]==this.problemClassification){
+                                id = this.ids[i]
+                                break;
+                            }
+                        }
+                        me.leimsg = []
+                        axios.get('http://localhost:8080/admin/subdivision_type?problemClassificationId='+id)
+                            .then(function(response){
+                                var code = response.data.code
+                                var msg = response.data.msg
+                                if (code != 1) {
+                                    if (msg == 'need login') {
+                                        location.href = 'index.html'
+                                    }
+                                } else {
+                                    var data = response.data.data
+                                    for(var i=0;i<data.length;i++)
+                                    {
+                                        me.leimsg.push(data[i].name)
+                                    }
+                                }
+                            })
+
+                    }
+                }
+
+
+            },
+        }
+    });
+
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class QiniuStorage {
 
     public static String uploadFile(byte[] buff, String fileType) {
         String key = QiniuKeyGenerator.generateKey();
-        key = QiniuWrapper.upload(buff, key + "." + fileType, false);
+        key = QiniuWrapper.upload(buff, key + fileType, false);
         return key;
     }
 
