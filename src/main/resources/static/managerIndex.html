@@ -36,7 +36,8 @@
             <!-- 拆分成组件 -->
             <a class="uploadFile" @click.prevent='comName="manager"' style="cursor:pointer">用户界面</a>
             <a @click.prevent='comName="zuzhi"' style="cursor:pointer">组织管理</a>
-            <a @click.prevent='comName="wendang"' style="cursor:pointer">文档管理</a>
+            <a @click.prevent='comName="wendang"' style="cursor:pointer">目录管理</a>
+            <a @click.prevent='comName="fileWatch"' style="cursor:pointer">文档观察</a>
     </div>
     <component :is="comName"></component>
 </div>
@@ -356,6 +357,54 @@
             </div>
         </div>
     </template>
+    <template id="fileWatch">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <div class="fileWatch">
+                    <div class="fileLeft">
+                        一级目录
+                        <select v-model="writeCategory" @change="searchSecond()">
+                            <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+                        </select>
+                        <br>
+                        二级目录
+                        <select v-model="secondWriteCategory">
+                            <option v-for="item in secondCategory" :value="item.secondCategoryId">{{item.secondCategoryName}}</option>
+                        </select>
+                        <br>
+                        <input type="submit" value="查看" @click.prevent="seeDoc()">
+                    </div>
+                    <div class="fileRight">
+                        文档列表
+                        <div style='width:100%; height:400px; overflow-y:auto;'>
+                            <table border="1" cellspacing='0' align="center">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>名称</th>
+                                    <th>编辑</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for='(item,index) in doc'>
+                                    <td align="center">{{index+1}}</td>
+                                    <td align="center">
+                                        {{item.docOriginName}}
+                                    </td>
+                                    <td>
+                                        <a style="color: green;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
+                                        <a style="color: red;" @click.prevent="deleteDoc(item.docId)">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</template>
     <script src="js/managerIndex.js"></script>
 </body>
 
