@@ -9,7 +9,7 @@ import java.util.Date;
 public class SecondCategoryInfo {
 
     private String secondCategoryId;
-    private String secondCategoryName;
+    private String secondCategoryName="";
     @JsonIgnore
     private String categoryId;
     @JsonIgnore

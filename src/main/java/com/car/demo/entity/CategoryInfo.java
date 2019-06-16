@@ -9,8 +9,8 @@ import java.util.Date;
 @Data
 public class CategoryInfo {
 
-    private String categoryId;
-    private String categoryName;
+    private String categoryId="";
+    private String categoryName="";
     @JsonIgnore
     private Date createTime;
 

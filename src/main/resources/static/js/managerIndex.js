@@ -69,6 +69,86 @@ var vm = new Vue({
         },
     },
     components: {
+        fileWatch:{
+            template: '#fileWatch',
+            data:function(){
+                return {
+                    category:'',
+                    secondCategory:'',
+                    writeCategory:'',
+                    secondWriteCategory:'',
+                    doc: ''
+                }
+            },
+            methods:{
+                searchSecond:function(){
+                    var me = this;
+                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.secondCategory =  response.data.data
+                            }
+                        })
+                },
+                seeDoc: function() {
+                    var me = this
+                    axios.get('http://localhost:8080/doc/get_doc?secondCategoryId='+me.secondWriteCategory)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.doc =  response.data.data
+                                console.log(me.doc)
+                            }
+                        })
+                },
+                deleteDoc:function(id) {
+                    var me = this
+                    axios.get('http://localhost:8080/doc/delete_doc?docId='+id)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                location.href = 'userIndexManage.html'
+                            }
+                        })
+                }
+            },
+            created: function() {
+                var me = this;
+                axios.get('http://localhost:8080/doc/get_category')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.category =  response.data.data
+                        }
+                    })
+
+            }
+        },
         wendang:{
             template: '#wendang',
             data:function(){
