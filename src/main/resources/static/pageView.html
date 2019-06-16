@@ -78,6 +78,7 @@
             </select>
             细分类型:
             <select v-model="subdivisionType" class="xifen">
+                <option value=""></option>
                 <option v-for='item in leimsg' :value="item">{{item}}</option>
             </select>
             等级:
@@ -132,9 +133,9 @@
             </select>
             完成状态
             <select v-model="completionStatus">
-                <option value="" @click="serach()"></option>
-                <option value="完成" @click="serach()">完成</option>
-                <option value="未完成" @click="serach()">未完成</option>
+                <option value="" ></option>
+                <option value="完成" >完成</option>
+                <option value="未完成" >未完成</option>
             </select>
             开始时间
             <input type="date" v-model="startTime">
