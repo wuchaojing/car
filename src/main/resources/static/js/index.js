@@ -21,7 +21,7 @@ var vm = new Vue({
             methods: {
                 //添加active类效果
                 getMsg: function () {
-                    this.$axios.get('http://localhost:8080/user/login?number=' + this.username + '&password=' + this.password)
+                    this.$axios.get('http://60.205.187.142:9090/user/login?number=' + this.username + '&password=' + this.password)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -58,7 +58,7 @@ var vm = new Vue({
             },
             created: function () {
                 var me = this;
-                this.$axios.get('http://localhost:8080/user/register_superior')
+                this.$axios.get('http://60.205.187.142:9090/user/register_superior')
                     .then(function (response) {
                         // console.log(1)
                         var code = response.data.code
@@ -131,7 +131,7 @@ var vm = new Vue({
                         var data = {name: this.name, password: this.password, number: this.number, superiorId: id}
                         this.$axios({
                             method: 'post',
-                            url: 'http://localhost:8080/user/register',
+                            url: 'http://60.205.187.142:9090/user/register',
                             data: JSON.stringify(data),
                             headers: {
                                 'Content-Type': 'application/json'

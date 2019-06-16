@@ -21,7 +21,7 @@ var vm = new Vue({
                 alert('确认密码和新密码不一致')
                 return;
             }
-            axios.post('http://localhost:8080/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
+            axios.post('http://60.205.187.142:9090/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg
@@ -63,7 +63,7 @@ var vm = new Vue({
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
                         }
                     };
-                    axios.post('http://localhost:8080/safe_problem/upload', formdata, config)
+                    axios.post('http://60.205.187.142:9090/safe_problem/upload', formdata, config)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -90,7 +90,7 @@ var vm = new Vue({
             },
             methods: {
                 go: function (id) {
-                    axios.get('http://localhost:8080/record/safe_problems?recordId=' + id)
+                    axios.get('http://60.205.187.142:9090/record/safe_problems?recordId=' + id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -112,7 +112,7 @@ var vm = new Vue({
     },
     created: function () {
         var me = this
-        axios.get('http://localhost:8080/record/relative_records')
+        axios.get('http://60.205.187.142:9090/record/relative_records')
             .then(function (response) {
                 var code = response.data.code
                 var msg = response.data.msg

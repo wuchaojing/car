@@ -49,7 +49,7 @@ var vm = new Vue({
                 alert('确认密码和新密码不一致')
                 return;
             }
-            axios.post('http://localhost:8080/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
+            axios.post('http://60.205.187.142:9090/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg
@@ -83,7 +83,7 @@ var vm = new Vue({
             methods:{
                 searchSecond:function(){
                     var me = this;
-                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_secondCategory?categoryId='+me.writeCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -99,7 +99,7 @@ var vm = new Vue({
                 },
                 seeDoc: function() {
                     var me = this
-                    axios.get('http://localhost:8080/doc/get_doc?secondCategoryId='+me.secondWriteCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_doc?secondCategoryId='+me.secondWriteCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -116,7 +116,7 @@ var vm = new Vue({
                 },
                 deleteDoc:function(id) {
                     var me = this
-                    axios.get('http://localhost:8080/doc/delete_doc?docId='+id)
+                    axios.get('http://60.205.187.142:9090/doc/delete_doc?docId='+id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -133,7 +133,7 @@ var vm = new Vue({
             },
             created: function() {
                 var me = this;
-                axios.get('http://localhost:8080/doc/get_category')
+                axios.get('http://60.205.187.142:9090/doc/get_category')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -169,7 +169,7 @@ var vm = new Vue({
             methods: {
                 searchSecond:function(){
                     var me = this;
-                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_secondCategory?categoryId='+me.writeCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -223,7 +223,7 @@ var vm = new Vue({
                         var data = {
                             categoryId: id
                         }
-                        axios.get("http://localhost:8080/doc/admin_delete_category?categoryId="+id)
+                        axios.get("http://60.205.187.142:9090/doc/admin_delete_category?categoryId="+id)
                             .then(function (response) {
                                 var code = response.data.code
                                 var msg = response.data.msg
@@ -238,7 +238,7 @@ var vm = new Vue({
                                 }
                             })
                     }else if(flag == '二级目录') {
-                        axios.get("http://localhost:8080/doc/admin_delete_secondCategory?secondCategoryId="+id)
+                        axios.get("http://60.205.187.142:9090/doc/admin_delete_secondCategory?secondCategoryId="+id)
                             .then(function (response) {
                                 var code = response.data.code
                                 var msg = response.data.msg
@@ -265,13 +265,13 @@ var vm = new Vue({
                             stateJudgementName: this.content,
                             stateJudgementId: this.id
                         }
-                        ajaxPost("http://localhost:8080/admin/state_judgement_update",JSON.stringify(data))
+                        ajaxPost("http://60.205.187.142:9090/admin/state_judgement_update",JSON.stringify(data))
                     }else if(this.msgFlag == '等级') {
                         var data = {
                             rankName: this.content,
                             rankId: this.id
                         }
-                        ajaxPost('http://localhost:8080/admin/rank_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/rank_update',JSON.stringify(data))
                     }
 
                 },*/
@@ -285,19 +285,19 @@ var vm = new Vue({
                         var data = {
                             categoryName: this.addContent,
                         }
-                        ajaxPost("http://localhost:8080/doc/admin_add_category",JSON.stringify(data))
+                        ajaxPost("http://60.205.187.142:9090/doc/admin_add_category",JSON.stringify(data))
                     }else if(this.msgFlag == '二级目录') {
                         var data = {
                             categoryId:this.writeCategory,
                             secondCategoryName: this.addContent
                         }
-                        ajaxPost('http://localhost:8080/doc/admin_add_secondCategory\n',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/doc/admin_add_secondCategory\n',JSON.stringify(data))
                     }
                 }
             },
             created: function() {
                 var me = this;
-                axios.get('http://localhost:8080/doc/get_category')
+                axios.get('http://60.205.187.142:9090/doc/get_category')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -363,27 +363,27 @@ var vm = new Vue({
                         var data = {
                             stateJudgementId: id
                         }
-                        ajaxPost("http://localhost:8080/admin/state_judgement_delete",JSON.stringify(data))
+                        ajaxPost("http://60.205.187.142:9090/admin/state_judgement_delete",JSON.stringify(data))
                     }else if(flag == '等级') {
                         var data = {
                             rankId: id
                         }
-                        ajaxPost('http://localhost:8080/admin/rank_delete',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/rank_delete',JSON.stringify(data))
                     }else if(flag == '审计层级') {
                         var data = {
                             auditHierarchyId: id
                         }
-                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_delete',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/audit_hierarchy_delete',JSON.stringify(data))
                     }else if(flag == '责任区域') {
                         var data = {
                             responsibleAreaId: id
                         }
-                        ajaxPost('http://localhost:8080/admin/responsible_area_delete',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/responsible_area_delete',JSON.stringify(data))
                     }else if(flag == '问题分类') {
                         var data = {
                             problemClassificationId: id
                         }
-                        ajaxPost('http://localhost:8080/admin/problem_classification_delete',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/problem_classification_delete',JSON.stringify(data))
                     }else if(flag == '细分类型') {
                         var data = {
                             stateJudgementId: id
@@ -402,31 +402,31 @@ var vm = new Vue({
                             stateJudgementName: this.content,
                             stateJudgementId: this.id
                         }
-                        ajaxPost("http://localhost:8080/admin/state_judgement_update",JSON.stringify(data))
+                        ajaxPost("http://60.205.187.142:9090/admin/state_judgement_update",JSON.stringify(data))
                     }else if(this.msgFlag == '等级') {
                         var data = {
                             rankName: this.content,
                             rankId: this.id
                         }
-                        ajaxPost('http://localhost:8080/admin/rank_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/rank_update',JSON.stringify(data))
                     }else if(this.msgFlag == '审计层级') {
                         var data = {
                             auditHierarchyName: this.content,
                             auditHierarchyId: this.id
                         }
-                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/audit_hierarchy_update',JSON.stringify(data))
                     }else if(this.msgFlag == '责任区域') {
                         var data = {
                             responsibleAreaName: this.content,
                             responsibleAreaId: this.id
                         }
-                        ajaxPost('http://localhost:8080/admin/responsible_area_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/responsible_area_update',JSON.stringify(data))
                     }else if(this.msgFlag == '问题分类') {
                         var data = {
                             problemClassificationName: this.content,
                             problemClassificationId: this.id
                         }
-                        ajaxPost('http://localhost:8080/admin/problem_classification_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/problem_classification_update',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
 
                     }
@@ -444,27 +444,27 @@ var vm = new Vue({
                         var data = {
                             stateJudgementName: this.addContent,
                         }
-                        ajaxPost("http://localhost:8080/admin/state_judgement_insert",JSON.stringify(data))
+                        ajaxPost("http://60.205.187.142:9090/admin/state_judgement_insert",JSON.stringify(data))
                     }else if(this.msgFlag == '等级') {
                         var data = {
                             rankName: this.addContent,
                         }
-                        ajaxPost('http://localhost:8080/admin/rank_insert',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/rank_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '审计层级') {
                         var data = {
                             auditHierarchyName: this.addContent,
                         }
-                        ajaxPost('http://localhost:8080/admin/audit_hierarchy_insert',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/audit_hierarchy_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '责任区域') {
                         var data = {
                             responsibleAreaName: this.addContent,
                         }
-                        ajaxPost('http://localhost:8080/admin/responsible_area_insert',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/responsible_area_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '问题分类') {
                         var data = {
                             problemClassificationName: this.addContent,
                         }
-                        ajaxPost('http://localhost:8080/admin/problem_classification_insert',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/admin/problem_classification_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
 
                     }
@@ -472,7 +472,7 @@ var vm = new Vue({
             },
             created: function() {
                 var me = this;
-                axios.get("http://localhost:8080/admin/state_judgement")
+                axios.get("http://60.205.187.142:9090/admin/state_judgement")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -485,7 +485,7 @@ var vm = new Vue({
                             me.statement =  response.data.data
                         }
                     })
-                axios.get("http://localhost:8080/admin/rank")
+                axios.get("http://60.205.187.142:9090/admin/rank")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -498,7 +498,7 @@ var vm = new Vue({
                             me.rank =  response.data.data
                         }
                     })
-                axios.get("http://localhost:8080/admin/problem_classification")
+                axios.get("http://60.205.187.142:9090/admin/problem_classification")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -511,7 +511,7 @@ var vm = new Vue({
                             me.problemClassification =  response.data.data
                         }
                     })
-                axios.get("http://localhost:8080/admin/audit_hierarchy")
+                axios.get("http://60.205.187.142:9090/admin/audit_hierarchy")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -524,7 +524,7 @@ var vm = new Vue({
                             me.auditHierarchy =  response.data.data
                         }
                     })
-                axios.get("http://localhost:8080/admin/responsible_area")
+                axios.get("http://60.205.187.142:9090/admin/responsible_area")
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -586,7 +586,7 @@ var vm = new Vue({
                         return;
                     }
                     var me = this
-                    axios.post('http://localhost:8080/user/admin_delete?userId=' + id)
+                    axios.post('http://60.205.187.142:9090/user/admin_delete?userId=' + id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -635,7 +635,7 @@ var vm = new Vue({
                     }
                     axios({
                             method: 'post',
-                            url: 'http://localhost:8080/user/admin_update',
+                            url: 'http://60.205.187.142:9090/user/admin_update',
                             data: JSON.stringify(data),
                             headers: {
                                 'Content-Type': 'application/json'
@@ -661,7 +661,7 @@ var vm = new Vue({
             },
             created: function () {
                 var me = this
-                axios.get('http://localhost:8080/user/admin_search_all')
+                axios.get('http://60.205.187.142:9090/user/admin_search_all')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.data
@@ -670,7 +670,7 @@ var vm = new Vue({
                             location.href = 'index.html'
                             return;
                         } else {
-                            axios.get('http://localhost:8080/user/register_superior')
+                            axios.get('http://60.205.187.142:9090/user/register_superior')
                                 .then(function (response) {
                                     var code = response.data.code
                                     var position = response.data.data

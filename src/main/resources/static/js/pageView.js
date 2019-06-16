@@ -192,7 +192,7 @@ var problem = {
             this.startTime = year + '-0' + month + '-01'
             this.endTime = year + '-0' + month + '-30'
         }
-        axios.get('http://localhost:8080/safe_problem/search_this_month')
+        axios.get('http://60.205.187.142:9090/safe_problem/search_this_month')
             .then(function (response) {
                 var code = response.data.code
                 var msg = response.data.msg
@@ -206,7 +206,7 @@ var problem = {
                     console.log(me.msg)
                 }
             })
-        axios.get('http://localhost:8080/admin/state_judgement')
+        axios.get('http://60.205.187.142:9090/admin/state_judgement')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -222,7 +222,7 @@ var problem = {
                     }
                 }
             })
-        axios.get('http://localhost:8080/admin/rank')
+        axios.get('http://60.205.187.142:9090/admin/rank')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -238,7 +238,7 @@ var problem = {
                     }
                 }
             })
-        axios.get('http://localhost:8080/admin/problem_classification')
+        axios.get('http://60.205.187.142:9090/admin/problem_classification')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -255,7 +255,7 @@ var problem = {
                     }
                 }
             })
-        axios.get('http://localhost:8080/admin/responsible_area')
+        axios.get('http://60.205.187.142:9090/admin/responsible_area')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -271,7 +271,7 @@ var problem = {
                     }
                 }
             })
-        axios.get('http://localhost:8080/admin/audit_hierarchy')
+        axios.get('http://60.205.187.142:9090/admin/audit_hierarchy')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -287,7 +287,7 @@ var problem = {
                     }
                 }
             })
-        /*axios.get('http://localhost:8080/admin/rank')
+        /*axios.get('http://60.205.187.142:9090/admin/rank')
             .then(function(response){
                 var code = response.data.code
                 var msg = response.data.msg
@@ -320,7 +320,7 @@ var problem = {
                     }
                 }
                 me.leimsg = []
-                axios.get('http://localhost:8080/admin/subdivision_type?problemClassificationId='+id)
+                axios.get('http://60.205.187.142:9090/admin/subdivision_type?problemClassificationId='+id)
                     .then(function(response){
                        var code = response.data.code
                        var msg = response.data.msg
@@ -484,7 +484,7 @@ var problem = {
             var me = this
             var start = this.startTime + '+00:00:00'
             var end = this.endTime + '+23:59:59'
-            axios.get('http://localhost:8080/safe_problem/search?startTime=' + start + '&endTime=' + end)
+            axios.get('http://60.205.187.142:9090/safe_problem/search?startTime=' + start + '&endTime=' + end)
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg
@@ -514,7 +514,7 @@ var zong = {
     },
     created: function () {
         var me = this
-        axios.get('http://localhost:8080/safe_problem/audit')
+        axios.get('http://60.205.187.142:9090/safe_problem/audit')
             .then(function (response) {
                 var code = response.data.code
                 var msg = response.data.msg
@@ -568,7 +568,7 @@ var vm = new Vue({
                 alert('确认密码和新密码不一致')
                 return;
             }
-            axios.post('http://localhost:8080/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
+            axios.post('http://60.205.187.142:9090/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg

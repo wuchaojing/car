@@ -1,10 +1,10 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : 60.205.187.142
  Source Server Type    : MySQL
  Source Server Version : 50725
- Source Host           : localhost:3306
+ Source Host           : 60.205.187.142:3306
  Source Schema         : car
 
  Target Server Type    : MySQL
