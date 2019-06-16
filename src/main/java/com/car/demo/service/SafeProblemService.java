@@ -18,6 +18,8 @@ public interface SafeProblemService {
 
     ResultInfo audit();
 
+    ResultInfo audit(Integer year, Integer month);
+
     ResultInfo update(SafeProblem safeProblem);
 
     ResultInfo searchById(String problemId);
