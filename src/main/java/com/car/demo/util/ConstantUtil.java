@@ -8,7 +8,8 @@ public class ConstantUtil {
 //
 //    public final static String UPLOAD_PATH = "/Users/wuchaojing/developer";
 
-    public final static String UPLOAD_PATH = "D:/excel_xingyi/";
+//    public final static String UPLOAD_PATH = "D:/excel_xingyi/";
+    public final static String UPLOAD_PATH = "/data";
 
 
 }

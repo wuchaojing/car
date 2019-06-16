@@ -54,7 +54,7 @@
 <!-- 文件上传组件 -->
 <template id='upload'>
     <div class='upload'>
-        <h2>请选择你要上传的文件</h2>
+        <h2>请选择你要上传的Excel文件</h2>
         <form action="">
             <input type="file" name='myfiles' @change="upload($event)">
             <input type="submit" value='上传' v-show="buttonFlag" @click.prevent='submit($event)'>

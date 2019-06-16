@@ -5,7 +5,6 @@ import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.mapper.UserMapper;
 import com.car.demo.service.RecordService;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -45,7 +44,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
     private List<String> getRelativeUserIds(String userSuperiorId, List<String> list) {
-        System.out.println("-----------");
         if (userSuperiorId == null) {//end: is null
             return null;
         }

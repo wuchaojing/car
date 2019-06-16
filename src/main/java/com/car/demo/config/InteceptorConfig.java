@@ -15,7 +15,6 @@ public class InteceptorConfig extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/user/register")
                 .excludePathPatterns("/user/login")
                 .excludePathPatterns("/user/register_superior")
-                .excludePathPatterns("/safe_problem/audit")
                 .excludePathPatterns("/error")
                 .excludePathPatterns("/static/**");
         super.addInterceptors(registry);

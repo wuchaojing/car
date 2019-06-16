@@ -39,6 +39,99 @@ var vm = new Vue({
         edit(id) {
             sessionStorage.setItem('problemId',id)
             location.href = 'edit.html'
+        },getTime: function () {
+            if (this.startTime == '' && this.endTime == '') {
+                return this.search()
+            }
+            var me = this
+            var start = this.startTime + '+00:00:00'
+            var end = this.endTime + '+23:59:59'
+            axios.get('http://localhost:8080/safe_problem/search?startTime=' + start + '&endTime=' + end)
+                .then(function (response) {
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        alert(msg)
+                        if (msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        me.msg = data
+                    }
+                })
+        },
+        search: function () {
+            var msg = []
+            for (var i = 0; i < this.msg.length; i++) {
+                var flag = true
+                if(i==0) {
+                    console.log(this.subdivisionType)
+                    console.log(this.problemClassification)
+                }
+                if (this.msg[i].stateJudgement.indexOf(this.stateJudgement) != -1 && this.msg[i].problemClassification.indexOf(this.problemClassification) != -1 && this.msg[i].rank.indexOf(this.rank) != -1 && this.msg[i].auditHierarchy.indexOf(this.auditHierarchy) != -1 && this.msg[i].repeatQuestion.indexOf(this.repeatQuestion) != -1 &&this.msg[i].responsibleArea.indexOf(this.responsibleArea)!= -1) {
+                    if (this.subdivisionType == '其他') {
+                        for (var j = 0; j < this.leimsg.length - 1; j++) {
+                            if (this.leimsg[j].indexOf(this.msg[i].subdivisionType) != -1) {
+                                flag = false
+                            }
+                        }
+                        if (this.completionStatus == '' && flag) {
+                            var arr = this.msg[i].completionStatus.split('/')
+                            if ((arr[0] == '完成') || (arr[0] == '已完成')) {
+                                this.msg[i].status = 1
+                            } else if (arr[0] == '未完成') {
+                                this.msg[i].status = 0
+                            } else {
+                                if (!isNaN(parseInt(arr[0]))) {
+                                    var c = parseInt(arr[0])
+                                    var d = parseInt(arr[1])
+                                    this.msg[i].status = parseInt(c / d)
+                                }
+                            }
+                            msg.push(this.msg[i])
+                        } else if (this.completionStatus == '完成' && flag) {
+                            if (this.msg[i].status == 1) {
+                                msg.push(this.msg[i])
+                            }
+                        } else {
+                            if (this.msg[i].status == 0 && flag) {
+                                msg.push(this.msg[i])
+                            }
+                        }
+                    } else {
+                        if(this.msg[i].subdivisionType===null) this.msg[i].subdivisionType=''
+                        if (this.msg[i].subdivisionType.indexOf(this.subdivisionType) != -1) {
+                            if (this.completionStatus == '') {
+                                var arr = this.msg[i].completionStatus.split('/')
+                                if ((arr[0] == '完成') || (arr[0] == '已完成')) {
+                                    this.msg[i].status = 1
+                                } else if (arr[0] == '未完成') {
+                                    this.msg[i].status = 0
+                                } else {
+                                    if (!isNaN(parseInt(arr[0]))) {
+                                        var c = parseInt(arr[0])
+                                        var d = parseInt(arr[1])
+                                        this.msg[i].status = parseInt(c / d)
+                                    }
+                                }
+                                msg.push(this.msg[i])
+                            } else if (this.completionStatus == '完成') {
+                                if (this.msg[i].status == 1) {
+                                    msg.push(this.msg[i])
+                                }
+                            } else {
+                                if (this.msg[i].status == 0) {
+                                    msg.push(this.msg[i])
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return msg
         },
         searchGo: function () {
             var id;
@@ -47,6 +140,7 @@ var vm = new Vue({
                 this.subdivisionType = ''
                 this.leimsg = ''
             }else {
+                this.subdivisionType = ''
                 for(var i=0;i<this.problemClassifications.length;i++) {
                     if(this.problemClassifications[i]==this.problemClassification){
                         id = this.ids[i]

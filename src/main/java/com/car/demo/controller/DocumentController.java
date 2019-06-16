@@ -22,7 +22,7 @@ public class DocumentController {
 
     @PostMapping("upload")
     @ResponseBody
-    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, HttpSession session) {
+    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, String name,String entryTime,HttpSession session) {
 
         if (file == null) {
             return new ResultInfo(0, "请选择文件");
@@ -31,6 +31,15 @@ public class DocumentController {
         if (StringUtils.isEmpty(secondCategoryId)) {
             return new ResultInfo(0, "请选择文件所属目录");
         }
+
+//        if (StringUtils.isEmpty(name)) {
+//            return new ResultInfo(0, "请输入名称");
+//        }
+//
+//        if (StringUtils.isEmpty(entryTime)) {
+//            return new ResultInfo(0, "请输入录入时间");
+//        }
+
 
         User curUser = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
 

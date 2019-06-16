@@ -4,6 +4,7 @@ import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
+import com.car.demo.util.CalendarUtil;
 import com.car.demo.util.ConstantUtil;
 import com.car.demo.util.ExcelImageAndWords;
 import com.car.demo.util.MD5Util;
@@ -37,14 +38,9 @@ public class SafeProblemServiceImpl implements SafeProblemService {
     public ResultInfo searchByThisMonth() {
         SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();
         //获取当前月第一天：
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
-        safeProblemForSearch.setStartTime(c.getTime());
+        safeProblemForSearch.setStartTime(CalendarUtil.getFirstDayofThisMonth());
         //获取当前月最后一天
-        Calendar ca = Calendar.getInstance();
-        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-        safeProblemForSearch.setEndTime(ca.getTime());
+        safeProblemForSearch.setEndTime(CalendarUtil.getLastDayofThisMonth());
         List<SafeProblem> safeProblems = safeProblemMapper.searchByThisMonth(safeProblemForSearch);
         return new ResultInfo(1, safeProblems);
     }
@@ -82,7 +78,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                     recordMapper.insert(record);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("transferTo {} catch wrong", filePath, e);
             return new ResultInfo(0, "上传失败，请重试");
         }
@@ -99,23 +95,36 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 //        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
 //
 //        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
-        SafeProblemForSearch safeProblemForSearch=new SafeProblemForSearch();//为了日期
+        SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
         //获取当前月第一天：
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
-        safeProblemForSearch.setStartTime(c.getTime());
+        Date first = CalendarUtil.getFirstDayofThisMonth();
         //获取当前月最后一天
-        Calendar ca = Calendar.getInstance();
-        ca.set(Calendar.DAY_OF_MONTH, ca.getActualMaximum(Calendar.DAY_OF_MONTH));
-        safeProblemForSearch.setEndTime(ca.getTime());
-        List<Map<String, Object>> companyAudit=safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
-        List<Map<String, Object>> audit=safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
-        List<Map<String, Object>> companyProblemType=safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
+        Date end = CalendarUtil.getLastDayofThisMonth();
+        safeProblemForSearch.setStartTime(first);
+        safeProblemForSearch.setEndTime(end);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
         //AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
-        AuditDataNew auditData=new AuditDataNew(companyAudit,audit,companyProblemType);
+        AuditDataNew auditData = new AuditDataNew(companyAudit, audit, companyProblemType);
         return new ResultInfo(1, auditData);
 
+    }
+
+    @Override
+    public ResultInfo audit(Integer year, Integer month) {
+        SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
+        //获取指定月第一天：
+        Date first = CalendarUtil.getFisrtDayOfMonth(year, month);
+        //获取指定月最后一天
+        Date end = CalendarUtil.getLastDayOfMonth(year, month);
+        safeProblemForSearch.setStartTime(first);
+        safeProblemForSearch.setEndTime(end);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
+        AuditDataNew auditData = new AuditDataNew(companyAudit, audit, companyProblemType);
+        return new ResultInfo(1, auditData);
     }
 
     public ResultInfo update(SafeProblem safeProblem) {
