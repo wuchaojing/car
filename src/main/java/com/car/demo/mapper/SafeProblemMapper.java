@@ -59,8 +59,8 @@ public interface SafeProblemMapper {
             "</script>")
     List<SafeProblem> searchByThisMonth(SafeProblemForSearch safeProblemForSearch);
 
-    @Insert("<script> insert into safe_problem (problem_id,audit_area, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, record_id) values (" +
-            "#{problemId},#{auditArea},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{recordId})" +
+    @Insert("<script> insert into safe_problem (problem_id,audit_area, propose_time, problem_description, photo, state_judgement, problem_classification, subdivision_type, rank, rectification_measures, responsible_area, person_liable, completion_deadline, audit_hierarchy, repeat_question, completion_status, finish_photo, create_time, record_id, is_completion) values (" +
+            "#{problemId},#{auditArea},#{proposeTime},#{problemDescription},#{photo},#{stateJudgement},#{problemClassification},#{subdivisionType},#{rank},#{rectificationMeasures},#{responsibleArea},#{personLiable},#{completionDeadline},#{auditHierarchy},#{repeatQuestion},#{completionStatus},#{finishPhoto},#{createTime},#{recordId},#{isCompletion})" +
             " </script>")
     void insert(SafeProblem safeProblem);
 
@@ -118,7 +118,7 @@ public interface SafeProblemMapper {
     List<Map<String, Object>> searchCompanyAudit();
 
     @Update("update safe_problem " +
-            "set audit_area=#{auditArea},propose_time=#{proposeTime},problem_description=#{problemDescription},state_judgement=#{stateJudgement},problem_classification=#{problemClassification},subdivision_type=#{subdivisionType},rank=#{rank},rectification_measures=#{rectificationMeasures},responsible_area=#{responsibleArea},person_liable=#{personLiable},completion_deadline=#{completionDeadline},audit_hierarchy=#{auditHierarchy},repeat_question=#{repeatQuestion},completion_status=#{completionStatus} " +
+            "set audit_area=#{auditArea},propose_time=#{proposeTime},problem_description=#{problemDescription},state_judgement=#{stateJudgement},problem_classification=#{problemClassification},subdivision_type=#{subdivisionType},rank=#{rank},rectification_measures=#{rectificationMeasures},responsible_area=#{responsibleArea},person_liable=#{personLiable},completion_deadline=#{completionDeadline},audit_hierarchy=#{auditHierarchy},repeat_question=#{repeatQuestion},completion_status=#{completionStatus},is_completion=#{isCompletion} " +
             "where problem_id=#{problemId}")
     void update(SafeProblem safeProblem);
 

@@ -1,5 +1,6 @@
 package com.car.demo.mapper;
 
+import com.car.demo.entity.Integration;
 import com.car.demo.entity.User;
 import org.apache.ibatis.annotations.*;
 
@@ -30,7 +31,7 @@ public interface UserMapper {
     @Update("update user set review_state=#{reviewState},update_time=#{updateTime} where user_id=#{userId}")
     void updateReviewState(User user);
 
-    @Update("update user set level = #{level},update_time=#{updateTime} where user_id = #{userId}")
+    @Update("update user set detail = #{detail},update_time=#{updateTime},superior_id=#{superiorId} where user_id = #{userId}")
     void update(User user);
 
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,level,detail from user where review_state<>'已注销' and user_id !='admin'")
@@ -65,4 +66,19 @@ public interface UserMapper {
 
     @Update("update user set password=#{password},update_time=#{updateTime} where user_id=#{userId}")
     void updatePassword(User user);
+
+    @Select("select user_id as userId,number,name from user where review_state='已审核' and level in (${pinjie})")
+    List<User> searchUpperClass(@Param("pinjie") String pinjie);
+
+    @Insert("insert into integration values (#{id},#{name},#{reason},#{mark},#{userId},#{markId})")
+    void mark(Integration integration);
+
+    @Select("select user_id as userId,number,name from user where review_state='已审核' and superior_id=#{userId}")
+    List<User> getDirectSons(@Param("userId") String userId);
+
+    @Select("(select id,name,reason,mark,user_id as userId from integration where user_id=#{userId}) union (select id,name,reason,mark,user_id as userId from integration where mark_id=#{userId})")
+    List<Integration> getSelfAndSonsMark(@Param("userId") String userId);
+
+    @Delete("delete from integration where id=#{id}")
+    void deleteMark(@Param("id") String markId);
 }

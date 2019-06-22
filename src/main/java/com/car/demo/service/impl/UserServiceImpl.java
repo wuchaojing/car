@@ -1,5 +1,6 @@
 package com.car.demo.service.impl;
 
+import com.car.demo.entity.Integration;
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.User;
 import com.car.demo.mapper.UserMapper;
@@ -123,6 +124,53 @@ public class UserServiceImpl implements UserService {
         }
         user.setPassword(newPassword);
         userMapper.updatePassword(user);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo getUpperClass(String level) {
+        String[] levels = {"车间长", "工段长", "班组长", "普通员工"};
+        int flag = -1;
+        String pinjie = "'管理员'";
+        for (int i = 0; i < levels.length; i++) {
+            if (levels[i].equals(level)) {
+                flag = i;
+                break;
+            } else {
+                pinjie += ",'" + levels[i] + "'";
+            }
+        }
+        if (flag == -1) {
+            return new ResultInfo(0, "这个身份非正确格式");
+        }
+        System.out.println(pinjie);
+        List<User> users = userMapper.searchUpperClass(pinjie);
+        return new ResultInfo(1, users);
+    }
+
+    @Override
+    public ResultInfo mark(Integration integration) {
+        String id = MD5Util.str2MD5(UUID.randomUUID().toString());
+        integration.setId(id);
+        userMapper.mark(integration);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo getDirectSons(String userId) {
+        List<User> users=userMapper.getDirectSons(userId);
+        return new ResultInfo(1, users);
+    }
+
+    @Override
+    public ResultInfo getSelfAndSonsMark(String userId) {
+        List<Integration> integrations=userMapper.getSelfAndSonsMark(userId);//也查了userId，若和自己相同则是自己的
+        return new ResultInfo(1, integrations);
+    }
+
+    @Override
+    public ResultInfo deleteMark(String markId) {
+        userMapper.deleteMark(markId);
         return new ResultInfo(1);
     }
 }
