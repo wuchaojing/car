@@ -78,7 +78,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
                     recordMapper.insert(record);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("transferTo {} catch wrong", filePath, e);
             return new ResultInfo(0, "上传失败，请重试");
         }
