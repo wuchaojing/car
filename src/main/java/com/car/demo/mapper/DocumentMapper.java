@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface DocumentMapper {
 
-    @Insert("insert into document(doc_id,doc_new_name,doc_origin_name,second_category_id,user_id,create_time) values(" +
-            "#{docId},#{docNewName},#{docOriginName},#{secondCategoryId},#{userId},#{createTime})")
+    @Insert("insert into document(doc_id,doc_new_name,doc_origin_name,happen_time,second_category_id,user_id,create_time) values(" +
+            "#{docId},#{docNewName},#{docOriginName},#{happenTime},#{secondCategoryId},#{userId},#{createTime})")
     void insertDocument(DocumentInfo documentInfo);
 
     @Insert("insert into category(category_id,category_name,create_time) values(" +
@@ -54,4 +54,10 @@ public interface DocumentMapper {
 
     @Delete("delete from document where doc_id = #{docId}")
     void delDoc(@Param("docId") String docId);
+
+    @Update("update category set category_name = #{categoryName} where category_id = #{categoryId}")
+    void updateCategory(@Param("categoryId") String categoryId, @Param("categoryName") String categoryName);
+
+    @Update("update second_category set second_category_name = #{secondCategoryName} where second_category_id = #{secondCategoryId}")
+    void updateSecondCategory(@Param("secondCategoryId") String secondCategoryId, @Param("secondCategoryName") String secondCategoryName);
 }

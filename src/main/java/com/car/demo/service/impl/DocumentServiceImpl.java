@@ -26,7 +26,7 @@ public class DocumentServiceImpl implements DocumentService {
     private DocumentMapper documentMapper;
 
     @Override
-    public ResultInfo upload(MultipartFile file, String secondCategoryId, String userId) {
+    public ResultInfo upload(MultipartFile file, String happenTime, String secondCategoryId, String userId) {
         DocumentInfo documentInfo = new DocumentInfo();
         // 上传文件到七牛云
         try {
@@ -39,6 +39,7 @@ public class DocumentServiceImpl implements DocumentService {
             documentInfo.setDocOriginName(originName);
             documentInfo.setDocNewName(picName);
             documentInfo.setSecondCategoryId(secondCategoryId);
+            documentInfo.setHappenTime(happenTime);
             documentInfo.setUserId(userId);
             documentInfo.setCreateTime(new Date());
 
@@ -114,6 +115,18 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public ResultInfo delDoc(String docId) {
         documentMapper.delDoc(docId);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updateCategory(String categoryId, String categoryName) {
+        documentMapper.updateCategory(categoryId, categoryName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updateSecondCategory(String secondCategoryId, String secondCategoryName) {
+        documentMapper.updateSecondCategory(secondCategoryId, secondCategoryName);
         return new ResultInfo(1);
     }
 }
