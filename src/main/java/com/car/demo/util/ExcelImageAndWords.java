@@ -63,67 +63,123 @@ public class ExcelImageAndWords {
                 safeProblem.setProblemId(MD5Util.str2MD5(UUID.randomUUID().toString()));//encryption UUID is problemId
 
                 cell = row.getCell((short) 1);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setAuditArea(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setAuditArea("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setAuditArea(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 2);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProposeTime(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                if(cell==null){
+                    safeProblem.setProposeTime(nowSameDate);
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProposeTime(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                }
 
                 cell = row.getCell((short) 3);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProblemDescription(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setProblemDescription("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProblemDescription(cell.getStringCellValue());
+                }
 
-                cell = row.getCell((short) 4);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+//                cell = row.getCell((short) 4);
+//                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setPhoto(picMap.get(i + "-" + 4));
 
                 cell = row.getCell((short) 5);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setStateJudgement(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setStateJudgement("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setStateJudgement(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 6);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProblemClassification(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setProblemClassification("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProblemClassification(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 7);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setSubdivisionType(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setSubdivisionType("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setSubdivisionType(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 8);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRank(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRank("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRank(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 9);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRectificationMeasures(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRectificationMeasures("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRectificationMeasures(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 10);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setResponsibleArea(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setResponsibleArea("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setResponsibleArea(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 11);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setPersonLiable(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setPersonLiable("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setPersonLiable(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 12);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionDeadline(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                if(cell==null){
+                    safeProblem.setCompletionDeadline(nowSameDate);
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setCompletionDeadline(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                }
 
                 cell = row.getCell((short) 13);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setAuditHierarchy(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setAuditHierarchy("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setAuditHierarchy(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 14);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRepeatQuestion(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRepeatQuestion("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRepeatQuestion(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 15);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionStatus(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setCompletionStatus("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setCompletionStatus(cell.getStringCellValue());
+                }
 
-                cell = row.getCell((short) 16);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+//                cell = row.getCell((short) 16);
+//                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setFinishPhoto(picMap.get(i + "-" + 16));
 
                 //the last content
