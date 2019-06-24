@@ -232,4 +232,35 @@ public class AdminServiceImpl implements AdminService {
         return new ResultInfo(1,adminData);
     }
     //=====================================================================7
+
+    @Override
+    public ResultInfo searchReason() {
+        List<AdminData> list = adminMapper.searchReason();
+        return new ResultInfo(1, list);
+    }
+
+    @Override
+    public ResultInfo insertReason(String reasonName) {
+        adminMapper.insertReason(UUID.randomUUID().toString(), reasonName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo updateReason(String reasonId, String reasonName) {
+        adminMapper.updateReason(reasonId, reasonName);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo deleteReason(String reasonId) {
+        adminMapper.deleteReason(reasonId);
+        return new ResultInfo(1);
+    }
+
+    @Override
+    public ResultInfo searchReasonById(String reasonId) {
+        AdminData adminData=adminMapper.searchReasonById(reasonId);
+        return new ResultInfo(1,adminData);
+    }
+    //==================================================8
 }

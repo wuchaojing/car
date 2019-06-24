@@ -22,7 +22,7 @@ public class DocumentController {
 
     @PostMapping("upload")
     @ResponseBody
-    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, String name,String entryTime,HttpSession session) {
+    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, String name, String entryTime, HttpSession session) {
 
         if (file == null) {
             return new ResultInfo(0, "请选择文件");

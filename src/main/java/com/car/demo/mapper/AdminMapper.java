@@ -120,5 +120,21 @@ public interface AdminMapper {
 
     @Select("select id,name from responsible_area where id=#{id}")
     AdminData searchResponsibleAreaById(@Param("id") String responsibleAreaId);
-    //==================================================================1
+    //==================================================================7
+
+    @Select("select id,name from reason")
+    List<AdminData> searchReason();
+
+    @Insert("insert into reason values(#{id},#{name})")
+    void insertReason(@Param("id") String reasonId, @Param("name") String reasonName);
+
+    @Update("update reason set name=#{name} where id=#{id}")
+    void updateReason(@Param("id") String reasonId, @Param("name") String reasonName);
+
+    @Delete("delete from reason where id=#{id}")
+    void deleteReason(@Param("id") String reasonId);
+
+    @Select("select id,name from reason where id=#{id}")
+    AdminData searchReasonById(@Param("id") String reasonId);
+    //===================================================8
 }

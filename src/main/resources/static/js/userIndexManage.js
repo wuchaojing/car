@@ -53,7 +53,8 @@ var vm = new Vue({
                     writeCategory:'',
                     secondWriteCategory:'',
                     doc:'',
-                    file:''
+                    file:'',
+                    date:''
                 }
             },
             methods:{
@@ -63,9 +64,11 @@ var vm = new Vue({
                 submit: function (event) {
                     var me = this
                     me.buttonFlag = false
+                    var date = this.date.split('/').join('-')
                     var formdata = new FormData();
                     formdata.append('file', me.file);
                     formdata.append('secondCategoryId', me.secondWriteCategory);
+                    formdata.append('happenTime',date)
                     var config = {
                         headers: {
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
@@ -213,7 +216,9 @@ var vm = new Vue({
                     number: '',
                     name:'',
                     password:'',
-                    password2:''
+                    password2:'',
+                    level:'',
+                    detail:''
                 }
             },
             methods: {
@@ -236,8 +241,9 @@ var vm = new Vue({
                         alert('没有此上级!')
                         return;
                     }
-                    var data = {name: this.name, password: this.password, number: this.number, superiorId: id}
-                    axios({
+                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail}
+
+                    /*axios({
                         method: 'post',
                         url: 'http://localhost:8080/user/register',
                         data: JSON.stringify(data),
@@ -256,55 +262,67 @@ var vm = new Vue({
                             alert('注册成功')
                             location.href = 'userIndexManage.html'
                         }
-                    })
+                    })*/
                 }
 
             },
             created: function () {
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var level = user.level
+                if(user.level=='车间长') {
+                    this.level = '工段长'
+                }else if(user.level=='工段长') {
+                    this.level = '班组长'
+                }
                 var me = this
                 axios.get('http://localhost:8080/user/user_search_part')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.data
                         if (code != 1) {
-                            alert('请先登录！')
-                            location.href = 'index.html'
-                            return;
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
                         } else {
-                            axios.get('http://localhost:8080/user/register_superior')
-                                .then(function (response) {
-                                    var code = response.data.code
-                                    var position = response.data.data
-                                    if (code != 1) {
-                                        alert(msg)
-                                    } else {
-                                        var flag
-                                        me.position = position
-                                        for (var i = 0; i < msg.length; i++) {
-                                            flag = false
-                                            for (var j = 0; j < me.position.length; j++) {
-                                                if (flag) {
-                                                    continue
-                                                }
-                                                if (msg[i].superiorId == me.position[j].userId) {
-                                                    var msgAndNumber = me.position[j].name + '(' + me.position[j].number + ')'
-                                                    msg[i].msgAndNumber = msgAndNumber
-                                                    flag = true
-                                                }
-                                            }
-                                        }
-                                        for (var i = 0; i < msg.length; i++) {
-                                            if (!msg[i].msgAndNumber) {
-                                                msg[i].msgAndNumber = '无'
-                                            }
-                                        }
-                                        me.msg = msg
-                                    }
-
-                                })
+                            me.msg = msg
                         }
 
                     });
+                /*axios.get('http://localhost:8080/user/register_superior')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var position = response.data.data
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var flag
+                            me.position = position
+                            for (var i = 0; i < msg.length; i++) {
+                                flag = false
+                                for (var j = 0; j < me.position.length; j++) {
+                                    if (flag) {
+                                        continue
+                                    }
+                                    if (msg[i].superiorId == me.position[j].userId) {
+                                        var msgAndNumber = me.position[j].name + '(' + me.position[j].number + ')'
+                                        msg[i].msgAndNumber = msgAndNumber
+                                        flag = true
+                                    }
+                                }
+                            }
+                            for (var i = 0; i < msg.length; i++) {
+                                if (!msg[i].msgAndNumber) {
+                                    msg[i].msgAndNumber = '无'
+                                }
+                            }
+                            me.msg = msg
+                        }
+
+                    })*/
             }
         },
         upload: {
@@ -412,6 +430,107 @@ var vm = new Vue({
                 }*/
             },
             props: ['submits']
+        },
+        jifenManage:{
+            template:'#jifenManage',
+            data: function(){
+                return {
+                    name: '',
+                    mark:'',
+                    reson:'',
+                    level: '',
+                    flag: true
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var me = this
+                if(user.level!='班组') {
+                    axios.get('http://localhost:8080/user/user_search_part')
+                        .then(function(response){
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                var data = response.data.data
+                                me.level = data
+                            }
+                        })
+                    }
+                }
+
+        },
+        jifenWatch:{
+            template:'#jifenWatch',
+            data:function(){
+                return {
+                    msg:'',
+                    myMsg:''
+                }
+            },
+            methods:{
+                del: function(id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var data = {
+                        markId: id
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://localhost:8080/user/mark_delete',
+                        data:JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'managerIndex.html'
+                        }
+                    })
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var id = user.userId
+                var me = this
+                axios.get('http://localhost:8080/user/self_and_sons_mark?userId='+id)
+                    .then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.msg = data
+                            console.log(data)
+                            for(var i=0;i<me.msg.length;i++){
+                                if(me.msg[i].userId==id)
+                                {
+                                    me.myMsg = me.msg[i]
+                                    console.log(me.myMsg)
+                                    me.msg.splice(i,1)
+                                    break;
+                                }
+                            }
+                        }
+                    })
+            }
         }
     },
     created: function () {

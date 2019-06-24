@@ -85,11 +85,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo audit() {
-        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
-        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
-        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
-        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
-        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+
         SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
         //获取当前月第一天：
         Date first = CalendarUtil.getFirstDayofThisMonth();
@@ -97,6 +93,11 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         Date end = CalendarUtil.getLastDayofThisMonth();
         safeProblemForSearch.setStartTime(first);
         safeProblemForSearch.setEndTime(end);
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy(safeProblemForSearch);
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio(safeProblemForSearch);
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType(safeProblemForSearch);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit(safeProblemForSearch);
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
         List<Map<String, Object>> companyAuditNew = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
@@ -109,11 +110,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo audit(Integer year, Integer month) {
-        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
-        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
-        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
-        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
-        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+
         SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
         //获取指定月第一天：
         Date first = CalendarUtil.getFisrtDayOfMonth(year, month);
@@ -121,6 +118,11 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         Date end = CalendarUtil.getLastDayOfMonth(year, month);
         safeProblemForSearch.setStartTime(first);
         safeProblemForSearch.setEndTime(end);
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy(safeProblemForSearch);
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio(safeProblemForSearch);
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType(safeProblemForSearch);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit(safeProblemForSearch);
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
         List<Map<String, Object>> companyAuditNew = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);

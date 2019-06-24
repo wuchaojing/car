@@ -198,8 +198,8 @@ var vm = new Vue({
                 },
                 updateA:function(flag,name,id) {
                     this.msgFlag = flag
-                    this.content = name;
                     this.id = id;
+                    this.content = name
                     this.updateFlag1 = !this.updateFlag1
                 },
                 addA: function(flag){
@@ -255,26 +255,25 @@ var vm = new Vue({
                             })
                     }
                 },
-               /* sendUpdate: function() {
+                sendUpdate: function() {
                     var a = window.confirm('确认修改?')
                     if (!a) {
                         return;
                     }
                     if(this.msgFlag=='一级目录'){
                         var data = {
-                            stateJudgementName: this.content,
-                            stateJudgementId: this.id
+                            categoryId: this.id,
+                            categoryName: this.content
                         }
-                        ajaxPost("http://localhost:8080/admin/state_judgement_update",JSON.stringify(data))
-                    }else if(this.msgFlag == '等级') {
+                        ajaxPost("http://localhost:8080/doc/update_category",JSON.stringify(data))
+                    }else if(this.msgFlag == '二级目录') {
                         var data = {
-                            rankName: this.content,
-                            rankId: this.id
+                            secondCategoryId: this.id,
+                            secondCategoryName: this.content
                         }
-                        ajaxPost('http://localhost:8080/admin/rank_update',JSON.stringify(data))
+                        ajaxPost('http://localhost:8080/doc/update_second_categor',JSON.stringify(data))
                     }
-
-                },*/
+                },
                 sendAdd:function() {
                     sessionStorage.setItem('comName','wendang')
                     var a = window.confirm('确认添加?')
@@ -330,6 +329,8 @@ var vm = new Vue({
                     problemClassification:'',
                     auditHierarchy:'',
                     responsibleArea: '',
+                    subdivisionType:'',
+                    writeProblem:''
                 }
             },
             methods: {
@@ -386,8 +387,9 @@ var vm = new Vue({
                         ajaxPost('http://localhost:8080/admin/problem_classification_delete',JSON.stringify(data))
                     }else if(flag == '细分类型') {
                         var data = {
-                            stateJudgementId: id
+                            subdivisionTypeId: id
                         }
+                        ajaxPost('http://localhost:8080/admin/subdivision_type_delete',JSON.stringify(data))
                     }
 
                 },
@@ -428,7 +430,11 @@ var vm = new Vue({
                         }
                         ajaxPost('http://localhost:8080/admin/problem_classification_update',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
-
+                        var data = {
+                            subdivisionTypeName: this.content,
+                            subdivisionTypeId: this.id
+                        }
+                        ajaxPost('http://localhost:8080/admin/subdivision_type_update',JSON.stringify(data))
                     }
 
 
@@ -439,7 +445,6 @@ var vm = new Vue({
                     if (!a) {
                         return;
                     }
-
                     if(this.msgFlag=='状态判断'){
                         var data = {
                             stateJudgementName: this.addContent,
@@ -466,8 +471,33 @@ var vm = new Vue({
                         }
                         ajaxPost('http://localhost:8080/admin/problem_classification_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
-
+                        if(this.writeProblem==''){
+                            alert('需要选择一个问题分类！')
+                            return false
+                        }
+                        var data = {
+                            problemClassificationId: this.writeProblem,
+                            subdivisionTypeName: this.addContent
+                        }
+                        ajaxPost('http://localhost:8080/admin/subdivision_type_insert',JSON.stringify(data))
                     }
+                },
+                searchSecond:function() {
+                    var me = this
+                    console.log(me.writeProblem)
+                    axios.get('http://localhost:8080/admin/subdivision_type?problemClassificationId=' + me.writeProblem)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.subdivisionType = response.data.data
+                            }
+                        })
                 }
             },
             created: function() {
@@ -549,6 +579,14 @@ var vm = new Vue({
                     highName:'',
                     sname:'',
                     snumber:'',
+                    name:'',
+                    number:'',
+                    password:'',
+                    password2:'',
+                    higherName: '',
+                    level:'车间长',
+                    detail:'',
+                    flag: false
                 }
             },
             methods: {
@@ -601,6 +639,45 @@ var vm = new Vue({
 
                         })
                     sessionStorage.setItem('comName','manager')
+                },
+                //注册操作
+                sendRegister(){
+                    var id = ''
+                    if (this.password != this.password2) {
+                        alert('两次密码不一致')
+                        return;
+                    } else if (this.number == 'admin' || this.number == 'audit') {
+                        alert('此编号不可注册!')
+                        return;
+                    }
+                    else {
+                        id = user.userId
+                    }
+                    if (id === undefined) {
+                        alert('没有此上级!')
+                        return;
+                    }
+                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail}
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:8080/user/register',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            alert('注册成功')
+                            location.href = 'managerIndex.html'
+                        }
+                    })
                 },
                 //更新操作
                 update: function (id, reviewState, msg) {

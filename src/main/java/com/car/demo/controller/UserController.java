@@ -217,8 +217,8 @@ public class UserController {
 
     @PostMapping("mark_delete")
     @ResponseBody
-    public ResultInfo deleteMark(String markId) {
-
+    public ResultInfo deleteMark(@RequestBody Map<String, String> params) {
+        String markId=params.get("markId");
         if (StringUtils.isEmpty(markId)) {
             return new ResultInfo(0, "至少选择一个");
         }

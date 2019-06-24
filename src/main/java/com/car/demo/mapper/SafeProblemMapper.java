@@ -32,10 +32,10 @@ public interface SafeProblemMapper {
             "and repeat_question = #{repeatQuestion}" +
             "</if> " +
             "<if test='completionStatus == \"完成\"'> " +
-            "and completion_status in ( select name from completion_status )" +
+            "and is_completion=1 "+//"and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='completionStatus == \"未完成\"'> " +
-            "and completion_status not  in ( select name from completion_status )" +
+            "and is_completion!=1 "+//"and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='startTime != null'> " +
             "and propose_time >= #{startTime}" +
@@ -90,10 +90,10 @@ public interface SafeProblemMapper {
             "and repeat_question = #{s.repeatQuestion}" +
             "</if> " +
             "<if test='s.completionStatus == \"完成\"'> " +
-            "and completion_status in ( select name from completion_status )" +
+            "and is_completion=1 "+//"and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.completionStatus == \"未完成\"'> " +
-            "and completion_status not in ( select name from completion_status )" +
+            "and is_completion!=1 "+//"and completion_status in ( select name from completion_status )" +
             "</if> " +
             "<if test='s.startTime != null'> " +
             "and propose_time >= #{s.startTime}" +
@@ -105,17 +105,17 @@ public interface SafeProblemMapper {
             "</script> ")
     List<SafeProblem> searchByRecordIdsAndCondition(@Param("recordIds") String recordIds, @Param("s") SafeProblemForSearch safeProblemForSearch);
 
-    @Select("select responsible_area,audit_hierarchy,count(*) as number from safe_problem group by responsible_area,audit_hierarchy order by responsible_area")
-    List<Map<String, Object>> searchHierarchy();
+    @Select("<script> select responsible_area,audit_hierarchy,count(*) as number from safe_problem where propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime} group by responsible_area,audit_hierarchy order by responsible_area </script> ")
+    List<Map<String, Object>> searchHierarchy(SafeProblemForSearch safeProblemForSearch);
 
-    @Select("select responsible_area,sum(case when completion_status  in ( select name from completion_status ) then 1 else 0 end)/count(*) as complete_ratio from safe_problem group by responsible_area order by responsible_area")
-    List<Map<String, Object>> searchFloorCompleteRatio();
+    @Select("<script> select responsible_area,sum(case when is_completion=1 then 1 else 0 end)/count(*) as complete_ratio from safe_problem where propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime} group by responsible_area order by responsible_area </script>")
+    List<Map<String, Object>> searchFloorCompleteRatio(SafeProblemForSearch safeProblemForSearch);//原来的想法是completion_status  in ( select name from completion_status )
 
-    @Select("select problem_classification,rank,count(*) as number from safe_problem group by problem_classification,rank order by problem_classification")
-    List<Map<String, Object>> searchProblemType();
+    @Select("<script> select problem_classification,rank,count(*) as number from safe_problem where propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime}  group by problem_classification,rank order by problem_classification </script>")
+    List<Map<String, Object>> searchProblemType(SafeProblemForSearch safeProblemForSearch);
 
-    @Select("select state_judgement,count(*) as number from safe_problem group by state_judgement order by state_judgement")
-    List<Map<String, Object>> searchCompanyAudit();
+    @Select("<script> select state_judgement,count(*) as number from safe_problem where propose_time <![CDATA[<=]]> #{endTime} and propose_time >= #{startTime}  group by state_judgement order by state_judgement </script>")
+    List<Map<String, Object>> searchCompanyAudit(SafeProblemForSearch safeProblemForSearch);
 
     @Update("update safe_problem " +
             "set audit_area=#{auditArea},propose_time=#{proposeTime},problem_description=#{problemDescription},state_judgement=#{stateJudgement},problem_classification=#{problemClassification},subdivision_type=#{subdivisionType},rank=#{rank},rectification_measures=#{rectificationMeasures},responsible_area=#{responsibleArea},person_liable=#{personLiable},completion_deadline=#{completionDeadline},audit_hierarchy=#{auditHierarchy},repeat_question=#{repeatQuestion},completion_status=#{completionStatus},is_completion=#{isCompletion} " +
