@@ -22,7 +22,7 @@ public class DocumentController {
 
     @PostMapping("upload")
     @ResponseBody
-    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, String name, String entryTime, HttpSession session) {
+    public ResultInfo uploadDoc(@RequestParam("file") MultipartFile file, String secondCategoryId, String happenTime, HttpSession session) {
 
         if (file == null) {
             return new ResultInfo(0, "请选择文件");
@@ -32,18 +32,13 @@ public class DocumentController {
             return new ResultInfo(0, "请选择文件所属目录");
         }
 
-//        if (StringUtils.isEmpty(name)) {
-//            return new ResultInfo(0, "请输入名称");
-//        }
-//
-//        if (StringUtils.isEmpty(entryTime)) {
-//            return new ResultInfo(0, "请输入录入时间");
-//        }
-
+        if (StringUtils.isEmpty(happenTime)) {
+            return new ResultInfo(0, "请输入档案发生时间");
+        }
 
         User curUser = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
 
-        return documentService.upload(file, secondCategoryId, curUser.getUserId());
+        return documentService.upload(file, happenTime, secondCategoryId, curUser.getUserId());
     }
 
     @PostMapping("admin_add_category")
@@ -129,5 +124,34 @@ public class DocumentController {
             return new ResultInfo(0, "请选择要删除的文件");
         }
         return documentService.delDoc(docId);
+    }
+
+    @PostMapping("update_category")
+    @ResponseBody
+    public ResultInfo updateCategory(@RequestBody Map<String, String> params) {
+        String categoryId=params.get("categoryId");
+        String categoryName=params.get("categoryName");
+        if (StringUtils.isEmpty(categoryId)) {
+            return new ResultInfo(0, "请选择要更新的目录");
+        }
+        if (StringUtils.isEmpty(categoryName)) {
+            return new ResultInfo(0, "请输入名字");
+        }
+        return documentService.updateCategory(categoryId, categoryName);
+    }
+
+    @PostMapping("update_second_category")
+    @ResponseBody
+    public ResultInfo updateSecondCategory(@RequestBody Map<String, String> params) {
+        String secondCategoryId=params.get("secondCategoryId");
+        String secondCategoryName=params.get("secondCategoryName");
+        if (StringUtils.isEmpty(secondCategoryId)) {
+            return new ResultInfo(0, "请选择要更新的目录");
+        }
+
+        if (StringUtils.isEmpty(secondCategoryName)) {
+            return new ResultInfo(0, "请输入名字");
+        }
+        return documentService.updateSecondCategory(secondCategoryId, secondCategoryName);
     }
 }

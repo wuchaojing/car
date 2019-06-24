@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface DocumentService {
 
-    ResultInfo upload(MultipartFile file, String secondCategoryId, String userId);
+    ResultInfo upload(MultipartFile file, String happenTime, String secondCategoryId, String userId);
 
     ResultInfo addCategory(String categoryName);
 
@@ -22,4 +22,8 @@ public interface DocumentService {
     ResultInfo getDoc(String secondCategoryId, String userId);
 
     ResultInfo delDoc(String docId);
+
+    ResultInfo updateCategory(String categoryId,String categoryName);
+
+    ResultInfo updateSecondCategory(String secondCategoryId, String secondCategoryName);
 }

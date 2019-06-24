@@ -248,8 +248,9 @@ var vm = new Vue({
                                 var code = response.data.code
                                 var msg = response.data.msg
                                 if (code != 1) {
+                                    alert(msg)
                                     if (msg == 'need login') {
-                                        alert(msg)
+                                        //alert(msg)
 
                                         location.href = 'index.html'
                                     }
@@ -276,7 +277,7 @@ var vm = new Vue({
                             secondCategoryId: this.id,
                             secondCategoryName: this.content
                         }
-                        ajaxPost('http://localhost:8080/doc/update_second_categor',JSON.stringify(data))
+                        ajaxPost('http://localhost:8080/doc/update_second_category',JSON.stringify(data))
                     }
                 },
                 sendAdd:function() {
