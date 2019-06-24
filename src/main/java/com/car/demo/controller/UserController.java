@@ -168,8 +168,10 @@ public class UserController {
 
     @PostMapping("mark")
     @ResponseBody
-    public ResultInfo mark(@RequestBody Integration integration, @RequestBody Map<String, String> params) {
+    public ResultInfo mark(@RequestBody Map<String, String> params) {//@RequestBody Integration integration, @RequestBody Map<String, String> params
         String level = params.get("level");
+        //因为不支持同时类和params，重新组装一下
+        Integration integration = new Integration(params.get("name"), params.get("reason"), params.get("mark"), params.get("userId"), params.get("markId"));
         if (StringUtils.isEmpty(level)) {
             return new ResultInfo(0, "输入当前用户级别");
         }
@@ -218,7 +220,7 @@ public class UserController {
     @PostMapping("mark_delete")
     @ResponseBody
     public ResultInfo deleteMark(@RequestBody Map<String, String> params) {
-        String markId=params.get("markId");
+        String markId = params.get("markId");
         if (StringUtils.isEmpty(markId)) {
             return new ResultInfo(0, "至少选择一个");
         }

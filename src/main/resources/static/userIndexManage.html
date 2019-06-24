@@ -244,12 +244,14 @@
             </div>
             <div v-show="!flag">
                 用户名:
-                <select  v-model="name">
-                    <option v-for="item in level" :value="item.id">{{item.name}}</option>
+                <select  v-model="id" @change="change(id)">
+                    <option v-for="item in level" :value="item.userId">{{item.name}}</option>
                 </select>
             </div>
             <br>
-            原因: <input type="text" v-model="reson">
+            原因: <select type="text" v-model="reason">
+            <option v-for="item in reasons" :value="item.name">{{item.name}}</option>
+        </select>
             <br>
             <br>
             积分: <input type="text" v-model="mark">
@@ -292,7 +294,7 @@
                     <td align="center">{{item.reason}}<br></td>
                     <td align="center">{{item.mark}}</td>
                     <td align="center">
-                        <a @click.prevent="del(item.markId)" style="color: red;">删除</a>
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
                     </td>
                 </tr>
                 </tbody>

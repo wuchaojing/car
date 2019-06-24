@@ -37,6 +37,7 @@
             <a class="uploadFile" @click.prevent='comName="manager"' style="cursor:pointer">用户界面</a>
             <a @click.prevent='comName="zuzhi"' style="cursor:pointer">组织管理</a>
             <a @click.prevent='comName="wendang"' style="cursor:pointer">目录管理</a>
+            <a @click.prevent='comName="reason"' style="cursor:pointer">原因管理</a>
             <a @click.prevent='comName="fileWatch"' style="cursor:pointer">文档观察</a>
     </div>
     <component :is="comName"></component>
@@ -299,6 +300,16 @@
                             value="添加用户"
                             @click.prevent="feiUser()"
                     />
+                    <div v-show="updateFlag" class="updateFlag" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;width:300px;height:300px;margin:auto;background-color: green;z-index: 3;">
+                        <button style="position: absolute;right: 5px;top: 10px;width: 20px;height: 20px;" @click="updateX()">x</button>
+                        上级: <br>
+                        <select v-model="shangJi">
+                            <option v-for="item in shang" :value="item.userId">{{item.msgAndNumber}}</option>
+                        </select> <br>
+                        具体分区: <br>
+                        <input type="text" v-model="detail" > <br>
+                        <input type="submit" value="提交" @click.prevent="sendUpdate">
+                    </div>
                     <div class="userAdd" v-show="userAddflag" >
                         <div class="title">请注册</div>
                         <button @click="feiUser()">x</button>
@@ -327,7 +338,12 @@
                                 v-model="password2"
                                 autocomplete="off"
                         />
-                            级别: <input type="text" v-model="level" disabled>
+                            级别:
+                            <select v-model="level">
+                            <option value="车间长">车间长</option>
+                            <option value="工段长">工段长</option>
+                            <option value="班组长">班组长</option>
+                            </select>
                             具体: <input type="text" placeholder="具体级别" v-model="detail">
                             <input type="submit" value="提交" @click.prevent="sendRegister()">
                         </form>
@@ -340,6 +356,7 @@
                         <th>序号</th>
                         <th>编号</th>
                         <th>姓名</th>
+                        <th>级别</th>
 <!--                    <th>注册时间</th>-->
                         <th>上级名称</th>
                         <th>管理</th>
@@ -350,15 +367,16 @@
                         <td align="center">{{index+1}}</td>
                         <td align="center">{{item.number}}</td>
                         <td align="center">{{item.name}}<br></td>
+                        <td align="center">{{item.level}}<br></td>
 <!--                        <td align="center">{{item.createTime}}</td>-->
                         <td align="center">
                             {{item.msgAndNumber}}
                             <!--<select v-model="item.msgAndNumber">
-                                <option v-for="another in search()">{{another.name}}</option>
+                                <option v-for="another in search(item.level)">{{another.name}}</option>
                             </select>-->
                         </td>
                         <td align="center"><a href="#" style="color:green"
-                                              @click="update(item.userId,item.reviewState,item.msgAndNumber)">确认</a>
+                                              @click.prevent="updateShang(item.level,item.userId)">修改上级</a>
                             <a href="#" style="color:red" @click="del(item.userId,index)">删除</a></td>
                     </tr>
                     </tbody>
@@ -417,6 +435,46 @@
         </div>
 
 </template>
+    <template id="reason">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <input type="button" value="积分原因管理"  style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <div v-show="showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('积分原因')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>积分原因</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in reasons">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('积分原因',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('积分原因',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </template>
     <script src="js/managerIndex.js"></script>
 </body>
 

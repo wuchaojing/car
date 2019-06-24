@@ -65,7 +65,12 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://localhost:8080/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
+
         },
     },
     components: {
@@ -584,28 +589,73 @@ var vm = new Vue({
                     password:'',
                     password2:'',
                     higherName: '',
-                    level:'车间长',
+                    level:'',
                     detail:'',
-                    flag: false
+                    flag: false,
+                    shang:'',
+                    updateFlag:false,
+                    shangJi:'',
+                    gongduan:'',
+                    chejian:'',
+                    banzu:'',
+                    userId:''
                 }
             },
             methods: {
-                feiUser: function() {
-                    this.userAddflag = !this.userAddflag
+                sendUpdate:function(){
+                    var data = {
+                        userId: this.userId,
+                        detail: this.detail,
+                        superiorId: this.shangJi
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://localhost:8080/user/admin_update',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = "managerIndex.html"
+                        }
+
+                    })
                 },
-                search: function () {
-                    var position = []
-                    var msg2 = {name: '无'}
-                    position.push(msg2)
-                    for (var i = 0; i < this.position.length; i++) {
-                        if (this.position[i].name.indexOf(name) !== -1) {
-                            var msg = {name: ''}
-                            // console.log(this.position[i].name)
-                            msg.name = this.position[i].name + '(' + this.position[i].number + ')'
-                            position.push(msg)
+                updateX:function(){
+                    this.updateFlag = !this.updateFlag
+                },
+                updateShang:function(level,id){
+                    this.updateFlag = !this.updateFlag
+                    this.userId = id
+                    if(level=="班组长"){
+                        this.shang = this.banzu
+                    }else if(level=="工段长") {
+                        this.shang = this.gongduan
+                    }else if(level=="车间长"){
+                        this.shang = this.chejian
+                    }
+                    if(this.shang!=''){
+                        for(var i=0;i<this.shang.length;i++){
+                            if(this.shang[i].name==='admin'){
+                                this.shang.splice(i,1)
+                                i--;
+                            }else {
+                                this.shang[i].msgAndNumber = this.shang[i].name + '(' + this.shang[i].number+ ')'
+                            }
                         }
                     }
-                    return position
+
+                },
+                feiUser: function() {
+                    this.userAddflag = !this.userAddflag
                 },
                 searchGo: function () {
                     var msg = []
@@ -616,7 +666,6 @@ var vm = new Vue({
                     }
                     return msg
                 },
-
                 //删除操作
                 del: function (id, index) {
                     var a = window.confirm('确认删除?')
@@ -728,24 +777,23 @@ var vm = new Vue({
                                     location.href = 'index.html'
                                 }
                             }
-                            // else {
-                            //     //直接删除这一行就行
-                            //     alert('修改成功！')
-                            // }
                         })
 
                 }
             },
+            //找出上级来
             created: function () {
                 var me = this
                 axios.get('http://localhost:8080/user/admin_search_all')
                     .then(function (response) {
                         var code = response.data.code
+                        var data = response.data.msg
                         var msg = response.data.data
                         if (code != 1) {
-                            alert('请先登录！')
-                            location.href = 'index.html'
-                            return;
+                            alert(data)
+                            if(data=='need login'){
+                                location.href = 'index.html'
+                            }
                         } else {
                             axios.get('http://localhost:8080/user/register_superior')
                                 .then(function (response) {
@@ -776,8 +824,139 @@ var vm = new Vue({
                                         }
                                         me.msg = msg
                                     }
-
                                 })
+                        }
+                    })
+                axios.get('http://localhost:8080/user/get_upper_class?level=工段长')
+                    .then(function (response) {
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        alert(msg)
+                        if(msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        me.gongduan = data
+                    }
+                })
+                axios.get('http://localhost:8080/user/get_upper_class?level=车间长')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.chejian = data
+                        }
+                    })
+                axios.get('http://localhost:8080/user/get_upper_class?level=班组长')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.banzu = data
+                        }
+                    })
+            }
+        },
+        reason:{
+            template:'#reason',
+            data:function(){
+                return {
+                    showFlag: true,
+                    updateFlag1: false,
+                    AddFlag1: false,
+                    content:'',
+                    addContent:'',
+                    id:'',
+                    msgFlag:'',
+                    content:'',
+                    reasons:''
+                }
+            },
+            methods:{
+                updateA:function(flag,name,id) {
+                    this.msgFlag = flag
+                    this.id = id;
+                    this.content = name
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                addA: function(flag){
+                    this.msgFlag = flag
+                    if(this.AddFlag2==true)
+                        this.AddFlag2 = !this.AddFlag2
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                anniuUpdate:function(){
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                anniuAdd:function(){
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                deleteA: function(flag,id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    if(flag=='积分原因'){
+                        var data = {
+                            reasonId: id
+                        }
+                        ajaxPost('http://localhost:8080/admin/reason_delete',JSON.stringify(data))
+                    }
+
+                },
+                sendUpdate: function() {
+                    var a = window.confirm('确认修改?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='积分原因'){
+                        var data = {
+                            reasonId: this.id,
+                            reasonName: this.content
+                        }
+                        ajaxPost("http://localhost:8080/admin/reason_update",JSON.stringify(data))
+                    }
+                },
+                sendAdd:function() {
+                    var a = window.confirm('确认添加?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='积分原因'){
+                        var data = {
+                            reasonName: this.addContent,
+                        }
+                        ajaxPost("http://localhost:8080/admin/reason_insert",JSON.stringify(data))
+                    }
+                }
+            },
+            created:function(){
+                var me = this
+                axios.get('http://localhost:8080/admin/reason')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.reasons =  response.data.data
                         }
                     })
             }

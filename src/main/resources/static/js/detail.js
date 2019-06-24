@@ -191,7 +191,11 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://localhost:8080/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
         }
     },
     created: function () {

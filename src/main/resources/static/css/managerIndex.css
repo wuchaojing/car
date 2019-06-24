@@ -167,5 +167,19 @@ thead th ,tbody td {
     border: 1px solid #ccc;
     text-align: center;
 }
+/*修改上级的小框*/
+.updateFlag {
+    text-align: center;
+}
+.updateFlag select,.updateFlag input {
+    margin-top: 20px;
+    width: 200px;
+    heigth: 50px;
+}
+.updateFlag input[type='submit'] {
+    height: 60px;
+    font-size: 20px;
+    cursor: pointer;
+}
 
 

@@ -503,7 +503,7 @@ var problem = {
 }
 var zong = {
     template: '#zong',
-    data() {
+    data:function() {
         return {
             flag: true,
             hierarchy: '',
@@ -512,7 +512,50 @@ var zong = {
             companyAudit: '',
             companyAuditNew: '',
             audit:'',
-            companyProblemType:''
+            companyProblemType:'',
+            year:'',
+            month:''
+        }
+    },
+    methods:{
+        searchZong:function(){
+            var me = this
+            if(me.month>13) {
+                alert('月份不合格')
+                return
+            }
+            axios.get('http://localhost:8080/safe_problem/audit_year_month?year='+me.year+'&month='+me.month)
+                .then(function (response) {
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        if (msg == 'need login') {
+                            alert(msg)
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        var auditData = data.auditData
+                        var auditDataNew = data.auditDataNew
+                        me.hierarchy = auditData.hierarchy
+                        me.hierarchyCompleteRatio = auditData.hierarchyCompleteRatio
+                        me.problemType = auditData.problemType
+                        me.companyAudit = auditData.companyAudit
+                        me.companyAuditNew = auditDataNew.companyAuditNew
+                        me.audit = auditDataNew.audit
+                        me.companyProblemType = auditDataNew.companyProblemType
+                        for (var i = 0; i < me.hierarchyCompleteRatio.length; i++) {
+                            var complete_ratio = me.hierarchyCompleteRatio[i].complete_ratio * 100
+                            complete_ratio = complete_ratio.toFixed(2)
+                            me.hierarchyCompleteRatio[i].complete_ratio = complete_ratio + '%'
+                        }
+                        for (var i = 0; i < me.companyProblemType.length; i++) {
+                            var complete_ratio = me.companyProblemType[i].complete_ratio * 100
+                            complete_ratio = complete_ratio.toFixed(2)
+                            me.companyProblemType[i].complete_ratio =  complete_ratio + '%'
+                        }
+                    }
+                })
         }
     },
     created: function () {
@@ -600,7 +643,11 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://localhost:8080/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
         }
     },
     router: router
