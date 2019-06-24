@@ -510,6 +510,9 @@ var zong = {
             hierarchyCompleteRatio: '',
             problemType: '',
             companyAudit: '',
+            companyAuditNew: '',
+            audit:'',
+            companyProblemType:''
         }
     },
     created: function () {
@@ -525,13 +528,25 @@ var zong = {
                     }
                 } else {
                     var data = response.data.data
-                    me.hierarchy = data.hierarchy
-                    me.hierarchyCompleteRatio = data.hierarchyCompleteRatio
+                    var auditData = data.auditData
+                    var auditDataNew = data.auditDataNew
+                    me.hierarchy = auditData.hierarchy
+                    me.hierarchyCompleteRatio = auditData.hierarchyCompleteRatio
+                    me.problemType = auditData.problemType
+                    me.companyAudit = auditData.companyAudit
+                    me.companyAuditNew = auditDataNew.companyAuditNew
+                    me.audit = auditDataNew.audit
+                    me.companyProblemType = auditDataNew.companyProblemType
                     for (var i = 0; i < me.hierarchyCompleteRatio.length; i++) {
-                        me.hierarchyCompleteRatio[i].complete_ratio = me.hierarchyCompleteRatio[i].complete_ratio * 100 + '%'
+                        var complete_ratio = me.hierarchyCompleteRatio[i].complete_ratio * 100
+                        complete_ratio = complete_ratio.toFixed(2)
+                        me.hierarchyCompleteRatio[i].complete_ratio = complete_ratio + '%'
                     }
-                    me.problemType = data.problemType
-                    me.companyAudit = data.companyAudit
+                    for (var i = 0; i < me.companyProblemType.length; i++) {
+                        var complete_ratio = me.companyProblemType[i].complete_ratio * 100
+                        complete_ratio = complete_ratio.toFixed(2)
+                        me.companyProblemType[i].complete_ratio =  complete_ratio + '%'
+                    }
                 }
             })
     }

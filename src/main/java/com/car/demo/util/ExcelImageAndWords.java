@@ -171,11 +171,18 @@ public class ExcelImageAndWords {
                 }
 
                 cell = row.getCell((short) 15);
+
                 if(cell==null){
                     safeProblem.setCompletionStatus("");
                 }else{
                     cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                     safeProblem.setCompletionStatus(cell.getStringCellValue());
+                    //判断是否是完成，或者 n/m (n==m)
+                    if(Others.isCompletion(cell.getStringCellValue())){
+                        safeProblem.setIsCompletion(1);
+                    }else{
+                        safeProblem.setIsCompletion(0);
+                    }
                 }
 
 //                cell = row.getCell((short) 16);

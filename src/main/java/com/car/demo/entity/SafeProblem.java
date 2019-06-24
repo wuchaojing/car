@@ -34,5 +34,5 @@ public class SafeProblem {
     private Date createTime;
 
     private String recordId;
-
+    private Integer isCompletion;
 }

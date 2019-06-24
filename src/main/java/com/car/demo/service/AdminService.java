@@ -79,4 +79,15 @@ public interface AdminService {
 
     ResultInfo searchResponsibleAreaById(String responsibleAreaId);
     //======================================================================7
+
+    ResultInfo searchReason();
+
+    ResultInfo insertReason(String reasonName);
+
+    ResultInfo updateReason(String reasonId, String reasonName);
+
+    ResultInfo deleteReason(String reasonId);
+
+    ResultInfo searchReasonById(String reasonId);
+    //=============================================================8
 }
