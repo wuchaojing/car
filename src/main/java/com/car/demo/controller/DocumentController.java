@@ -37,7 +37,6 @@ public class DocumentController {
         }
 
         User curUser = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
-
         return documentService.upload(file, happenTime, secondCategoryId, curUser.getUserId());
     }
 
