@@ -357,6 +357,7 @@
                         <th>编号</th>
                         <th>姓名</th>
                         <th>级别</th>
+                        <th>具体级别</th>
 <!--                    <th>注册时间</th>-->
                         <th>上级名称</th>
                         <th>管理</th>
@@ -366,8 +367,9 @@
                     <tr v-for="(item,index) in searchGo()">
                         <td align="center">{{index+1}}</td>
                         <td align="center">{{item.number}}</td>
-                        <td align="center">{{item.name}}<br></td>
-                        <td align="center">{{item.level}}<br></td>
+                        <td align="center">{{item.name}}</td>
+                        <td align="center">{{item.level}}</td>
+                        <td align="center">{{item.detail}}</td>
 <!--                        <td align="center">{{item.createTime}}</td>-->
                         <td align="center">
                             {{item.msgAndNumber}}

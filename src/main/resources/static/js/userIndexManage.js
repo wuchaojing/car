@@ -234,6 +234,27 @@ var vm = new Vue({
                 }
             },
             methods: {
+                del:function(id,index){
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var me = this
+                    axios.post('http://localhost:8080/user/admin_delete?userId=' + id)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.msg.splice(index, 1)
+                            }
+
+                        })
+                },
                 feiUser: function() {
                     this.userAddflag = !this.userAddflag
                 },

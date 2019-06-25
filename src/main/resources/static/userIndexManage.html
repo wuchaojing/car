@@ -219,6 +219,8 @@
                     <th>序号</th>
                     <th>编号</th>
                     <th>姓名</th>
+                    <th>级别</th>
+                    <th>具体级别</th>
                     <th>管理</th>
                 </tr>
                 </thead>
@@ -226,9 +228,11 @@
                 <tr v-for="(item,index) in msg">
                     <td align="center">{{index+1}}</td>
                     <td align="center">{{item.number}}</td>
-                    <td align="center">{{item.name}}<br></td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.level}}</td>
+                    <td align="center">{{item.detail}}</td>
                     <td align="center">
-                        <a href="#" style="color:red" @click="del(item.userId,index)">删除</a>
+                        <a href="#" style="color:red" @click.prevent="del(item.userId,index)">删除</a>
                     </td>
                 </tr>
                 </tbody>

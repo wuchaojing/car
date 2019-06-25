@@ -131,7 +131,7 @@ var vm = new Vue({
                                     location.href = 'index.html'
                                 }
                             } else {
-                                location.href = 'userIndexManage.html'
+                                location.href = 'managerIndex.html'
                             }
                         })
                 }
