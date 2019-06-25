@@ -33,5 +33,7 @@ public interface UserService {
 
     ResultInfo getSelfAndSonsMark(String userId);
 
+    ResultInfo getSelfAndSonsMarkSum(String userId);
+
     ResultInfo deleteMark(String markId);
 }

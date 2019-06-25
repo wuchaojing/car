@@ -11,7 +11,7 @@ var vm = new Vue({
         newValue2: '',
         oldValue: '',
         userName: user.name,
-        msg2: '',
+        // msg2: '',
         msg: '',
         stateJudgement: '',
         problemClassification: '',
@@ -130,7 +130,6 @@ var vm = new Vue({
 
                 }
             }
-
             return msg
         },
         searchGo: function () {
@@ -208,6 +207,7 @@ var vm = new Vue({
                 str += ","
             }
         }
+        console.log(str)
         axios.get('http://localhost:8080/record/safe_problems_batch?recordIds='+str)
             .then(function (response) {
                 var code = response.data.code
@@ -220,10 +220,10 @@ var vm = new Vue({
                     }
                 } else {
                     // sessionStorage.removeItem('recordId')
-                    me.msg2 = data
+                    console.log(data)
+                    me.msg = data
                 }
             })
-        var me = this
         var date = new Date()
         var year = date.getFullYear()
         var month = date.getMonth() + 1
@@ -245,19 +245,6 @@ var vm = new Vue({
             this.startTime = year + '-0' + month + '-01'
             this.endTime = year + '-0' + month + '-30'
         }
-        axios.get('http://localhost:8080/safe_problem/search_this_month')
-            .then(function (response) {
-                var code = response.data.code
-                var msg = response.data.msg
-                if (code != 1) {
-                    if (msg == 'need login') {
-                        location.href = 'index.html'
-                    }
-                } else {
-                    var data = response.data.data
-                    me.msg = data
-                }
-            })
         axios.get('http://localhost:8080/admin/state_judgement')
             .then(function(response){
                 var code = response.data.code

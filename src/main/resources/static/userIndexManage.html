@@ -42,6 +42,7 @@
         <a href="#" @click.prevent='compName="fileWatch"'>文档观察</a>
         <a href="#" @click.prevent='compName="jifenManage"'>积分管理</a>
         <a href="#" @click.prevent='compName="jifenWatch"'>积分观看</a>
+        <a href="#" @click.prevent='compName="zongjiFen"'>总积分观看</a>
     </div>
     <div class="right" ref='right'>
         <div class="right-main">
@@ -270,6 +271,7 @@
     <div>
         <div class="top">
             <h2 style="font-weight: 400;">积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
         </div>
         <div class="userMessage" style="height: 400px;overflow-y: auto">
             <table border="1" cellspacing='0' align="center">
@@ -283,16 +285,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr v-for="item in myMsg">
                     <td align="center">0(自己)</td>
-                    <td align="center">{{myMsg.name}}</td>
-                    <td align="center">{{myMsg.reason}}<br></td>
-                    <td align="center">{{myMsg.mark}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.reason}}<br></td>
+                    <td align="center">{{item.mark}}</td>
                     <td align="center" style="color: red;">
                         不可编辑自己
                     </td>
                 </tr>
-                <tr v-for="(item,index) in msg">
+                <tr v-for="(item,index) in search()">
                     <td align="center">{{index+1}}</td>
                     <td align="center">{{item.name}}</td>
                     <td align="center">{{item.reason}}<br></td>
@@ -300,6 +302,45 @@
                     <td align="center">
                         <a @click.prevent="del(item.id)" style="color: red;">删除</a>
                     </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+<!--总积分-->
+<template id="zongjiFen">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">总积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
+        </div>
+        <div class="userMessage" style="height: 400px;overflow-y: auto">
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>总积分</th>
+<!--                    <th>编辑</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr >
+                    <td align="center">0(自己)</td>
+                    <td align="center">{{myMsg.name}}</td>
+                    <td align="center">{{myMsg.mark}}</td>
+                   <!-- <td align="center" style="color: red;">
+                        不可编辑自己
+                    </td>-->
+                </tr>
+                <tr v-for="(item,index) in search()">
+                    <td align="center">{{index+1}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.mark}}</td>
+                    <!--<td align="center">
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
+                    </td>-->
                 </tr>
                 </tbody>
             </table>

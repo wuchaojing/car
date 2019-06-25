@@ -168,6 +168,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResultInfo getSelfAndSonsMarkSum(String userId) {
+        List<Integration> integrations=userMapper.getSelfAndSonsMarkSum(userId);//也查了userId，若和自己相同则是自己的
+        return new ResultInfo(1, integrations);
+    }
+
+    @Override
     public ResultInfo deleteMark(String markId) {
         userMapper.deleteMark(markId);
         return new ResultInfo(1);

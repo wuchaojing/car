@@ -67,12 +67,20 @@ var vm = new Vue({
                 },
                 submit: function (event) {
                     var me = this
-                    me.buttonFlag = false
+
                     var date = this.date.split('/').join('-')
                     var formdata = new FormData();
                     formdata.append('file', me.file);
                     formdata.append('secondCategoryId', me.secondWriteCategory);
                     formdata.append('happenTime',date)
+                    console.log(me.file)
+                    console.log(me.secondWriteCategory)
+                    console.log(me.date)
+                    if(!me.file||!me.secondWriteCategory||!me.date){
+                        alert('必须完整输入才可以！')
+                        return false
+                    }
+                    me.buttonFlag = false
                     var config = {
                         headers: {
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
@@ -460,6 +468,10 @@ var vm = new Vue({
                 },
                 send:function(){
                     var user = JSON.parse(sessionStorage.getItem('user'))
+                    if(isNaN(this.mark)){
+                        alert('积分必须是数字形式！例如+5，-3，5')
+                        return
+                    }
                     var data = {
                         name: this.name,
                         reason: this.reason,
@@ -531,7 +543,8 @@ var vm = new Vue({
             data:function(){
                 return {
                     msg:'',
-                    myMsg:''
+                    myMsg:[],
+                    sname:''
                 }
             },
             methods:{
@@ -562,13 +575,22 @@ var vm = new Vue({
                             location.href = 'userIndexManage.html'
                         }
                     })
+                },
+                search:function(){
+                    var msg = []
+                    for(var i=0;i<this.msg.length;i++){
+                        console.log(this.msg[i])
+                        if(this.msg[i].name.indexOf(this.sname)!==-1){
+                            msg.push(this.msg[i])
+                        }
+                    }
+                    return msg
                 }
             },
             created:function(){
                 var user = JSON.parse(sessionStorage.getItem('user'))
                 var id = user.userId
                 var me = this
-                console.log(id)
                 axios.get('http://localhost:8080/user/self_and_sons_mark?userId='+id)
                     .then(function(response){
                         var code = response.data.code
@@ -584,16 +606,92 @@ var vm = new Vue({
                             for(var i=0;i<me.msg.length;i++){
                                 if(me.msg[i].userId==id)
                                 {
-                                    me.myMsg = me.msg[i]
+                                    me.myMsg.push(me.msg[i])
                                     me.msg.splice(i,1)
-                                    console.log(me.msg)
+                                    i--;
+                                }
+                            }
+                        }
+                    })
+            }
+        },
+        zongjiFen:{
+            template:'#zongjiFen',
+            data:function(){
+                return {
+                    msg:'',
+                    myMsg:'',
+                    sname:''
+                }
+            },
+            methods:{
+                del: function(id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var data = {
+                        markId: id
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://localhost:8080/user/mark_delete',
+                        data:JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'userIndexManage.html'
+                        }
+                    })
+                },
+                search:function(){
+                    var msg = []
+                    for(var i=0;i<this.msg.length;i++){
+                        if(this.msg[i].name.indexOf(this.sname)!==-1){
+                            msg.push(this.msg[i])
+                        }
+                    }
+                    return msg
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var id = user.userId
+                var me = this
+                axios.get('http://localhost:8080/user/self_and_sons_mark_sum?userId='+id)
+                    .then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.msg = data
+                            for(var i=0;i<me.msg.length;i++){
+                                if(me.msg[i].userId==id)
+                                {
+                                    me.myMsg = me.msg[i]
+                                    console.log(me.myMsg)
+                                    me.msg.splice(i,1)
                                     break;
                                 }
                             }
                         }
                     })
             }
-        }
+        },
     },
     created: function () {
         var me = this
