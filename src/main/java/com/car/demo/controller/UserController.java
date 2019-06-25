@@ -171,7 +171,7 @@ public class UserController {
     public ResultInfo mark(@RequestBody Map<String, String> params) {//@RequestBody Integration integration, @RequestBody Map<String, String> params
         String level = params.get("level");
         //因为不支持同时类和params，重新组装一下
-        Integration integration = new Integration(params.get("name"), params.get("reason"), params.get("mark"), params.get("userId"), params.get("markId"));
+        Integration integration = new Integration(params.get("name"), params.get("reason"), Double.parseDouble(params.get("mark")), params.get("userId"), params.get("markId"));
         if (StringUtils.isEmpty(level)) {
             return new ResultInfo(0, "输入当前用户级别");
         }
@@ -215,6 +215,15 @@ public class UserController {
             return new ResultInfo(0, "请选择一个用户");
         }
         return userService.getSelfAndSonsMark(userId);
+    }
+
+    @GetMapping("self_and_sons_mark_sum")
+    @ResponseBody
+    public ResultInfo getSelfAndSonsMarkSum(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return new ResultInfo(0, "请选择一个用户");
+        }
+        return userService.getSelfAndSonsMarkSum(userId);
     }
 
     @PostMapping("mark_delete")

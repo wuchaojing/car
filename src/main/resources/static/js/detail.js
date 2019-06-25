@@ -11,7 +11,7 @@ var vm = new Vue({
         newValue2: '',
         oldValue: '',
         userName: user.name,
-        msg2: '',
+        // msg2: '',
         msg: '',
         stateJudgement: '',
         problemClassification: '',
@@ -208,6 +208,7 @@ var vm = new Vue({
                 str += ","
             }
         }
+        console.log(str)
         axios.get('http://localhost:8080/record/safe_problems_batch?recordIds='+str)
             .then(function (response) {
                 var code = response.data.code
@@ -220,7 +221,8 @@ var vm = new Vue({
                     }
                 } else {
                     // sessionStorage.removeItem('recordId')
-                    me.msg2 = data
+                    console.log(data)
+                    me.msg = data
                 }
             })
         var me = this
