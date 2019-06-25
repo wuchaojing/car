@@ -1,26 +1,26 @@
 .top select {
-  margin-top: 10px;
+    margin-top: 10px;
     margin-right: 25px;
 }
 div.left a{
-  background-color: #3A3C48;
+    background-color: #157FCC;
 }
 div.left .router-link-active {
-  background-color: #282A32
+    background-color: #157FCC
 }
 div.top{
     width: 100%;
     margin-left: 0;
 }
 .zong {
-  text-align: center;
+    text-align: center;
 }
 .toggle {
-  width: 200px;
-  height: 50px;
-  margin-top: 30px;
-  cursor: pointer;
-    background-color: green;
+    width: 200px;
+    height: 50px;
+    margin-top: 30px;
+    cursor: pointer;
+    background-color: #157FCC;
 }
 input.export {
     position: absolute;
@@ -30,42 +30,44 @@ input.export {
     width: 50px;
     height: 50px;
     cursor: pointer;
-    background-color: green;
+    background-color: #157FCC;
 }
 .xifen {
     width: 200px;
 }
 .cengji,.wenti {
-  margin-top: 20px;
-  width: 100%;
-  height: 350px;
+    margin-top: 20px;
+    width: 100%;
+    height: 350px;
 }
 .cengjiAll,.cengjiLv {
-  float: left;
-  width: 550px;
-  height: 205px;
+    margin-left:10px;
+    float: left;
+    width: 550px;
+    height: 205px;
     margin-top: 10px;
-  background-color: #2E9789;
+    background-color: #157FCC;
 }
 .cengjiLv {
-  width: 550px;
-  float: right;
+    margin-right:10px;
+    width: 550px;
+    float: right;
 }
 .cengjiAll>div,.cengjiLv>div {
-  height: 25px;
-  line-height: 25px;
-  border-bottom: 1px solid #ccc
+    height: 25px;
+    line-height: 25px;
+    border-bottom: 1px solid #ccc
 }
 .cengjiAll>div.one,.cengjiLv>div.one {
-  border-top: 1px solid #ccc;
+    border-top: 1px solid #ccc;
 }
 .cengjiAll>div>span,.cengjiLv>div>span {
-  display: inline-block;
-  width: 33%;
-  font-size: 14px;
-  text-align: center;
-  border-left: 1px solid #ccc;
+    display: inline-block;
+    width: 33%;
+    font-size: 14px;
+    text-align: center;
+    border-left: 1px solid #ccc;
 }
 .cengjiLv>div>span {
-  width: 49.7%;
+    width: 49.7%;
 }

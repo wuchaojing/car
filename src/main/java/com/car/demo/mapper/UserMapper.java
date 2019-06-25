@@ -74,10 +74,10 @@ public interface UserMapper {
     @Select("select user_id as userId,number,name from user where review_state='已审核' and superior_id=#{userId}")
     List<User> getDirectSons(@Param("userId") String userId);
 
-    @Select("<script> (select id,name,reason,mark,user_id as userId from integration where user_id=#{userId} and review_state!='已注销') union (select id,name,reason,mark,user_id as userId from integration where mark_id=#{userId} and review_state!='已注销') </script>")
+    @Select("<script> (select id,name,reason,mark,user_id as userId from integration where user_id=#{userId}) union (select id,name,reason,mark,user_id as userId from integration where mark_id=#{userId}) </script>")
     List<Integration> getSelfAndSonsMark(@Param("userId") String userId);
 
-    @Select("<script> (select name,sum(mark) as mark,user_id as userId from integration where user_id=#{userId} and review_state!='已注销' group by user_id) union (select name,sum(mark) as mark,user_id as userId from integration where mark_id=#{userId} and review_state!='已注销' group by user_id) </script>")
+    @Select("<script> (select name,sum(mark) as mark,user_id as userId from integration where user_id=#{userId} group by user_id) union (select name,sum(mark) as mark,user_id as userId from integration where mark_id=#{userId} group by user_id) </script>")
     List<Integration> getSelfAndSonsMarkSum(@Param("userId") String userId);//总分不用查id了
 
     @Delete("delete from integration where id=#{id}")
