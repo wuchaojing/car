@@ -204,9 +204,9 @@
 </template>
 <template id="zong">
     <div class="zong right-main">
-        输入年<input type="text" placeholder="例如 2019">
-        输入月<input type="text" placeholder="例如 3">
-        <input type="button" value="点击搜索" @click="searchZong" style="height: 50px;background-color: green">
+        输入年<input type="text" placeholder="例如 2019" v-model="year">
+        输入月<input type="text" placeholder="例如 3" v-model="month">
+        <input type="button" value="点击搜索" @click="searchZong()" style="height: 50px;background-color: green">
         <input type="button" class="toggle" value="换一批" @click="flag=!flag" style="background-color: green;">
         <div class="cengji" v-if="flag">
             <div class="cengjiAll" style="overflow:auto;">

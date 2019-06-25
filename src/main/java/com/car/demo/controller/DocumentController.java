@@ -128,7 +128,9 @@ public class DocumentController {
 
     @PostMapping("update_category")
     @ResponseBody
-    public ResultInfo updateCategory(String categoryId, String categoryName) {
+    public ResultInfo updateCategory(@RequestBody Map<String, String> params) {
+        String categoryId=params.get("categoryId");
+        String categoryName=params.get("categoryName");
         if (StringUtils.isEmpty(categoryId)) {
             return new ResultInfo(0, "请选择要更新的目录");
         }
@@ -140,7 +142,9 @@ public class DocumentController {
 
     @PostMapping("update_second_category")
     @ResponseBody
-    public ResultInfo updateSecondCategory(String secondCategoryId, String secondCategoryName) {
+    public ResultInfo updateSecondCategory(@RequestBody Map<String, String> params) {
+        String secondCategoryId=params.get("secondCategoryId");
+        String secondCategoryName=params.get("secondCategoryName");
         if (StringUtils.isEmpty(secondCategoryId)) {
             return new ResultInfo(0, "请选择要更新的目录");
         }

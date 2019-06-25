@@ -81,7 +81,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<User> getRelativeUsers(User superiorUser, List<User> list) {
-        System.out.println("-----------");
         if (superiorUser == null) {//end: is null
             return null;
         }

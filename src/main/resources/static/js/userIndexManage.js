@@ -39,7 +39,11 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://localhost:8080/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
         }
     },
     components: {
@@ -227,6 +231,7 @@ var vm = new Vue({
                 },
                 sendMsg: function () {
                     var id = ''
+                    var user = JSON.parse(sessionStorage.getItem('user'))
                     if (this.password != this.password2) {
                         alert('两次密码不一致')
                         return;
@@ -241,9 +246,9 @@ var vm = new Vue({
                         alert('没有此上级!')
                         return;
                     }
-                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail}
+                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail,superiorId:id}
 
-                    /*axios({
+                    axios({
                         method: 'post',
                         url: 'http://localhost:8080/user/register',
                         data: JSON.stringify(data),
@@ -262,7 +267,7 @@ var vm = new Vue({
                             alert('注册成功')
                             location.href = 'userIndexManage.html'
                         }
-                    })*/
+                    })
                 }
 
             },
@@ -435,18 +440,61 @@ var vm = new Vue({
             template:'#jifenManage',
             data: function(){
                 return {
+                    id:'',
                     name: '',
                     mark:'',
-                    reson:'',
+                    reason:'',
+                    reasons:'',
                     level: '',
                     flag: true
+                }
+            },
+            methods:{
+                change(id){
+                    for(var i=0;i<this.level.length;i++){
+                        if(id==this.level[i].userId){
+                            this.name = this.level[i].name
+                            break;
+                        }
+                    }
+                },
+                send:function(){
+                    var user = JSON.parse(sessionStorage.getItem('user'))
+                    var data = {
+                        name: this.name,
+                        reason: this.reason,
+                        mark: this.mark,
+                        userId: this.id,
+                        markId: user.userId,
+                        level: user.level
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://localhost:8080/user/mark',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'userIndexManage.html'
+                        }
+                    })
                 }
             },
             created:function(){
                 var user = JSON.parse(sessionStorage.getItem('user'))
                 var me = this
-                if(user.level!='班组') {
-                    axios.get('http://localhost:8080/user/user_search_part')
+                if(user.level!='班组长') {
+                    me.flag = false
+                    axios.get('http://localhost:8080/user/direct_sons?userId='+user.userId)
                         .then(function(response){
                             var code = response.data.code
                             var msg = response.data.msg
@@ -461,6 +509,20 @@ var vm = new Vue({
                             }
                         })
                     }
+                    axios.get('http://localhost:8080/admin/reason')
+                        .then(function(response){
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                var data = response.data.data
+                                me.reasons = data
+                            }
+                        })
                 }
 
         },
@@ -497,7 +559,7 @@ var vm = new Vue({
                                 location.href = 'index.html'
                             }
                         } else {
-                            location.href = 'managerIndex.html'
+                            location.href = 'userIndexManage.html'
                         }
                     })
                 }
@@ -506,6 +568,7 @@ var vm = new Vue({
                 var user = JSON.parse(sessionStorage.getItem('user'))
                 var id = user.userId
                 var me = this
+                console.log(id)
                 axios.get('http://localhost:8080/user/self_and_sons_mark?userId='+id)
                     .then(function(response){
                         var code = response.data.code
@@ -518,13 +581,12 @@ var vm = new Vue({
                         } else {
                             var data = response.data.data
                             me.msg = data
-                            console.log(data)
                             for(var i=0;i<me.msg.length;i++){
                                 if(me.msg[i].userId==id)
                                 {
                                     me.myMsg = me.msg[i]
-                                    console.log(me.myMsg)
                                     me.msg.splice(i,1)
+                                    console.log(me.msg)
                                     break;
                                 }
                             }
@@ -549,5 +611,6 @@ var vm = new Vue({
                     me.submits = data
                 }
             })
+
     }
 });

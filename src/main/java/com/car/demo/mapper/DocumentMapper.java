@@ -43,7 +43,7 @@ public interface DocumentMapper {
     @Select("select second_category_id as secondCategoryId,second_category_name as secondCategoryName from second_category where category_id = #{categoryId}")
     List<SecondCategoryInfo> getSecondCategory(@Param("categoryId") String categoryId);
 
-    @Select("<script> select doc_id as docId,doc_new_name as docNewName,doc_origin_name as docOriginName from document " +
+    @Select("<script> select doc_id as docId,doc_new_name as docNewName,doc_origin_name as docOriginName,happen_time as happenTime from document " +
             "<where> second_category_id = #{secondCategoryId} " +
             "<if test='userId != null'>" +
             "and user_id = #{userId}" +
