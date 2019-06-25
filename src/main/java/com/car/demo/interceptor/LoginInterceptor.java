@@ -23,6 +23,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (user == null) {
             response2Client(response);
             return false;
+        }else{
+            session.setMaxInactiveInterval(30*60);//以秒为单位，即在没有活动30分钟后，session将失效.
         }
         return true;
     }

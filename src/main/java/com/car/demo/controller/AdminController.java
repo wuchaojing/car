@@ -337,4 +337,50 @@ public class AdminController {
         return adminService.deleteResponsibleArea(responsibleAreaId);
     }
     //=====================================================================7
+
+
+    @GetMapping("reason")
+    public ResultInfo searchReason() {
+        return adminService.searchReason();
+    }
+
+    @GetMapping("reason_id")
+    public ResultInfo searchReasonById(String reasonId) {
+        if (StringUtils.isEmpty(reasonId)) {
+            return new ResultInfo(0, "请选择一条");
+        }
+        return adminService.searchReasonById(reasonId);
+    }
+
+    @PostMapping("reason_insert")
+    public ResultInfo insertReason(@RequestBody Map<String, String> params) {
+        String reasonName=params.get("reasonName");
+        if (StringUtils.isEmpty(reasonName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        return adminService.insertReason(reasonName);
+    }
+
+    @PostMapping("reason_update")
+    public ResultInfo updateReason(@RequestBody Map<String, String> params) {
+        String reasonId=params.get("reasonId");
+        if (StringUtils.isEmpty(reasonId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        String reasonName=params.get("reasonName");
+        if (StringUtils.isEmpty(reasonName)) {
+            return new ResultInfo(0, "输入的名不能为空");
+        }
+        return adminService.updateReason(reasonId, reasonName);
+    }
+
+    @PostMapping("reason_delete")
+    public ResultInfo deleteReason(@RequestBody Map<String, String> params) {
+        String reasonId=params.get("reasonId");
+        if (StringUtils.isEmpty(reasonId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        return adminService.deleteReason(reasonId);
+    }
+    //=================================================================8
 }

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,6 +40,9 @@
         <a href="#" @click.prevent='compName="upload"'>文件上传</a>
         <a href="#" @click.prevent='compName="fileUpload"'>文档上传</a>
         <a href="#" @click.prevent='compName="fileWatch"'>文档观察</a>
+        <a href="#" @click.prevent='compName="jifenManage"'>积分管理</a>
+        <a href="#" @click.prevent='compName="jifenWatch"'>积分观看</a>
+        <a href="#" @click.prevent='compName="zongjiFen"'>总积分观看</a>
     </div>
     <div class="right" ref='right'>
         <div class="right-main">
@@ -111,6 +113,9 @@
         <form action="">
             <input type="file" name='myfiles' @change="upload($event)">
             <br>
+            录入时间
+            <input type="date" v-model="date" style="margin-top: 100px;">
+            <br>
             <input type="submit" value='上传' v-show="buttonFlag" @click.prevent='submit($event)'>
             <input class="buttonTwo" type="submit" value="上传中..." v-show="!buttonFlag" disabled>
         </form>
@@ -140,6 +145,7 @@
                     <tr>
                         <th>序号</th>
                         <th>名称</th>
+                        <th>录入时间</th>
                         <th>编辑</th>
                     </tr>
                     </thead>
@@ -148,6 +154,9 @@
                         <td align="center">{{index+1}}</td>
                         <td align="center">
                             {{item.docOriginName}}
+                        </td>
+                        <td align="center">
+                            {{item.happenTime}}
                         </td>
                         <td>
                             <a style="color: green;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
@@ -160,6 +169,7 @@
         </div>
     </div>
 </template>
+<!--用户管理-->
 <template id='userManage'>
     <div>
         <div class="top">
@@ -197,6 +207,8 @@
                     autocomplete="off"
                     v-model="password2"
             />
+                级别: <input type="text" v-model="level"  disabled>
+                具体: <input type="text" v-model="detail" placeholder="具体级别">
                 <input type="submit" value="提交" @click.prevent="sendMsg()">
             </form>
         </div>
@@ -207,8 +219,8 @@
                     <th>序号</th>
                     <th>编号</th>
                     <th>姓名</th>
-                    <th>注册时间</th>
-                    <th>上级名称</th>
+                    <th>级别</th>
+                    <th>具体级别</th>
                     <th>管理</th>
                 </tr>
                 </thead>
@@ -216,22 +228,127 @@
                 <tr v-for="(item,index) in msg">
                     <td align="center">{{index+1}}</td>
                     <td align="center">{{item.number}}</td>
-                    <td align="center">{{item.name}}<br></td>
-                    <td align="center">{{item.createTime}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.level}}</td>
+                    <td align="center">{{item.detail}}</td>
                     <td align="center">
-                        {{item.msgAndNumber}}
-<!--                        <select v-model="item.msgAndNumber">-->
-<!--                            <option v-for="another in search()">{{another.name}}</option>-->
-<!--                        </select>-->
-                    </td>
-                    <td align="center">
-                        <a href="#" style="color:red" @click="del(item.userId,index)">删除</a>
+                        <a href="#" style="color:red" @click.prevent="del(item.userId,index)">删除</a>
                     </td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    </div>
+</template>
+<!--积分管理页面-->
+<template id="jifenManage">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">积分管理</h2>
+        </div>
+        <div style="margin-left: 100px;" class="jifen">
+            <div v-show="flag">
+                用户: <input type="text" v-model="name">
+            </div>
+            <div v-show="!flag">
+                用户名:
+                <select  v-model="id" @change="change(id)">
+                    <option v-for="item in level" :value="item.userId">{{item.name}}</option>
+                </select>
+            </div>
+            <br>
+            原因: <select type="text" v-model="reason">
+            <option v-for="item in reasons" :value="item.name">{{item.name}}</option>
+        </select>
+            <br>
+            <br>
+            积分: <input type="text" v-model="mark">
+            <br>
+            <br>
+            <input type="submit" value="提交" @click.prevent="send" style="background-color: green">
+        </div>
+    </div>
+</template>
+<!--积分观看页面-->
+<template id="jifenWatch">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
+        </div>
+        <div class="userMessage" style="height: 400px;overflow-y: auto">
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>原因</th>
+                    <th>积分</th>
+                    <th>编辑</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in myMsg">
+                    <td align="center">0(自己)</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.reason}}<br></td>
+                    <td align="center">{{item.mark}}</td>
+                    <td align="center" style="color: red;">
+                        不可编辑自己
+                    </td>
+                </tr>
+                <tr v-for="(item,index) in search()">
+                    <td align="center">{{index+1}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.reason}}<br></td>
+                    <td align="center">{{item.mark}}</td>
+                    <td align="center">
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+<!--总积分-->
+<template id="zongjiFen">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">总积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
+        </div>
+        <div class="userMessage" style="height: 400px;overflow-y: auto">
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>总积分</th>
+<!--                    <th>编辑</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr >
+                    <td align="center">0(自己)</td>
+                    <td align="center">{{myMsg.name}}</td>
+                    <td align="center">{{myMsg.mark}}</td>
+                   <!-- <td align="center" style="color: red;">
+                        不可编辑自己
+                    </td>-->
+                </tr>
+                <tr v-for="(item,index) in search()">
+                    <td align="center">{{index+1}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.mark}}</td>
+                    <!--<td align="center">
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
+                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 <script src='js/userIndexManage.js'></script>

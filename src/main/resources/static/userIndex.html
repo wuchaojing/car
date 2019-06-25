@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>五菱</title>
     <link rel="stylesheet" href="css/userIndex.css">
+    <link rel="stylesheet" href="css/userIndexManage.css">
     <link rel="stylesheet" href="css/multiplex.css">
     <script src="lib/vue-2.4.0.js"></script>
     <script src="lib/axios.js"></script>
@@ -35,8 +35,13 @@
     <!-- 左侧导航栏 -->
     <div class="left" ref='left'>
         <!-- 拆分成组件 -->
-        <a href="#" @click.prevent='compName="upload"' class="uploadFile">文件上传</a>
         <a href="#" @click.prevent='compName="submitRecodes"'>提交记录</a>
+        <a href="#" @click.prevent='compName="upload"'>文件上传</a>
+        <a href="#" @click.prevent='compName="fileUpload"'>文档上传</a>
+        <a href="#" @click.prevent='compName="fileWatch"'>文档观察</a>
+        <a href="#" @click.prevent='compName="jifenManage"'>积分管理</a>
+        <a href="#" @click.prevent='compName="jifenWatch"'>积分观看</a>
+        <a href="#" @click.prevent='compName="zongjiFen"'>总积分观看</a>
     </div>
     <div class="right" ref='right'>
         <div class="right-main">
@@ -50,7 +55,7 @@
 <!-- 文件上传组件 -->
 <template id='upload'>
     <div class='upload'>
-        <h2>请选择你要上传的文件</h2>
+        <h2>请选择你要上传的Excel文件</h2>
         <form action="">
             <input type="file" name='myfiles' @change="upload($event)">
             <input type="submit" value='上传' v-show="buttonFlag" @click.prevent='submit($event)'>
@@ -59,33 +64,218 @@
     </div>
 </template>
 <template id='submitRecodes'>
-    <div style='width:100%; height:520px; overflow-y:auto;'>
-        <table border="1" cellspacing='0' align="center">
-            <thead>
-            <tr>
-                <th>序号</th>
-                <th>编号</th>
-                <th>姓名</th>
-                <th>提交时间</th>
-                <th>查看详情</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for='(item,index) in submits'>
-                <td align="center">{{index+1}}</td>
-                <td align="center">{{item.number}}</td>
-                <td align="center">{{item.name}}</td>
-                <td align="center">{{item.commitTime}}</td>
-                <td align="center"><a style="color:green;cursor:pointer;" @click.prevent="go(item.recordId)">查看详情</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div>
+        <div class="top">
+            <input type="button" value="查看详情" style="width: 150px;height: 50px;" @click="searchRecords()">
+        </div>
+        <div style='width:100%; height:400px; overflow-y:auto;'>
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>选择</th>
+                    <th>编号</th>
+                    <th>姓名</th>
+                    <th>提交时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for='(item,index) in submits'>
+                    <td align="center">{{index+1}}</td>
+                    <td align="center"><input type="checkbox" :value="item.recordId" @click="checks($event)" ></td>
+                    <td align="center">{{item.number}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.commitTime}}</td>
+                    <!--                    <td align="center"><a style="color:green;cursor:pointer;" @click.prevent="go(item.recordId)">查看详情</a>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</template>
+<!-- 文档上传页面 -->
+<template id="fileUpload">
+    <div class="fileUpload">
+        一级目录
+        <select v-model="writeCategory" @change="searchSecond()">
+            <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+        </select>
+        <br>
+        二级目录
+        <select v-model="secondWriteCategory">
+            <option v-for="item in secondCategory" :value="item.secondCategoryId">{{item.secondCategoryName}}</option>
+        </select>
+        <br>
+        <br>
+        <form action="">
+            <input type="file" name='myfiles' @change="upload($event)">
+            <br>
+            录入时间
+            <input type="date" v-model="date" style="margin-top: 100px;">
+            <br>
+            <input type="submit" value='上传' v-show="buttonFlag" @click.prevent='submit($event)'>
+            <input class="buttonTwo" type="submit" value="上传中..." v-show="!buttonFlag" disabled>
+        </form>
     </div>
 </template>
-<template id='userManage'>http://60.205.187.142
+<!-- 文档查看页面 -->
+<template id="fileWatch">
+    <div class="fileWatch">
+        <div class="fileLeft">
+            一级目录
+            <select v-model="writeCategory" @change="searchSecond()">
+                <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+            </select>
+            <br>
+            二级目录
+            <select v-model="secondWriteCategory">
+                <option v-for="item in secondCategory" :value="item.secondCategoryId">{{item.secondCategoryName}}</option>
+            </select>
+            <br>
+            <input type="submit" value="查看" @click.prevent="seeDoc()">
+        </div>
+        <div class="fileRight">
+            文档列表
+            <div style='width:100%; height:400px; overflow-y:auto;'>
+                <table border="1" cellspacing='0' align="center">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>名称</th>
+                        <th>录入时间</th>
+                        <th>编辑</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for='(item,index) in doc'>
+                        <td align="center">{{index+1}}</td>
+                        <td align="center">
+                            {{item.docOriginName}}
+                        </td>
+                        <td align="center">
+                            {{item.happenTime}}
+                        </td>
+                        <td>
+                            <a style="color: green;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
+                            <a style="color: red;" @click.prevent="deleteDoc(item.docId)">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</template>
+<!--积分管理页面-->
+<template id="jifenManage">
     <div>
-
+        <div class="top">
+            <h2 style="font-weight: 400;">积分管理</h2>
+        </div>
+        <div style="margin-left: 100px;" class="jifen">
+            <div v-show="flag">
+                用户: <input type="text" v-model="name">
+            </div>
+            <div v-show="!flag">
+                用户名:
+                <select  v-model="id" @change="change(id)">
+                    <option v-for="item in level" :value="item.userId">{{item.name}}</option>
+                </select>
+            </div>
+            <br>
+            原因: <select type="text" v-model="reason">
+            <option v-for="item in reasons" :value="item.name">{{item.name}}</option>
+        </select>
+            <br>
+            <br>
+            积分: <input type="text" v-model="mark">
+            <br>
+            <br>
+            <input type="submit" value="提交" @click.prevent="send" style="background-color: green">
+        </div>
+    </div>
+</template>
+<!--积分观看页面-->
+<template id="jifenWatch">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
+        </div>
+        <div class="userMessage" style="height: 400px;overflow-y: auto">
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>原因</th>
+                    <th>积分</th>
+                    <th>编辑</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in myMsg">
+                    <td align="center">0(自己)</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.reason}}<br></td>
+                    <td align="center">{{item.mark}}</td>
+                    <td align="center" style="color: red;">
+                        不可编辑自己
+                    </td>
+                </tr>
+                <tr v-for="(item,index) in search()">
+                    <td align="center">{{index+1}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.reason}}<br></td>
+                    <td align="center">{{item.mark}}</td>
+                    <td align="center">
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+<!--总积分-->
+<template id="zongjiFen">
+    <div>
+        <div class="top">
+            <h2 style="font-weight: 400;">总积分查看</h2>
+            输入名字：<input type="text" v-model="sname">
+        </div>
+        <div class="userMessage" style="height: 400px;overflow-y: auto">
+            <table border="1" cellspacing='0' align="center">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>总积分</th>
+                    <!--                    <th>编辑</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr >
+                    <td align="center">0(自己)</td>
+                    <td align="center">{{myMsg.name}}</td>
+                    <td align="center">{{myMsg.mark}}</td>
+                    <!-- <td align="center" style="color: red;">
+                         不可编辑自己
+                     </td>-->
+                </tr>
+                <tr v-for="(item,index) in search()">
+                    <td align="center">{{index+1}}</td>
+                    <td align="center">{{item.name}}</td>
+                    <td align="center">{{item.mark}}</td>
+                    <!--<td align="center">
+                        <a @click.prevent="del(item.id)" style="color: red;">删除</a>
+                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 <script src='js/userIndex.js'></script>

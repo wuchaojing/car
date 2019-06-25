@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>五菱</title>
     <link rel="stylesheet" href="css/multiplex.css">
     <link rel="stylesheet" href="css/detail.css">
     <link rel="stylesheet" href="css/pageView.css">
@@ -204,47 +204,75 @@
 </template>
 <template id="zong">
     <div class="zong right-main">
-        <input type="button" class="toggle" value="默认层级问题，请切换" @click="flag=!flag">
+        输入年<input type="text" placeholder="例如 2019" v-model="year">
+        输入月<input type="text" placeholder="例如 3" v-model="month">
+        <input type="button" value="点击搜索" @click="searchZong()" style="height: 50px;background-color: green">
+        <input type="button" class="toggle" value="换一批" @click="flag=!flag" style="background-color: green;">
         <div class="cengji" v-if="flag">
             <div class="cengjiAll" style="overflow:auto;">
-                各层级审计总数
+                车间-审计级别-数量
                 <br>
                 <br>
-                <br>
-                <div class="one"><span>车间</span><span>级别</span><span>数量</span></div>
+                <div class="one"><span>车间</span><span>审计级别</span><span>数量</span></div>
                 <div v-for="item in hierarchy">
                     <span>{{item.responsible_area}}</span><span>{{item.audit_hierarchy}}</span><span>{{item.number}}</span>
                 </div>
             </div>
             <div class="cengjiLv" style="overflow:auto;">
-                各层级审计完成率
-                <br>
+                车间-完成率
                 <br>
                 <br>
                 <div class="one"><span>车间</span><span>完成率</span></div>
                 <div v-for="item in hierarchyCompleteRatio"><span>{{item.responsible_area}}</span><span>{{item.complete_ratio}}</span>
                 </div>
             </div>
-        </div>
-
-        <div class="wenti" v-else>
             <div class="cengjiAll" style="overflow:auto;">
-                问题类型统计
+                车间-等级-数量
                 <br>
                 <br>
-                <br>
-                <div class="one"><span>问题类型</span><span>级别</span><span>数量</span></div>
+                <div class="one"><span>车间</span><span>等级</span><span>数量</span></div>
                 <div v-for="item in problemType">
                     <span>{{item.problem_classification}}</span><span>{{item.rank}}</span><span>{{item.number}}</span>
                 </div>
             </div>
             <div class="cengjiLv" style="overflow:auto;">
-                公司级统计
+                车间-数量
                 <br>
                 <br>
-                <br>
-                <div class="one"><span>问题类型</span><span>数量</span></div>
+                <div class="one"><span>车间</span><span>数量</span></div>
                 <div v-for="item in companyAudit"><span>{{item.state_judgement}}</span><span>{{item.number}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="wenti" v-else>
+            <div class="cengjiAll" style="overflow:auto;">
+                公司级：车间-等级-数量
+                <br>
+                <br>
+                <br>
+                <div class="one"><span>问题类型</span><span>等级</span><span>数量</span></div>
+                <div v-for="item in companyAuditNew">
+                    <span>{{item.responsible_area}}</span><span>{{item.rank}}</span><span>{{item.number}}</span>
+                </div>
+            </div>
+            <div class="cengjiLv" style="overflow:auto;">
+                问题类型-完成率
+                <br>
+                <br>
+                <br>
+                <div class="one"><span>问题类型</span><span>完成率</span></div>
+                <div v-for="item in companyProblemType"><span>{{item.problem_classification}}</span><span>{{item.complete_ratio}}</span>
+                </div>
+            </div>
+            <div class="cengjiAll" style="overflow:auto;">
+                全部：车间-等级-数量
+                <br>
+                <br>
+                <br>
+                <div class="one"><span>问题类型</span><span>等级</span><span>数量</span></div>
+                <div v-for="item in audit">
+                    <span>{{item.responsible_area}}</span><span>{{item.rank}}</span><span>{{item.number}}</span>
                 </div>
             </div>
         </div>

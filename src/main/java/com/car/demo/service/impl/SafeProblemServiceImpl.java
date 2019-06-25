@@ -4,10 +4,7 @@ import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.service.SafeProblemService;
-import com.car.demo.util.CalendarUtil;
-import com.car.demo.util.ConstantUtil;
-import com.car.demo.util.ExcelImageAndWords;
-import com.car.demo.util.MD5Util;
+import com.car.demo.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,13 +85,7 @@ public class SafeProblemServiceImpl implements SafeProblemService {
 
     @Override
     public ResultInfo audit() {
-//        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy();
-//
-//        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio();
-//
-//        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType();
-//
-//        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit();
+
         SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
         //获取当前月第一天：
         Date first = CalendarUtil.getFirstDayofThisMonth();
@@ -102,17 +93,24 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         Date end = CalendarUtil.getLastDayofThisMonth();
         safeProblemForSearch.setStartTime(first);
         safeProblemForSearch.setEndTime(end);
-        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy(safeProblemForSearch);
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio(safeProblemForSearch);
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType(safeProblemForSearch);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit(safeProblemForSearch);
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+        List<Map<String, Object>> companyAuditNew = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
         //AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
-        AuditDataNew auditData = new AuditDataNew(companyAudit, audit, companyProblemType);
-        return new ResultInfo(1, auditData);
+        AuditDataNew auditDataNew = new AuditDataNew(companyAuditNew, audit, companyProblemType);
+        AuditTotal auditTotal = new AuditTotal(auditData, auditDataNew);
+        return new ResultInfo(1, auditTotal);
 
     }
 
     @Override
     public ResultInfo audit(Integer year, Integer month) {
+
         SafeProblemForSearch safeProblemForSearch = new SafeProblemForSearch();//为了日期
         //获取指定月第一天：
         Date first = CalendarUtil.getFisrtDayOfMonth(year, month);
@@ -120,14 +118,26 @@ public class SafeProblemServiceImpl implements SafeProblemService {
         Date end = CalendarUtil.getLastDayOfMonth(year, month);
         safeProblemForSearch.setStartTime(first);
         safeProblemForSearch.setEndTime(end);
-        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
+        List<Map<String, Object>> hierarchy = safeProblemMapper.searchHierarchy(safeProblemForSearch);
+        List<Map<String, Object>> hierarchyCompleteRatio = safeProblemMapper.searchFloorCompleteRatio(safeProblemForSearch);
+        List<Map<String, Object>> problemType = safeProblemMapper.searchProblemType(safeProblemForSearch);
+        List<Map<String, Object>> companyAudit = safeProblemMapper.searchCompanyAudit(safeProblemForSearch);
+        AuditData auditData = new AuditData(hierarchy, hierarchyCompleteRatio, problemType, companyAudit);
+        List<Map<String, Object>> companyAuditNew = safeProblemMapper.searchCompanyAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> audit = safeProblemMapper.searchAuditByMonth(safeProblemForSearch);
         List<Map<String, Object>> companyProblemType = safeProblemMapper.searchCompanyProblemTypeByMonth(safeProblemForSearch);
-        AuditDataNew auditData = new AuditDataNew(companyAudit, audit, companyProblemType);
-        return new ResultInfo(1, auditData);
+        AuditDataNew auditDataNew = new AuditDataNew(companyAuditNew, audit, companyProblemType);
+        AuditTotal auditTotal = new AuditTotal(auditData, auditDataNew);
+        return new ResultInfo(1, auditTotal);
     }
 
     public ResultInfo update(SafeProblem safeProblem) {
+        //判断是否是完成，或者 n/m (n==m)
+        if (Others.isCompletion(safeProblem.getCompletionStatus())) {
+            safeProblem.setIsCompletion(1);
+        } else {
+            safeProblem.setIsCompletion(0);
+        }
         safeProblemMapper.update(safeProblem);
         return new ResultInfo(1);
     }

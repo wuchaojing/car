@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface DocumentMapper {
 
-    @Insert("insert into document(doc_id,doc_new_name,doc_origin_name,second_category_id,user_id,create_time) values(" +
-            "#{docId},#{docNewName},#{docOriginName},#{secondCategoryId},#{userId},#{createTime})")
+    @Insert("insert into document(doc_id,doc_new_name,doc_origin_name,happen_time,second_category_id,user_id,create_time) values(" +
+            "#{docId},#{docNewName},#{docOriginName},#{happenTime},#{secondCategoryId},#{userId},#{createTime})")
     void insertDocument(DocumentInfo documentInfo);
 
     @Insert("insert into category(category_id,category_name,create_time) values(" +
@@ -43,7 +43,7 @@ public interface DocumentMapper {
     @Select("select second_category_id as secondCategoryId,second_category_name as secondCategoryName from second_category where category_id = #{categoryId}")
     List<SecondCategoryInfo> getSecondCategory(@Param("categoryId") String categoryId);
 
-    @Select("<script> select doc_id as docId,doc_new_name as docNewName,doc_origin_name as docOriginName from document " +
+    @Select("<script> select doc_id as docId,doc_new_name as docNewName,doc_origin_name as docOriginName,happen_time as happenTime from document " +
             "<where> second_category_id = #{secondCategoryId} " +
             "<if test='userId != null'>" +
             "and user_id = #{userId}" +
@@ -54,4 +54,10 @@ public interface DocumentMapper {
 
     @Delete("delete from document where doc_id = #{docId}")
     void delDoc(@Param("docId") String docId);
+
+    @Update("update category set category_name = #{categoryName} where category_id = #{categoryId}")
+    void updateCategory(@Param("categoryId") String categoryId, @Param("categoryName") String categoryName);
+
+    @Update("update second_category set second_category_name = #{secondCategoryName} where second_category_id = #{secondCategoryId}")
+    void updateSecondCategory(@Param("secondCategoryId") String secondCategoryId, @Param("secondCategoryName") String secondCategoryName);
 }

@@ -39,7 +39,11 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://60.205.187.142:9090/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
         }
     },
     components: {
@@ -53,7 +57,8 @@ var vm = new Vue({
                     writeCategory:'',
                     secondWriteCategory:'',
                     doc:'',
-                    file:''
+                    file:'',
+                    date:''
                 }
             },
             methods:{
@@ -62,10 +67,20 @@ var vm = new Vue({
                 },
                 submit: function (event) {
                     var me = this
-                    me.buttonFlag = false
+
+                    var date = this.date.split('/').join('-')
                     var formdata = new FormData();
                     formdata.append('file', me.file);
                     formdata.append('secondCategoryId', me.secondWriteCategory);
+                    formdata.append('happenTime',date)
+                    console.log(me.file)
+                    console.log(me.secondWriteCategory)
+                    console.log(me.date)
+                    if(!me.file||!me.secondWriteCategory||!me.date){
+                        alert('必须完整输入才可以！')
+                        return false
+                    }
+                    me.buttonFlag = false
                     var config = {
                         headers: {
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
@@ -213,15 +228,39 @@ var vm = new Vue({
                     number: '',
                     name:'',
                     password:'',
-                    password2:''
+                    password2:'',
+                    level:'',
+                    detail:''
                 }
             },
             methods: {
+                del:function(id,index){
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var me = this
+                    axios.post('http://60.205.187.142:9090/user/admin_delete?userId=' + id)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.msg.splice(index, 1)
+                            }
+
+                        })
+                },
                 feiUser: function() {
                     this.userAddflag = !this.userAddflag
                 },
                 sendMsg: function () {
                     var id = ''
+                    var user = JSON.parse(sessionStorage.getItem('user'))
                     if (this.password != this.password2) {
                         alert('两次密码不一致')
                         return;
@@ -236,7 +275,8 @@ var vm = new Vue({
                         alert('没有此上级!')
                         return;
                     }
-                    var data = {name: this.name, password: this.password, number: this.number, superiorId: id}
+                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail,superiorId:id}
+
                     axios({
                         method: 'post',
                         url: 'http://60.205.187.142:9090/user/register',
@@ -261,50 +301,62 @@ var vm = new Vue({
 
             },
             created: function () {
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var level = user.level
+                if(user.level=='车间长') {
+                    this.level = '工段长'
+                }else if(user.level=='工段长') {
+                    this.level = '班组长'
+                }
                 var me = this
                 axios.get('http://60.205.187.142:9090/user/user_search_part')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.data
                         if (code != 1) {
-                            alert('请先登录！')
-                            location.href = 'index.html'
-                            return;
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
                         } else {
-                            axios.get('http://60.205.187.142:9090/user/register_superior')
-                                .then(function (response) {
-                                    var code = response.data.code
-                                    var position = response.data.data
-                                    if (code != 1) {
-                                        alert(msg)
-                                    } else {
-                                        var flag
-                                        me.position = position
-                                        for (var i = 0; i < msg.length; i++) {
-                                            flag = false
-                                            for (var j = 0; j < me.position.length; j++) {
-                                                if (flag) {
-                                                    continue
-                                                }
-                                                if (msg[i].superiorId == me.position[j].userId) {
-                                                    var msgAndNumber = me.position[j].name + '(' + me.position[j].number + ')'
-                                                    msg[i].msgAndNumber = msgAndNumber
-                                                    flag = true
-                                                }
-                                            }
-                                        }
-                                        for (var i = 0; i < msg.length; i++) {
-                                            if (!msg[i].msgAndNumber) {
-                                                msg[i].msgAndNumber = '无'
-                                            }
-                                        }
-                                        me.msg = msg
-                                    }
-
-                                })
+                            me.msg = msg
                         }
 
                     });
+                /*axios.get('http://60.205.187.142:9090/user/register_superior')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var position = response.data.data
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var flag
+                            me.position = position
+                            for (var i = 0; i < msg.length; i++) {
+                                flag = false
+                                for (var j = 0; j < me.position.length; j++) {
+                                    if (flag) {
+                                        continue
+                                    }
+                                    if (msg[i].superiorId == me.position[j].userId) {
+                                        var msgAndNumber = me.position[j].name + '(' + me.position[j].number + ')'
+                                        msg[i].msgAndNumber = msgAndNumber
+                                        flag = true
+                                    }
+                                }
+                            }
+                            for (var i = 0; i < msg.length; i++) {
+                                if (!msg[i].msgAndNumber) {
+                                    msg[i].msgAndNumber = '无'
+                                }
+                            }
+                            me.msg = msg
+                        }
+
+                    })*/
             }
         },
         upload: {
@@ -412,7 +464,255 @@ var vm = new Vue({
                 }*/
             },
             props: ['submits']
-        }
+        },
+        jifenManage:{
+            template:'#jifenManage',
+            data: function(){
+                return {
+                    id:'',
+                    name: '',
+                    mark:'',
+                    reason:'',
+                    reasons:'',
+                    level: '',
+                    flag: true
+                }
+            },
+            methods:{
+                change(id){
+                    for(var i=0;i<this.level.length;i++){
+                        if(id==this.level[i].userId){
+                            this.name = this.level[i].name
+                            break;
+                        }
+                    }
+                },
+                send:function(){
+                    var user = JSON.parse(sessionStorage.getItem('user'))
+                    if(isNaN(this.mark)){
+                        alert('积分必须是数字形式！例如+5，-3，5')
+                        return
+                    }
+                    var data = {
+                        name: this.name,
+                        reason: this.reason,
+                        mark: this.mark,
+                        userId: this.id,
+                        markId: user.userId,
+                        level: user.level
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://60.205.187.142:9090/user/mark',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'userIndexManage.html'
+                        }
+                    })
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var me = this
+                if(user.level!='班组长') {
+                    me.flag = false
+                    axios.get('http://60.205.187.142:9090/user/direct_sons?userId='+user.userId)
+                        .then(function(response){
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                var data = response.data.data
+                                me.level = data
+                            }
+                        })
+                    }
+                    axios.get('http://60.205.187.142:9090/admin/reason')
+                        .then(function(response){
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                alert(msg)
+                                if (msg == 'need login') {
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                var data = response.data.data
+                                me.reasons = data
+                            }
+                        })
+                }
+
+        },
+        jifenWatch:{
+            template:'#jifenWatch',
+            data:function(){
+                return {
+                    msg:'',
+                    myMsg:[],
+                    sname:''
+                }
+            },
+            methods:{
+                del: function(id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var data = {
+                        markId: id
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://60.205.187.142:9090/user/mark_delete',
+                        data:JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'userIndexManage.html'
+                        }
+                    })
+                },
+                search:function(){
+                    var msg = []
+                    for(var i=0;i<this.msg.length;i++){
+                        console.log(this.msg[i])
+                        if(this.msg[i].name.indexOf(this.sname)!==-1){
+                            msg.push(this.msg[i])
+                        }
+                    }
+                    return msg
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var id = user.userId
+                var me = this
+                axios.get('http://60.205.187.142:9090/user/self_and_sons_mark?userId='+id)
+                    .then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.msg = data
+                            for(var i=0;i<me.msg.length;i++){
+                                if(me.msg[i].userId==id)
+                                {
+                                    me.myMsg.push(me.msg[i])
+                                    me.msg.splice(i,1)
+                                    i--;
+                                }
+                            }
+                        }
+                    })
+            }
+        },
+        zongjiFen:{
+            template:'#zongjiFen',
+            data:function(){
+                return {
+                    msg:'',
+                    myMsg:'',
+                    sname:''
+                }
+            },
+            methods:{
+                del: function(id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    var data = {
+                        markId: id
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://60.205.187.142:9090/user/mark_delete',
+                        data:JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = 'userIndexManage.html'
+                        }
+                    })
+                },
+                search:function(){
+                    var msg = []
+                    for(var i=0;i<this.msg.length;i++){
+                        if(this.msg[i].name.indexOf(this.sname)!==-1){
+                            msg.push(this.msg[i])
+                        }
+                    }
+                    return msg
+                }
+            },
+            created:function(){
+                var user = JSON.parse(sessionStorage.getItem('user'))
+                var id = user.userId
+                var me = this
+                axios.get('http://60.205.187.142:9090/user/self_and_sons_mark_sum?userId='+id)
+                    .then(function(response){
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.msg = data
+                            for(var i=0;i<me.msg.length;i++){
+                                if(me.msg[i].userId==id)
+                                {
+                                    me.myMsg = me.msg[i]
+                                    console.log(me.myMsg)
+                                    me.msg.splice(i,1)
+                                    break;
+                                }
+                            }
+                        }
+                    })
+            }
+        },
     },
     created: function () {
         var me = this
@@ -430,5 +730,6 @@ var vm = new Vue({
                     me.submits = data
                 }
             })
+
     }
 });

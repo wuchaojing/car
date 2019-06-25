@@ -65,7 +65,12 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            location.href = 'index.html'
+            axios.get('http://60.205.187.142:9090/user/logout')
+                .then(function(response){
+                    var code = response.data.code
+                    location.href = 'index.html'
+                })
+
         },
     },
     components: {
@@ -126,7 +131,7 @@ var vm = new Vue({
                                     location.href = 'index.html'
                                 }
                             } else {
-                                location.href = 'userIndexManage.html'
+                                location.href = 'managerIndex.html'
                             }
                         })
                 }
@@ -198,8 +203,8 @@ var vm = new Vue({
                 },
                 updateA:function(flag,name,id) {
                     this.msgFlag = flag
-                    this.content = name;
                     this.id = id;
+                    this.content = name
                     this.updateFlag1 = !this.updateFlag1
                 },
                 addA: function(flag){
@@ -243,8 +248,9 @@ var vm = new Vue({
                                 var code = response.data.code
                                 var msg = response.data.msg
                                 if (code != 1) {
+                                    alert(msg)
                                     if (msg == 'need login') {
-                                        alert(msg)
+                                        //alert(msg)
 
                                         location.href = 'index.html'
                                     }
@@ -255,26 +261,25 @@ var vm = new Vue({
                             })
                     }
                 },
-               /* sendUpdate: function() {
+                sendUpdate: function() {
                     var a = window.confirm('确认修改?')
                     if (!a) {
                         return;
                     }
                     if(this.msgFlag=='一级目录'){
                         var data = {
-                            stateJudgementName: this.content,
-                            stateJudgementId: this.id
+                            categoryId: this.id,
+                            categoryName: this.content
                         }
-                        ajaxPost("http://60.205.187.142:9090/admin/state_judgement_update",JSON.stringify(data))
-                    }else if(this.msgFlag == '等级') {
+                        ajaxPost("http://60.205.187.142:9090/doc/update_category",JSON.stringify(data))
+                    }else if(this.msgFlag == '二级目录') {
                         var data = {
-                            rankName: this.content,
-                            rankId: this.id
+                            secondCategoryId: this.id,
+                            secondCategoryName: this.content
                         }
-                        ajaxPost('http://60.205.187.142:9090/admin/rank_update',JSON.stringify(data))
+                        ajaxPost('http://60.205.187.142:9090/doc/update_second_category',JSON.stringify(data))
                     }
-
-                },*/
+                },
                 sendAdd:function() {
                     sessionStorage.setItem('comName','wendang')
                     var a = window.confirm('确认添加?')
@@ -330,6 +335,8 @@ var vm = new Vue({
                     problemClassification:'',
                     auditHierarchy:'',
                     responsibleArea: '',
+                    subdivisionType:'',
+                    writeProblem:''
                 }
             },
             methods: {
@@ -386,8 +393,9 @@ var vm = new Vue({
                         ajaxPost('http://60.205.187.142:9090/admin/problem_classification_delete',JSON.stringify(data))
                     }else if(flag == '细分类型') {
                         var data = {
-                            stateJudgementId: id
+                            subdivisionTypeId: id
                         }
+                        ajaxPost('http://60.205.187.142:9090/admin/subdivision_type_delete',JSON.stringify(data))
                     }
 
                 },
@@ -428,7 +436,11 @@ var vm = new Vue({
                         }
                         ajaxPost('http://60.205.187.142:9090/admin/problem_classification_update',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
-
+                        var data = {
+                            subdivisionTypeName: this.content,
+                            subdivisionTypeId: this.id
+                        }
+                        ajaxPost('http://60.205.187.142:9090/admin/subdivision_type_update',JSON.stringify(data))
                     }
 
 
@@ -439,7 +451,6 @@ var vm = new Vue({
                     if (!a) {
                         return;
                     }
-
                     if(this.msgFlag=='状态判断'){
                         var data = {
                             stateJudgementName: this.addContent,
@@ -466,8 +477,33 @@ var vm = new Vue({
                         }
                         ajaxPost('http://60.205.187.142:9090/admin/problem_classification_insert',JSON.stringify(data))
                     }else if(this.msgFlag == '细分类型') {
-
+                        if(this.writeProblem==''){
+                            alert('需要选择一个问题分类！')
+                            return false
+                        }
+                        var data = {
+                            problemClassificationId: this.writeProblem,
+                            subdivisionTypeName: this.addContent
+                        }
+                        ajaxPost('http://60.205.187.142:9090/admin/subdivision_type_insert',JSON.stringify(data))
                     }
+                },
+                searchSecond:function() {
+                    var me = this
+                    console.log(me.writeProblem)
+                    axios.get('http://60.205.187.142:9090/admin/subdivision_type?problemClassificationId=' + me.writeProblem)
+                        .then(function (response) {
+                            var code = response.data.code
+                            var msg = response.data.msg
+                            if (code != 1) {
+                                if (msg == 'need login') {
+                                    alert(msg)
+                                    location.href = 'index.html'
+                                }
+                            } else {
+                                me.subdivisionType = response.data.data
+                            }
+                        })
                 }
             },
             created: function() {
@@ -549,25 +585,78 @@ var vm = new Vue({
                     highName:'',
                     sname:'',
                     snumber:'',
+                    name:'',
+                    number:'',
+                    password:'',
+                    password2:'',
+                    higherName: '',
+                    level:'',
+                    detail:'',
+                    flag: false,
+                    shang:'',
+                    updateFlag:false,
+                    shangJi:'',
+                    gongduan:'',
+                    chejian:'',
+                    banzu:'',
+                    userId:''
                 }
             },
             methods: {
-                feiUser: function() {
-                    this.userAddflag = !this.userAddflag
+                sendUpdate:function(){
+                    var data = {
+                        userId: this.userId,
+                        detail: this.detail,
+                        superiorId: this.shangJi
+                    }
+                    axios({
+                        method:'post',
+                        url:'http://60.205.187.142:9090/user/admin_update',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if (msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            location.href = "managerIndex.html"
+                        }
+
+                    })
                 },
-                search: function () {
-                    var position = []
-                    var msg2 = {name: '无'}
-                    position.push(msg2)
-                    for (var i = 0; i < this.position.length; i++) {
-                        if (this.position[i].name.indexOf(name) !== -1) {
-                            var msg = {name: ''}
-                            // console.log(this.position[i].name)
-                            msg.name = this.position[i].name + '(' + this.position[i].number + ')'
-                            position.push(msg)
+                updateX:function(){
+                    this.updateFlag = !this.updateFlag
+                },
+                updateShang:function(level,id){
+                    this.updateFlag = !this.updateFlag
+                    this.userId = id
+                    if(level=="班组长"){
+                        this.shang = this.banzu
+                    }else if(level=="工段长") {
+                        this.shang = this.gongduan
+                    }else if(level=="车间长"){
+                        this.shang = this.chejian
+                    }
+                    if(this.shang!=''){
+                        for(var i=0;i<this.shang.length;i++){
+                            if(this.shang[i].name==='admin'){
+                                this.shang.splice(i,1)
+                                i--;
+                            }else {
+                                this.shang[i].msgAndNumber = this.shang[i].name + '(' + this.shang[i].number+ ')'
+                            }
                         }
                     }
-                    return position
+
+                },
+                feiUser: function() {
+                    this.userAddflag = !this.userAddflag
                 },
                 searchGo: function () {
                     var msg = []
@@ -578,7 +667,6 @@ var vm = new Vue({
                     }
                     return msg
                 },
-
                 //删除操作
                 del: function (id, index) {
                     var a = window.confirm('确认删除?')
@@ -601,6 +689,45 @@ var vm = new Vue({
 
                         })
                     sessionStorage.setItem('comName','manager')
+                },
+                //注册操作
+                sendRegister(){
+                    var id = ''
+                    if (this.password != this.password2) {
+                        alert('两次密码不一致')
+                        return;
+                    } else if (this.number == 'admin' || this.number == 'audit') {
+                        alert('此编号不可注册!')
+                        return;
+                    }
+                    else {
+                        id = user.userId
+                    }
+                    if (id === undefined) {
+                        alert('没有此上级!')
+                        return;
+                    }
+                    var data = {name: this.name, password: this.password, number: this.number, level:this.level,detail:this.detail}
+                    axios({
+                        method: 'post',
+                        url: 'http://60.205.187.142:9090/user/register',
+                        data: JSON.stringify(data),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            alert('注册成功')
+                            location.href = 'managerIndex.html'
+                        }
+                    })
                 },
                 //更新操作
                 update: function (id, reviewState, msg) {
@@ -651,24 +778,23 @@ var vm = new Vue({
                                     location.href = 'index.html'
                                 }
                             }
-                            // else {
-                            //     //直接删除这一行就行
-                            //     alert('修改成功！')
-                            // }
                         })
 
                 }
             },
+            //找出上级来
             created: function () {
                 var me = this
                 axios.get('http://60.205.187.142:9090/user/admin_search_all')
                     .then(function (response) {
                         var code = response.data.code
+                        var data = response.data.msg
                         var msg = response.data.data
                         if (code != 1) {
-                            alert('请先登录！')
-                            location.href = 'index.html'
-                            return;
+                            alert(data)
+                            if(data=='need login'){
+                                location.href = 'index.html'
+                            }
                         } else {
                             axios.get('http://60.205.187.142:9090/user/register_superior')
                                 .then(function (response) {
@@ -699,8 +825,139 @@ var vm = new Vue({
                                         }
                                         me.msg = msg
                                     }
-
                                 })
+                        }
+                    })
+                axios.get('http://60.205.187.142:9090/user/get_upper_class?level=工段长')
+                    .then(function (response) {
+                    var code = response.data.code
+                    var msg = response.data.msg
+                    if (code != 1) {
+                        alert(msg)
+                        if(msg == 'need login') {
+                            location.href = 'index.html'
+                        }
+                    } else {
+                        var data = response.data.data
+                        me.gongduan = data
+                    }
+                })
+                axios.get('http://60.205.187.142:9090/user/get_upper_class?level=车间长')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.chejian = data
+                        }
+                    })
+                axios.get('http://60.205.187.142:9090/user/get_upper_class?level=班组长')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            alert(msg)
+                            if(msg == 'need login') {
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            var data = response.data.data
+                            me.banzu = data
+                        }
+                    })
+            }
+        },
+        reason:{
+            template:'#reason',
+            data:function(){
+                return {
+                    showFlag: true,
+                    updateFlag1: false,
+                    AddFlag1: false,
+                    content:'',
+                    addContent:'',
+                    id:'',
+                    msgFlag:'',
+                    content:'',
+                    reasons:''
+                }
+            },
+            methods:{
+                updateA:function(flag,name,id) {
+                    this.msgFlag = flag
+                    this.id = id;
+                    this.content = name
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                addA: function(flag){
+                    this.msgFlag = flag
+                    if(this.AddFlag2==true)
+                        this.AddFlag2 = !this.AddFlag2
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                anniuUpdate:function(){
+                    this.updateFlag1 = !this.updateFlag1
+                },
+                anniuAdd:function(){
+                    this.AddFlag1 = !this.AddFlag1
+                },
+                deleteA: function(flag,id) {
+                    var a = window.confirm('确认删除?')
+                    if (!a) {
+                        return;
+                    }
+                    if(flag=='积分原因'){
+                        var data = {
+                            reasonId: id
+                        }
+                        ajaxPost('http://60.205.187.142:9090/admin/reason_delete',JSON.stringify(data))
+                    }
+
+                },
+                sendUpdate: function() {
+                    var a = window.confirm('确认修改?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='积分原因'){
+                        var data = {
+                            reasonId: this.id,
+                            reasonName: this.content
+                        }
+                        ajaxPost("http://60.205.187.142:9090/admin/reason_update",JSON.stringify(data))
+                    }
+                },
+                sendAdd:function() {
+                    var a = window.confirm('确认添加?')
+                    if (!a) {
+                        return;
+                    }
+                    if(this.msgFlag=='积分原因'){
+                        var data = {
+                            reasonName: this.addContent,
+                        }
+                        ajaxPost("http://60.205.187.142:9090/admin/reason_insert",JSON.stringify(data))
+                    }
+                }
+            },
+            created:function(){
+                var me = this
+                axios.get('http://60.205.187.142:9090/admin/reason')
+                    .then(function (response) {
+                        var code = response.data.code
+                        var msg = response.data.msg
+                        if (code != 1) {
+                            if (msg == 'need login') {
+                                alert(msg)
+                                location.href = 'index.html'
+                            }
+                        } else {
+                            me.reasons =  response.data.data
                         }
                     })
             }

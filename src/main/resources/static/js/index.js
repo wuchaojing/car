@@ -34,7 +34,9 @@ var vm = new Vue({
                                     location.href = 'managerIndex.html'
                                 else if (data.name == 'audit') {
                                     location.href = 'pageView.html'
-                                } else {
+                                } else if(data.level=='班组长'){
+                                    location.href = 'userIndex.html'
+                                }else {
                                     location.href = 'userIndexManage.html'
                                 }
                             }
