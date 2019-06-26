@@ -45,7 +45,7 @@
     <template id="wendang">
         <div class="right" ref="right">
             <div class="right-main" style="text-align: center;">
-                <input type="button" value="目录管理"  style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <input type="button" value="目录管理"  style="width: 150px;height: 50px;margin-top: 10px;background: #157FCC;">
                 <div style="position: absolute;top: 75px;z-index: 3;width: 100%;text-align: center">
                     请选择一级目录
                     <select v-model="writeCategory" style="width: 200px;" @change="searchSecond()">
@@ -123,7 +123,7 @@
     <template id="zuzhi">
         <div class="right" ref="right">
             <div class="right-main" style="text-align: center;">
-                <input type="button" value="换一批" @click="show()" style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <input type="button" value="换一批" @click="show()" style="width: 150px;height: 50px;margin-top: 10px;background: #157FCC;">
                 <div v-show="!showFlag" style="position: absolute;top: 75px;z-index: 3;width: 30%;right: 25px;">
                     请选择问题分类
                     <select v-model="writeProblem" style="width: 200px;" @change="searchSecond()">
@@ -440,7 +440,7 @@
     <template id="reason">
         <div class="right" ref="right">
             <div class="right-main" style="text-align: center;">
-                <input type="button" value="积分原因管理"  style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <input type="button" value="积分原因管理"  style="width: 150px;height: 50px;margin-top: 10px;background: #157FCC;">
                 <div v-show="showFlag" class="showGo">
                     <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
                         <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>

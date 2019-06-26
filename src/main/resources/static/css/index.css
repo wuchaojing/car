@@ -47,7 +47,7 @@ html,body {
   border-bottom: 1px solid #ccc;
 }
 .center a:hover {
-  background-color: green;
+  background-color: #157FCC;
 }
 .active {
   background-color: aqua;
@@ -81,7 +81,7 @@ html,body {
   color: #fff;
   line-height: 50px;
   text-align: center;
-  background-color: green;
+  background-color: #157FCC;
   cursor: pointer;
 }
 /* 登录按钮 */
