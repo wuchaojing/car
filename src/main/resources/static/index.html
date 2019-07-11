@@ -1,58 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <link rel="stylesheet" href="css/login.css">
-  <script src="lib/vue-2.4.0.js"></script>
-  <script src="lib/axios.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="lib/vue-2.4.0.js"></script>
+    <script src="lib/axios.js"></script>
 </head>
 <body>
-  <div class="main" id='app'>
+<div class="main" id='app'>
     <div class="formbox">
-      <div class="left"></div>
-      <div class="center">
-          <a href="#" @click.prevent='compName="login"'>登录</a>
-          <a href="#" @click.prevent='compName="register"'>注册</a>
-      </div>
+        <div class="left"></div>
+        <div class="center">
+            <a href="#" @click.prevent='compName="login"'>登录</a>
+<!--            <a href="#" @click.prevent='compName="register"'>注册</a>-->
+        </div>
         <!-- 组件占位 -->
         <transition mode='out-in'>
             <component :is="compName"></component>
         </transition>
-       
-      </div>
-  </div>
-  <!-- 登录组件 -->
-  <template id='login'>
-      <div class="right">
-          <div class="title">请登录</div>
-          <form action="#" method="get"  >
-              编号:&nbsp;&nbsp;<input type="text" placeholder="编号" name='username' v-model='username' autocomplete="off">
-              密码:&nbsp;&nbsp;<input type="password" placeholder="密码" name='password' v-model='password' autocomplete="off">
-              <input type="submit" class="login-submit" value='登录' @click.prevent='getMsg'>
-            </form>
-      </div>
-  </template>
-  <!-- 注册组件 -->
-  <template id="register">
-      <div class="right">
-          <div class="title">请注册</div>
-          <form action="#" method="post">
-              编号:&nbsp;&nbsp;<input type="text" placeholder="编号" name='number' autocomplete="off" @click='hide' v-model="number">
-              姓名:&nbsp;&nbsp;<input type="text" placeholder="姓名" name='name' autocomplete="off" @click='hide' v-model="name">
-              密码:&nbsp;&nbsp;<input type="password" placeholder="密码" name='password' autocomplete="off" @click='hide' v-model="password">
-              确认:&nbsp;&nbsp;<input type="password" placeholder="确认密码" name='password' autocomplete="off" @click='hide' v-model="password2">
-              上级:&nbsp;&nbsp;<input type="text" placeholder="上级" name='higher-name' autocomplete="off" v-model="higherName" @click='show' v-model="higherName">
-              
-              <div class="higher-namearea" v-show='flag'>
-                <div class="higher-content" v-for="item in search(higherName)" @click='showIn(item.name)'>{{item.name}}</div>    
-              </div>
-              <input type="submit" value='注册' @click.prevent="sendMsg">
-            </form>
-      </div>
-  </template>
-    <script src="js/index.js"></script>
+
+    </div>
+</div>
+<!-- 登录组件 -->
+<template id='login'>
+    <div class="right">
+        <div class="title">请登录</div>
+        <form action="#" method="get">
+            编号:&nbsp;&nbsp;<input type="text" placeholder="编号" name='username' v-model='username' autocomplete="off">
+            密码:&nbsp;&nbsp;<input type="password" placeholder="密码" name='password' v-model='password'
+                                  autocomplete="off">
+            <input type="submit" class="login-submit" value='登录' @click.prevent='getMsg'>
+        </form>
+    </div>
+</template>
+<!-- 注册组件 -->
+<template id="register">
+    <div class="right">
+        <div class="title">请注册</div>
+        <form action="#" method="post">
+            编号:&nbsp;&nbsp;<input type="text" placeholder="编号" name='number' autocomplete="off" @click='hide'
+                                  v-model="number">
+            姓名:&nbsp;&nbsp;<input type="text" placeholder="姓名" name='name' autocomplete="off" @click='hide'
+                                  v-model="name">
+            密码:&nbsp;&nbsp;<input type="password" placeholder="密码" name='password' autocomplete="off" @click='hide'
+                                  v-model="password">
+            确认:&nbsp;&nbsp;<input type="password" placeholder="确认密码" name='password' autocomplete="off" @click='hide'
+                                  v-model="password2">
+            上级:&nbsp;&nbsp;<input type="text" placeholder="上级" name='higher-name' autocomplete="off"
+                                  v-model="higherName" @click='show' v-model="higherName">
+
+            <div class="higher-namearea" v-show='flag'>
+                <div class="higher-content" v-for="item in search(higherName)" @click='showIn(item.name)'>
+                    {{item.name}}
+                </div>
+            </div>
+            <input type="submit" value='注册' @click.prevent="sendMsg">
+        </form>
+    </div>
+</template>
+<script src="js/index.js"></script>
 </body>
 </html>

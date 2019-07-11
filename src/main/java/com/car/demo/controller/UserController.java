@@ -1,5 +1,6 @@
 package com.car.demo.controller;
 
+import com.car.demo.entity.Integration;
 import com.car.demo.entity.ResultInfo;
 import com.car.demo.entity.User;
 import com.car.demo.service.UserService;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 
 @Controller
@@ -26,7 +28,7 @@ public class UserController {
 
     @PostMapping("register")
     @ResponseBody
-    public ResultInfo register(@RequestBody User user) {
+    public ResultInfo register(HttpSession session, @RequestBody User user) {
         if (StringUtils.isEmpty(user.getName())) {
             return new ResultInfo(0, "请输入用户名");
         }
@@ -39,16 +41,32 @@ public class UserController {
             return new ResultInfo(0, "请输入密码");
         }
 
-        if (StringUtils.isEmpty(user.getSuperiorId())) {
-            return new ResultInfo(0, "请选择上级");
+        if (StringUtils.isEmpty(user.getLevel())) {
+            return new ResultInfo(0, "请输入级别");
         }
 
+        if (StringUtils.isEmpty(user.getDetail())) {
+            return new ResultInfo(0, "请输入具体级别");
+        }
+        User userWillParent = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
+
+        if (userWillParent == null || StringUtils.isEmpty(userWillParent.getUserId())) {
+            return new ResultInfo(0, "用户未登录");
+        }
+
+        user.setSuperiorId(userWillParent.getUserId());
         return userService.register(user);
     }
 
     @GetMapping("login")
     @ResponseBody
     public ResultInfo login(HttpSession session, User user) {
+        User u = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
+        if (u != null) {//现在登录了一个，不允许再登一个
+            if (!u.getNumber().equals(user.getNumber())) {//解决关了当前页面但没关此浏览器全部页面导致同一用户不能重复登录的bug
+                return new ResultInfo(0, "不允许同时登录俩用户，请先退出之前用户");
+            }
+        }
         if (StringUtils.isEmpty(user.getNumber())) {
             return new ResultInfo(0, "请输入编号");
         }
@@ -58,6 +76,7 @@ public class UserController {
         ResultInfo resultInfo = userService.login(user);
         User dbUser = (User) resultInfo.getData();
         session.setAttribute(ConstantUtil.CLIENT_ID, dbUser);
+        session.setMaxInactiveInterval(30 * 60);//以秒为单位，即在没有活动30分钟后，session将失效
         return resultInfo;
     }
 
@@ -73,11 +92,12 @@ public class UserController {
         }
         if (StringUtils.isEmpty(oldPassword)) {
             return new ResultInfo(0, "旧密码不能为空");
-        }if (StringUtils.isEmpty(newPassword)) {
+        }
+        if (StringUtils.isEmpty(newPassword)) {
             return new ResultInfo(0, "新密码不能为空");
         }
-        user.setPassword(newPassword);
-        return userService.updatePassword(user,oldPassword);
+        user.setPassword(oldPassword);
+        return userService.updatePassword(user, newPassword);
     }
 
     @GetMapping("admin_search_all")
@@ -86,21 +106,30 @@ public class UserController {
         return userService.selectAll();
     }
 
-
-    @PostMapping("admin_update") // 只有管理员有这个权限
+    @GetMapping("user_search_part")
     @ResponseBody
-    public ResultInfo update(User user) {
+    public ResultInfo selectPart(HttpSession session) {//login了审核的用户后方可使用
+        User user = (User) session.getAttribute(ConstantUtil.CLIENT_ID);
+        if (user == null) {
+            return new ResultInfo(0, "用户未登录");
+        }
+        return userService.selectPart(user);
+    }
+
+    @PostMapping("admin_update") // 【修改具体分区】
+    @ResponseBody
+    public ResultInfo update(@RequestBody User user) {
 
         if (StringUtils.isEmpty(user.getUserId())) {
             return new ResultInfo(0, "请选择用户");
         }
 
-        if (StringUtils.isEmpty(user.getReviewState())) {
-            return new ResultInfo(0, "请选择审核状态");
+        if (StringUtils.isEmpty(user.getDetail())) {
+            return new ResultInfo(0, "请输入具体级别分区");
         }
 
-        if (StringUtils.isEmpty(user.getSuperiorId())) {//无上级也传值
-            return new ResultInfo(0, "请选择该用户上级");
+        if (StringUtils.isEmpty(user.getSuperiorId())) {
+            return new ResultInfo(0, "请输入该用户上级");
         }
 
         return userService.update(user);
@@ -128,4 +157,82 @@ public class UserController {
         return new ResultInfo(1);
     }
 
+    @GetMapping("get_upper_class")
+    @ResponseBody
+    public ResultInfo getUpperClass(User user) {
+        if (StringUtils.isEmpty(user.getLevel())) {
+            return new ResultInfo(0, "请选择一个用户");
+        }
+        return userService.getUpperClass(user.getLevel());
+    }
+
+    @PostMapping("mark")
+    @ResponseBody
+    public ResultInfo mark(@RequestBody Map<String, String> params) {//@RequestBody Integration integration, @RequestBody Map<String, String> params
+        String level = params.get("level");
+        //因为不支持同时类和params，重新组装一下
+        Integration integration = new Integration(params.get("name"), params.get("reason"), Double.parseDouble(params.get("mark")), params.get("userId"), params.get("markId"));
+        if (StringUtils.isEmpty(level)) {
+            return new ResultInfo(0, "输入当前用户级别");
+        }
+        if (StringUtils.isEmpty(integration.getName())) {
+            return new ResultInfo(0, "用户名不能为空");
+        }
+        if (StringUtils.isEmpty(integration.getReason())) {
+            return new ResultInfo(0, "原因不能为空");
+        }
+        if (StringUtils.isEmpty(integration.getMark())) {
+            return new ResultInfo(0, "打分不能为空");
+        }
+        if (StringUtils.isEmpty(integration.getMarkId())) {
+            return new ResultInfo(0, "评分人不能为空");
+        }
+        if (StringUtils.isEmpty(integration.getUserId())) {
+            if (!"班组长".equals(level)) {
+                return new ResultInfo(0, "请输入下拉框里面的人");
+            }
+            integration.setUserId("");//班组可以不用传那个人
+        }
+        if (StringUtils.isEmpty(integration.getName())) {
+            return new ResultInfo(0, "用户名不能为空");
+        }
+        return userService.mark(integration);
+    }
+
+    @GetMapping("direct_sons")
+    @ResponseBody
+    public ResultInfo getDirectSons(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return new ResultInfo(0, "请选择一个用户");
+        }
+        return userService.getDirectSons(userId);
+    }
+
+    @GetMapping("self_and_sons_mark")
+    @ResponseBody
+    public ResultInfo getSelfAndSonsMark(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return new ResultInfo(0, "请选择一个用户");
+        }
+        return userService.getSelfAndSonsMark(userId);
+    }
+
+    @GetMapping("self_and_sons_mark_sum")
+    @ResponseBody
+    public ResultInfo getSelfAndSonsMarkSum(String userId) {
+        if (StringUtils.isEmpty(userId)) {
+            return new ResultInfo(0, "请选择一个用户");
+        }
+        return userService.getSelfAndSonsMarkSum(userId);
+    }
+
+    @PostMapping("mark_delete")
+    @ResponseBody
+    public ResultInfo deleteMark(@RequestBody Map<String, String> params) {
+        String markId = params.get("markId");
+        if (StringUtils.isEmpty(markId)) {
+            return new ResultInfo(0, "至少选择一个");
+        }
+        return userService.deleteMark(markId);
+    }
 }

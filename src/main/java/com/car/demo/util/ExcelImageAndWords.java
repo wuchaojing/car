@@ -1,5 +1,6 @@
 package com.car.demo.util;
 
+import com.car.demo.qiniu.QiniuStorage;
 import com.car.demo.entity.SafeProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.POIXMLDocumentPart;
@@ -10,7 +11,6 @@ import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,12 +19,6 @@ import java.util.*;
 @Slf4j
 public class ExcelImageAndWords {
 
-    /**
-     * @param filePath
-     * @param nowSameDate a person's submitDate and recodeDate should be same
-     * @param recordId
-     * @return
-     */
     public static List<SafeProblem> getDataFromExcel(String filePath, Date nowSameDate, String recordId) {
         List<SafeProblem> safeProblems = new ArrayList<>();
         try {
@@ -39,15 +33,13 @@ public class ExcelImageAndWords {
             // get absolute stream
             fis = new FileInputStream(filePath);
             if (filePath.endsWith(".xls")) {
-                // 2003 excel endWith .xls
                 wookbook = new HSSFWorkbook(fis);// getWorkBook
             } else if (filePath.endsWith(".xlsx")) {
-                // 2007 excel excel endWith .xlsx
-                fis = new FileInputStream(filePath);
                 wookbook = new XSSFWorkbook(fis);// getWorkBook
             }
             Map<String, PictureData> maplist = null;
             Map<String, String> picMap = null;
+            assert wookbook != null;
             sheet = wookbook.getSheetAt(0);
             // 07 or 03 getPicture
             if (filePath.endsWith(".xls")) {
@@ -59,16 +51,8 @@ public class ExcelImageAndWords {
             if (null == picMap) {
                 return null;
             }
-            // getWorkSheet
-            // GetRowHead
             Row rowHead = sheet.getRow(0);
-            // getTotalColumnLen
-            int len = rowHead.getPhysicalNumberOfCells();
-            // getTotalRowLen
             int totalRowNum = sheet.getLastRowNum();
-            // get attribute
-            String temp = "";
-            // getAllStatus
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd");
             for (int i = 2; i <= totalRowNum; i++) {
                 // get row[i] object【the 0,1 is no use】
@@ -79,67 +63,130 @@ public class ExcelImageAndWords {
                 safeProblem.setProblemId(MD5Util.str2MD5(UUID.randomUUID().toString()));//encryption UUID is problemId
 
                 cell = row.getCell((short) 1);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setAuditArea(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setAuditArea("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setAuditArea(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 2);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProposeTime(simpleDateFormat.parse(cell.getStringCellValue()));
+                if(cell==null){
+                    safeProblem.setProposeTime(nowSameDate);
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProposeTime(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                }
 
                 cell = row.getCell((short) 3);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProblemDescription(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setProblemDescription("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProblemDescription(cell.getStringCellValue());
+                }
 
-                cell = row.getCell((short) 4);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+//                cell = row.getCell((short) 4);
+//                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setPhoto(picMap.get(i + "-" + 4));
 
                 cell = row.getCell((short) 5);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setStateJudgement(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setStateJudgement("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setStateJudgement(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 6);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setProblemClassification(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setProblemClassification("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setProblemClassification(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 7);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setSubdivisionType(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setSubdivisionType("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setSubdivisionType(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 8);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRank(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRank("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRank(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 9);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRectificationMeasures(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRectificationMeasures("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRectificationMeasures(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 10);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setResponsibleArea(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setResponsibleArea("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setResponsibleArea(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 11);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setPersonLiable(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setPersonLiable("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setPersonLiable(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 12);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionDeadline(simpleDateFormat.parse(cell.getStringCellValue()));
+                if(cell==null){
+                    safeProblem.setCompletionDeadline(nowSameDate);
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setCompletionDeadline(new java.sql.Date(simpleDateFormat.parse(cell.getStringCellValue()).getTime()));
+                }
 
                 cell = row.getCell((short) 13);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setAuditHierarchy(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setAuditHierarchy("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setAuditHierarchy(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 14);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setRepeatQuestion(cell.getStringCellValue());
+                if(cell==null){
+                    safeProblem.setRepeatQuestion("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setRepeatQuestion(cell.getStringCellValue());
+                }
 
                 cell = row.getCell((short) 15);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
-                safeProblem.setCompletionStatus(cell.getStringCellValue());
 
-                cell = row.getCell((short) 16);
-                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                if(cell==null){
+                    safeProblem.setCompletionStatus("");
+                }else{
+                    cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
+                    safeProblem.setCompletionStatus(cell.getStringCellValue());
+                    //判断是否是完成，或者 n/m (n==m)
+                    if(Others.isCompletion(cell.getStringCellValue())){
+                        safeProblem.setIsCompletion(1);
+                    }else{
+                        safeProblem.setIsCompletion(0);
+                    }
+                }
+
+//                cell = row.getCell((short) 16);
+//                cell.setCellType(Cell.CELL_TYPE_STRING);//set cellType String
                 safeProblem.setFinishPhoto(picMap.get(i + "-" + 16));
 
                 //the last content
@@ -150,13 +197,16 @@ public class ExcelImageAndWords {
 
             }
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: {}", filePath,e);
+            log.error("FileNotFoundException: {}", filePath, e);
             return null;
         } catch (IOException e) {
-            log.error("IOException: new HSSFWorkbook or XSSFWorkbook",e);
+            log.error("IOException: new HSSFWorkbook or XSSFWorkbook", e);
             return null;
         } catch (ParseException e) {
-            log.error("ParseException: parse excel Time yyyy-MM-dd error",e);
+            log.error("ParseException: parse excel Time yyyy-MM-dd error", e);
+            return null;
+        } catch (Exception e) {
+            log.error("file format error", e);
             return null;
         }
         return safeProblems;
@@ -205,34 +255,16 @@ public class ExcelImageAndWords {
     // write picture to disk
     private static Map<String, String> printImg(Map<String, PictureData> sheetList) {
         Map<String, String> picMap = new HashMap<>();
-        String picNameAndExt = null;
-        try {
-            // for (Map<String, PictureData> map : sheetList) {
-            for (String key : sheetList.keySet()) {
-                // get picture stream
-                PictureData pic = sheetList.get(key);
-                // get picture index
-                String picName = UUID.randomUUID().toString();//UUID to identity
-                // get picture type
-                String ext = pic.suggestFileExtension();
-                picNameAndExt = picName + "." + ext;
-                picMap.put(key, picNameAndExt);//i use  【"row-colume",picNameAndExt】 put in picMap
-                byte[] data = pic.getData();
-                // get picture save position
-                FileOutputStream out = null;
-                out = new FileOutputStream("D:\\photo_xingyi_excel2\\" + picNameAndExt);
-                log.info("picture save position：" + "D:/photo_xingyi_excel2/{}", picNameAndExt);
-                out.write(data);
-                out.close();
-            }
-            // }
-        } catch (FileNotFoundException e) {
-            log.error("fail to find file: {}", picNameAndExt, e);
-            return null;
-        } catch (IOException e) {
-            log.error("IOException: {} or {}", "out.write", "out.close", e);
-            return null;
+        for (String key : sheetList.keySet()) {
+            PictureData pic = sheetList.get(key);
+
+            byte[] data = pic.getData();
+
+            String picName = QiniuStorage.uploadImage(data);
+
+            picMap.put(key, picName);
         }
         return picMap;
     }
+
 }

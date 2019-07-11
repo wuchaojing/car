@@ -1,16 +1,15 @@
 package com.car.demo.controller;
 
 import com.car.demo.entity.ResultInfo;
+import com.car.demo.entity.SafeProblem;
 import com.car.demo.entity.SafeProblemForSearch;
 import com.car.demo.entity.User;
 import com.car.demo.service.SafeProblemService;
 import com.car.demo.util.ConstantUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -27,6 +26,12 @@ public class SafeProblemController {
     @ResponseBody
     public ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch) {//now only by id or null
         return safeProblemService.searchByCondition(safeProblemForSearch);
+    }
+
+    @GetMapping("search_this_month")
+    @ResponseBody
+    public ResultInfo searchByThisMonth() {
+        return safeProblemService.searchByThisMonth();
     }
 
     @PostMapping("upload")
@@ -50,5 +55,36 @@ public class SafeProblemController {
         return safeProblemService.audit();
     }
 
+    @GetMapping("audit_year_month")
+    @ResponseBody
+    public ResultInfo audit(Integer year, Integer month) {//前端传来需要保证是数字
+        if (year == null) {
+            return new ResultInfo(0, "请输入具体的年");
+        }
+        if (month == null) {
+            return new ResultInfo(0, "请输入具体的月");
+        }
+
+        if (month > 12 || month < 1) {
+            return new ResultInfo(0, "输入的月不符合规范");
+        }
+
+        return safeProblemService.audit(year, month);
+    }
+
+    @PostMapping("update")
+    @ResponseBody
+    public ResultInfo update(@RequestBody SafeProblem safeProblem) {
+        return safeProblemService.update(safeProblem);
+    }
+
+    @GetMapping("search_one")
+    @ResponseBody
+    public ResultInfo searchById(String problemId) {
+        if (StringUtils.isEmpty(problemId)) {
+            return new ResultInfo(0, "请选择一条要修改的报表");
+        }
+        return safeProblemService.searchById(problemId);
+    }
 
 }

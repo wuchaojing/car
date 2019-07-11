@@ -1,14 +1,10 @@
 package com.car.demo.service.impl;
 
-import com.car.demo.entity.Record;
-import com.car.demo.entity.ResultInfo;
-import com.car.demo.entity.SafeProblem;
-import com.car.demo.entity.User;
+import com.car.demo.entity.*;
 import com.car.demo.mapper.RecordMapper;
 import com.car.demo.mapper.SafeProblemMapper;
 import com.car.demo.mapper.UserMapper;
 import com.car.demo.service.RecordService;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -37,9 +33,13 @@ public class RecordServiceImpl implements RecordService {
         return new ResultInfo(1, totalRelativeRecords);
     }
 
-    @Override
-    public ResultInfo getSafeProblemByRecordId(Record record) {
-        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordId(record);
+    public ResultInfo getSafeProblemByRecordIds(String recordIds) {
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIds(recordIds);
+        return new ResultInfo(1, safeProblems);
+    }
+
+    public ResultInfo getSafeProblemByRecordIdsAndCondition(String recordIds, SafeProblemForSearch safeProblemForSearch) {
+        List<SafeProblem> safeProblems = safeProblemMapper.searchByRecordIdsAndCondition(recordIds, safeProblemForSearch);
         return new ResultInfo(1, safeProblems);
     }
 
@@ -54,5 +54,4 @@ public class RecordServiceImpl implements RecordService {
         }
         return list;
     }
-
 }

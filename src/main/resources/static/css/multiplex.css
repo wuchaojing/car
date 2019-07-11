@@ -1,0 +1,121 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html,body,#app {
+  width: 100%;
+  height: 100%;
+}
+.main-title {
+  position: absolute;
+  width: 100%;
+  height: 70px;
+  font-size: 30px;
+  line-height: 70px;
+  text-indent: 3em;
+  background-color: #222;
+  color: #A9D5C9;
+  z-index: 1;
+}
+.welcome {
+  position: absolute;
+  right: 90px;
+  top: 0;
+  width: 350px;
+  height: 70px;
+  line-height: 70px;
+  color: greenyellow;
+  z-index: 3;
+}
+.pass-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: 20px;
+  margin: auto;
+  width: 250px;
+  height: 300px;
+  background-color: #A9D5C9;
+  z-index: 3;
+  border: 7px solid #A9D5C9;
+  border-radius: 7px;
+}
+.pass-box input {
+  width: 220px;
+  height: 25px;
+  padding-left: 10px;
+  margin-left: 14px;
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 30px;
+}
+.pass-box input[type='button'] {
+  width: 230px;
+  margin-top: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.welcome span {
+  margin-right: 50px;
+}
+.welcome .repassword, .welcome .exit{
+  width: 60px;
+  height: 40px;
+  color: green;
+  cursor: pointer;
+  vertical-align: center;
+}
+.welcome .exit {
+  width: 45px;
+  color: red;
+}
+.flag {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 12px;
+    right: 10px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    /*background-color: #2E9789;*/
+}
+.left {
+  float: left;
+  width: 220px;
+  height: 100%;
+  background-color: #3A3C48;
+}
+.left-title {
+  width: 100%;
+  height: 70px;
+  font-size: 25px;
+  text-align: center;
+  color: #fff;
+  line-height: 70px;
+  background-color: #2E9789;
+}
+.left a {
+  display: block;
+  width: 220px;
+  height: 60px;
+  font-size: 18px;
+  text-align: center;
+  color: #B7B5B8;
+  line-height: 60px;
+  text-decoration: none;
+}
+.router-link-exact-active {
+  background-color: #282A32;
+}
+.right {
+  overflow: hidden;
+}
+.right-main {
+  position: relative;
+  margin-top: 70px;
+}
+
+

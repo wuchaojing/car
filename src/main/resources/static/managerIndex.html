@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/managerIndex.css">
+    <link rel="stylesheet" href="css/multiplex.css">
+    <script src="lib/vue-2.4.0.js"></script>
+    <script src="lib/axios.js"></script>
+</head>
+<body>
+<div class="main-title">
+    欢迎使用汽车安全问题审计软件
+</div>
+<div id="app">
+    <div class="welcome">
+        欢迎您, <span>{{userName}}</span>
+        <button class="repassword" @click="flag=!flag">修改密码</button>
+        <button class="exit" @click="exit">退出</button>
+    </div>
+    <div class="pass-box" v-show="flag">
+        之前密码:<br>
+        <input type="password" v-model="oldValue">
+        新密码:<br>
+        <input type="password" v-model="newValue">
+        确认新密码:<br>
+        <button class="flag" @click.prevent="flag=!flag">x</button>
+        <input type="password" v-model="newValue2">
+        <input type="button" value="提交" @click="repass">
+    </div>
+    <!-- 左侧导航栏 -->
+    <div class="left" ref="left">
+            <!-- 拆分成组件 -->
+            <a class="uploadFile" @click.prevent='comName="manager"' style="cursor:pointer">用户界面</a>
+            <a @click.prevent='comName="zuzhi"' style="cursor:pointer">组织管理</a>
+            <a @click.prevent='comName="wendang"' style="cursor:pointer">目录管理</a>
+            <a @click.prevent='comName="reason"' style="cursor:pointer">原因管理</a>
+            <a @click.prevent='comName="fileWatch"' style="cursor:pointer">文档观察</a>
+    </div>
+    <component :is="comName"></component>
+</div>
+    <template id="wendang">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <input type="button" value="目录管理"  style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <div style="position: absolute;top: 75px;z-index: 3;width: 100%;text-align: center">
+                    请选择一级目录
+                    <select v-model="writeCategory" style="width: 200px;" @change="searchSecond()">
+                        <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+                    </select>
+                </div>
+                <div v-show="showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div v-show="AddFlag2" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAddB()">x</button>
+                        <select v-model="writeCategory" style="width: 200px;" @change=" searchSecond()" >
+                            <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+                        </select>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('一级目录')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>一级目录</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in category">
+                                    <td>{{item.categoryName}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('一级目录',item.categoryName,item.categoryId)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('一级目录',item.categoryId)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div >
+                        <input type="button" value="添加" @click="addB('二级目录')">
+                        <br>
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>二级目录</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in secondCategory">
+                                    <td>{{item.secondCategoryName}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('二级目录',item.secondCategoryName,item.secondCategoryId)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('二级目录',item.secondCategoryId)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="zuzhi">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <input type="button" value="换一批" @click="show()" style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <div v-show="!showFlag" style="position: absolute;top: 75px;z-index: 3;width: 30%;right: 25px;">
+                    请选择问题分类
+                    <select v-model="writeProblem" style="width: 200px;" @change="searchSecond()">
+                        <option v-for="item in problemClassification" :value="item.id">{{item.name}}</option>
+                    </select>
+                </div>
+                <div v-show="showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('状态判断')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>状态判断</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in statement">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('状态判断',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('状态判断',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('等级')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>等级</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in rank">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('等级',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('等级',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <input type="button" value="添加" @click="addA('审计层级')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>审计层级</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in auditHierarchy">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('审计层级',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('审计层级',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div v-show="!showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('责任区域')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>责任区域</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in responsibleArea">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('责任区域',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('责任区域',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('问题分类')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>问题分类</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in problemClassification">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('问题分类',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('问题分类',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <input type="button" value="添加" @click="addA('细分类型')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>细分类型</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in subdivisionType">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('细分类型',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('细分类型',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="manager">
+        <div class="right" ref="right">
+            <div class="right-main">
+                <div class="top">
+                    名字: <input type="text" v-model="sname"/> 编号: <input type="text" v-model="snumber"/>
+                    <input
+                            type="submit"
+                            style="width:150px;height: 50px;cursor: pointer;"
+                            value="添加用户"
+                            @click.prevent="feiUser()"
+                    />
+                    <div v-show="updateFlag" class="updateFlag" style="position: absolute;left: 0;right: 0;top: 0;bottom: 0;width:300px;height:300px;margin:auto;background-color: green;z-index: 3;">
+                        <button style="position: absolute;right: 5px;top: 10px;width: 20px;height: 20px;" @click="updateX()">x</button>
+                        上级: <br>
+                        <select v-model="shangJi">
+                            <option v-for="item in shang" :value="item.userId">{{item.msgAndNumber}}</option>
+                        </select> <br>
+                        具体分区: <br>
+                        <input type="text" v-model="detail" > <br>
+                        <input type="submit" value="提交" @click.prevent="sendUpdate">
+                    </div>
+                    <div class="userAdd" v-show="userAddflag" >
+                        <div class="title">请注册</div>
+                        <button @click="feiUser()">x</button>
+                        <form >
+                            编号:&nbsp;&nbsp;<input
+                                type="text"
+                                placeholder="编号"
+                                v-model="number"
+                                autocomplete="off"
+                        />
+                            姓名:&nbsp;&nbsp;<input
+                                type="text"
+                                placeholder="姓名"
+                                v-model="name"
+                                autocomplete="off"
+                        />
+                            密码:&nbsp;&nbsp;<input
+                                type="password"
+                                placeholder="密码"
+                                v-model="password"
+                                autocomplete="off"
+                        />
+                            确认:&nbsp;&nbsp;<input
+                                type="password"
+                                placeholder="确认密码"
+                                v-model="password2"
+                                autocomplete="off"
+                        />
+                            级别:
+                            <select v-model="level">
+                            <option value="车间长">车间长</option>
+                            <option value="工段长">工段长</option>
+                            <option value="班组长">班组长</option>
+                            </select>
+                            具体: <input type="text" placeholder="具体级别" v-model="detail">
+                            <input type="submit" value="提交" @click.prevent="sendRegister()">
+                        </form>
+                    </div>
+                </div>
+                <div class="userMessage" style="height: 400px;overflow-y: auto">
+                <table border="1" cellspacing='0' align="center">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>编号</th>
+                        <th>姓名</th>
+                        <th>级别</th>
+                        <th>具体级别</th>
+<!--                    <th>注册时间</th>-->
+                        <th>上级名称</th>
+                        <th>管理</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in searchGo()">
+                        <td align="center">{{index+1}}</td>
+                        <td align="center">{{item.number}}</td>
+                        <td align="center">{{item.name}}</td>
+                        <td align="center">{{item.level}}</td>
+                        <td align="center">{{item.detail}}</td>
+<!--                        <td align="center">{{item.createTime}}</td>-->
+                        <td align="center">
+                            {{item.msgAndNumber}}
+                            <!--<select v-model="item.msgAndNumber">
+                                <option v-for="another in search(item.level)">{{another.name}}</option>
+                            </select>-->
+                        </td>
+                        <td align="center"><a href="#" style="color:green"
+                                              @click.prevent="updateShang(item.level,item.userId)">修改上级</a>
+                            <a href="#" style="color:red" @click="del(item.userId,index)">删除</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="fileWatch">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <div class="fileWatch">
+                    <div class="fileLeft">
+                        一级目录
+                        <select v-model="writeCategory" @change="searchSecond()">
+                            <option v-for="item in category" :value="item.categoryId">{{item.categoryName}}</option>
+                        </select>
+                        <br>
+                        二级目录
+                        <select v-model="secondWriteCategory">
+                            <option v-for="item in secondCategory" :value="item.secondCategoryId">{{item.secondCategoryName}}</option>
+                        </select>
+                        <br>
+                        <input type="submit" value="查看" @click.prevent="seeDoc()">
+                    </div>
+                    <div class="fileRight">
+                        文档列表
+                        <div style='width:100%; height:400px; overflow-y:auto;'>
+                            <table border="1" cellspacing='0' align="center">
+                                <thead>
+                                <tr>
+                                    <th>序号</th>
+                                    <th>录入时间</th>
+                                    <th>名称</th>
+                                    <th>编辑</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for='(item,index) in doc'>
+                                    <td align="center">{{index+1}}</td>
+                                    <td align="center">{{item.happenTime}}</td>
+                                    <td align="center">
+                                        {{item.docOriginName}}
+                                    </td>
+                                    <td>
+                                        <a style="color: green;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
+                                        <a style="color: red;" @click.prevent="deleteDoc(item.docId)">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</template>
+    <template id="reason">
+        <div class="right" ref="right">
+            <div class="right-main" style="text-align: center;">
+                <input type="button" value="积分原因管理"  style="width: 150px;height: 50px;margin-top: 10px;background: green;">
+                <div v-show="showFlag" class="showGo">
+                    <div v-show="updateFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click="anniuUpdate()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="content">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendUpdate()">
+                    </div>
+                    <div v-show="AddFlag1" style="position: absolute;left:0;right: 0;top: 0;bottom:0;width: 300px;height: 200px;background: green;margin: auto;">
+                        <button style="position:absolute;top: 5px;right: 5px;width: 20px;height: 20px;" @click=" anniuAdd()">x</button>
+                        <input type="text" style="width: 198px;height: 35px;margin-top: 30px" v-model="addContent">
+                        <input type="button" style="width: 200px;height: 35px" value="提交" @click="sendAdd()">
+                    </div>
+                    <div>
+                        <input type="button" value="添加" @click="addA('积分原因')">
+                        <div style="height:380px;width:100%;overflow: auto;">
+                            <table border="1" cellspacing='0' align="center" >
+                                <thead>
+                                <tr>
+                                    <td>积分原因</td>
+                                    <td>管理</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="item in reasons">
+                                    <td>{{item.name}}</td>
+                                    <td>
+                                        <a @click.prevent="updateA('积分原因',item.name,item.id)" style="color: green;">修改</a>
+                                        <a @click.prevent="deleteA('积分原因',item.id)" style="color: red;">删除</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </template>
+    <script src="js/managerIndex.js"></script>
+</body>
+
+</html>

@@ -12,7 +12,15 @@ import java.util.List;
 public interface SafeProblemService {
     ResultInfo searchByCondition(SafeProblemForSearch safeProblemForSearch);
 
+    ResultInfo searchByThisMonth();
+
     ResultInfo upload(MultipartFile[] myFiles, User user);
 
     ResultInfo audit();
+
+    ResultInfo audit(Integer year, Integer month);
+
+    ResultInfo update(SafeProblem safeProblem);
+
+    ResultInfo searchById(String problemId);
 }
