@@ -65,7 +65,7 @@ html,body {
   text-align: center;
   font-size: 30px;
 }
-.right input{ 
+.right input{
   width: 375px;
   height: 30px;
   margin: 7px 0;
@@ -85,9 +85,7 @@ html,body {
   cursor: pointer;
 }
 /* 登录按钮 */
-.right input.login-submit {
-  margin-top: 35px;
-}
+
 /* 注册组件的上级div处理 */
 .higher-namearea {
   display: block;

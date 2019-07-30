@@ -46,7 +46,7 @@ public interface UserMapper {
     @Select("select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,level,detail from user where superior_id=#{userSuperiorId} and review_state!='已注销'")
     List<User> selectSonsBySuperiorId(@Param("userSuperiorId") String userSuperiorId);
 
-    @Select("<script> select user_id as userId,number,name,password,superior_id as superiorId,review_state as reviewState,create_time as createTime,level,detail from user " +
+    @Select("<script> select * from retailer " +
             "<where> 1=1 " +
             "<if test='number != null and number != \"\"'> " +
             "and number = #{number}" +
