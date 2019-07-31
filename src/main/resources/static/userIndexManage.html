@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="css/multiplex.css">
     <script src="lib/vue-2.4.0.js"></script>
     <script src="lib/axios.js"></script>
+    <link rel="stylesheet" href="js/layui/css/layui.css"  media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 
 <body>
@@ -56,7 +58,7 @@
 <!-- 文件上传组件 -->
 <template id='upload'>
     <div class='upload'>
-        <h2>请选择你要上传的Excel文件</h2>
+        <h2 style="color: #97F3C0;">请选择你要上传的Excel文件</h2>
         <form action="">
             <input type="file" name='myfiles' @change="upload($event)">
             <input type="submit" value='上传' v-show="buttonFlag" @click.prevent='submit($event)'>
@@ -87,7 +89,7 @@
                     <td align="center">{{item.number}}</td>
                     <td align="center">{{item.name}}</td>
                     <td align="center">{{item.commitTime}}</td>
-<!--                    <td align="center"><a style="color:green;cursor:pointer;" @click.prevent="go(item.recordId)">查看详情</a>-->
+                    <!--                    <td align="center"><a style="color:#009688;cursor:pointer;" @click.prevent="go(item.recordId)">查看详情</a>-->
                     </td>
                 </tr>
                 </tbody>
@@ -159,7 +161,7 @@
                             {{item.happenTime}}
                         </td>
                         <td>
-                            <a style="color: green;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
+                            <a style="color: #009688;" :href="'http://qiniu.snroom.com/@'+item.docNewName" :download="item.docOriginName">下载</a>
                             <a style="color: red;" @click.prevent="deleteDoc(item.docId)">删除</a>
                         </td>
                     </tr>
@@ -266,7 +268,7 @@
             积分: <input type="text" v-model="mark">
             <br>
             <br>
-            <input type="submit" value="提交" @click.prevent="send" style="background-color: green">
+            <input type="submit" value="提交" @click.prevent="send" style="background-color: #009688">
         </div>
     </div>
 </template>
@@ -326,7 +328,7 @@
                     <th>序号</th>
                     <th>姓名</th>
                     <th>总积分</th>
-<!--                    <th>编辑</th>-->
+                    <!--                    <th>编辑</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -334,9 +336,9 @@
                     <td align="center">0(自己)</td>
                     <td align="center">{{myMsg.name}}</td>
                     <td align="center">{{myMsg.mark}}</td>
-                   <!-- <td align="center" style="color: red;">
-                        不可编辑自己
-                    </td>-->
+                    <!-- <td align="center" style="color: red;">
+                         不可编辑自己
+                     </td>-->
                 </tr>
                 <tr v-for="(item,index) in search()">
                     <td align="center">{{index+1}}</td>

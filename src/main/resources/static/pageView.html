@@ -14,6 +14,8 @@
     <script src='lib/vue-2.4.0.js'></script>
     <script src="lib/axios.js"></script>
     <script src='lib/vue-router-3.0.1.js'></script>
+    <link rel="stylesheet" href="js/layui/css/layui.css"  media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 
 <body>
@@ -206,8 +208,8 @@
     <div class="zong right-main">
         输入年<input type="text" placeholder="例如 2019" v-model="year">
         输入月<input type="text" placeholder="例如 3" v-model="month">
-        <input type="button" value="点击搜索" @click="searchZong()" style="height: 50px;background-color: green">
-        <input type="button" class="toggle" value="换一批" @click="flag=!flag" style="background-color: green;">
+        <input type="button" value="点击搜索" @click="searchZong()" style="height: 50px;background-color: #009688">
+        <input type="button" class="toggle" value="换一批" @click="flag=!flag" style="background-color: #009688;">
         <div class="cengji" v-if="flag">
             <div class="cengjiAll" style="overflow:auto;">
                 车间-审计级别-数量

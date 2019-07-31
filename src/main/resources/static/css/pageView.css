@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family:微软雅黑;
+}
 .top select {
   margin-top: 10px;
     margin-right: 25px;
@@ -20,7 +25,7 @@ div.top{
   height: 50px;
   margin-top: 30px;
   cursor: pointer;
-    background-color: green;
+    background-color: #e6e6e6;
 }
 input.export {
     position: absolute;
@@ -30,7 +35,7 @@ input.export {
     width: 50px;
     height: 50px;
     cursor: pointer;
-    background-color: green;
+    background-color: #e6e6e6;
 }
 .xifen {
     width: 200px;
@@ -45,7 +50,7 @@ input.export {
   width: 550px;
   height: 205px;
     margin-top: 10px;
-  background-color: #2E9789;
+  background-color: #DEF3CA;
 }
 .cengjiLv {
   width: 550px;
