@@ -22,7 +22,7 @@ var vm = new Vue({
                 alert('确认密码和新密码不一致')
                 return;
             }
-            axios.post('http://localhost:8080/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
+            axios.post('http://60.205.187.142:9090/user/update_password?oldPassword=' + this.oldValue + '&newPassword=' + this.newValue)
                 .then(function (response) {
                     var code = response.data.code
                     var msg = response.data.msg
@@ -39,7 +39,7 @@ var vm = new Vue({
         },
         exit: function () {
             sessionStorage.removeItem('user')
-            axios.get('http://localhost:8080/user/logout')
+            axios.get('http://60.205.187.142:9090/user/logout')
                 .then(function(response){
                     var code = response.data.code
                     location.href = 'index.html'
@@ -86,7 +86,7 @@ var vm = new Vue({
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
                         }
                     };
-                    axios.post('http://localhost:8080/doc/upload', formdata, config)
+                    axios.post('http://60.205.187.142:9090/doc/upload', formdata, config)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -104,7 +104,7 @@ var vm = new Vue({
                 },
                 searchSecond:function(){
                     var me = this;
-                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_secondCategory?categoryId='+me.writeCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -121,7 +121,7 @@ var vm = new Vue({
             },
             created: function() {
                 var me = this;
-                axios.get('http://localhost:8080/doc/get_category')
+                axios.get('http://60.205.187.142:9090/doc/get_category')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -151,7 +151,7 @@ var vm = new Vue({
             methods:{
                 searchSecond:function(){
                     var me = this;
-                    axios.get('http://localhost:8080/doc/get_secondCategory?categoryId='+me.writeCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_secondCategory?categoryId='+me.writeCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -167,7 +167,7 @@ var vm = new Vue({
                 },
                 seeDoc: function() {
                     var me = this
-                    axios.get('http://localhost:8080/doc/get_doc?secondCategoryId='+me.secondWriteCategory)
+                    axios.get('http://60.205.187.142:9090/doc/get_doc?secondCategoryId='+me.secondWriteCategory)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -184,7 +184,7 @@ var vm = new Vue({
                 },
                 deleteDoc:function(id) {
                     var me = this
-                    axios.get('http://localhost:8080/doc/delete_doc?docId='+id)
+                    axios.get('http://60.205.187.142:9090/doc/delete_doc?docId='+id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -201,7 +201,7 @@ var vm = new Vue({
             },
             created: function() {
                 var me = this;
-                axios.get('http://localhost:8080/doc/get_category')
+                axios.get('http://60.205.187.142:9090/doc/get_category')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.msg
@@ -240,7 +240,7 @@ var vm = new Vue({
                         return;
                     }
                     var me = this
-                    axios.post('http://localhost:8080/user/admin_delete?userId=' + id)
+                    axios.post('http://60.205.187.142:9090/user/admin_delete?userId=' + id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -279,7 +279,7 @@ var vm = new Vue({
 
                     axios({
                         method: 'post',
-                        url: 'http://localhost:8080/user/register',
+                        url: 'http://60.205.187.142:9090/user/register',
                         data: JSON.stringify(data),
                         headers: {
                             'Content-Type': 'application/json'
@@ -309,7 +309,7 @@ var vm = new Vue({
                     this.level = '班组长'
                 }
                 var me = this
-                axios.get('http://localhost:8080/user/user_search_part')
+                axios.get('http://60.205.187.142:9090/user/user_search_part')
                     .then(function (response) {
                         var code = response.data.code
                         var msg = response.data.data
@@ -323,7 +323,7 @@ var vm = new Vue({
                         }
 
                     });
-                /*axios.get('http://localhost:8080/user/register_superior')
+                /*axios.get('http://60.205.187.142:9090/user/register_superior')
                     .then(function (response) {
                         var code = response.data.code
                         var position = response.data.data
@@ -380,7 +380,7 @@ var vm = new Vue({
                             'Content-Type': 'multipart/form-data'  //之前说的以表单传数据的格式来传递fromdata
                         }
                     };
-                    axios.post('http://localhost:8080/safe_problem/upload', formdata, config)
+                    axios.post('http://60.205.187.142:9090/safe_problem/upload', formdata, config)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -417,7 +417,7 @@ var vm = new Vue({
                             str += ","
                         }
                     }
-                    axios.get('http://localhost:8080/record/safe_problems_batch?recordIds='+str)
+                    axios.get('http://60.205.187.142:9090/record/safe_problems_batch?recordIds='+str)
                         .then(function(response){
                             var code = response.data.code
                             var msg = response.data.msg
@@ -447,7 +447,7 @@ var vm = new Vue({
                     }
                 },
                 /*go: function (id) {
-                    axios.get('http://localhost:8080/record/safe_problems?recordId=' + id)
+                    axios.get('http://60.205.187.142:9090/record/safe_problems?recordId=' + id)
                         .then(function (response) {
                             var code = response.data.code
                             var msg = response.data.msg
@@ -503,7 +503,7 @@ var vm = new Vue({
                     }
                     axios({
                         method:'post',
-                        url:'http://localhost:8080/user/mark',
+                        url:'http://60.205.187.142:9090/user/mark',
                         data: JSON.stringify(data),
                         headers: {
                             'Content-Type': 'application/json'
@@ -527,7 +527,7 @@ var vm = new Vue({
                 var me = this
                 if(user.level!='班组长') {
                     me.flag = false
-                    axios.get('http://localhost:8080/user/direct_sons?userId='+user.userId)
+                    axios.get('http://60.205.187.142:9090/user/direct_sons?userId='+user.userId)
                         .then(function(response){
                             var code = response.data.code
                             var msg = response.data.msg
@@ -542,7 +542,7 @@ var vm = new Vue({
                             }
                         })
                     }
-                    axios.get('http://localhost:8080/admin/reason')
+                    axios.get('http://60.205.187.142:9090/admin/reason')
                         .then(function(response){
                             var code = response.data.code
                             var msg = response.data.msg
@@ -579,7 +579,7 @@ var vm = new Vue({
                     }
                     axios({
                         method:'post',
-                        url:'http://localhost:8080/user/mark_delete',
+                        url:'http://60.205.187.142:9090/user/mark_delete',
                         data:JSON.stringify(data),
                         headers: {
                             'Content-Type': 'application/json'
@@ -612,7 +612,7 @@ var vm = new Vue({
                 var user = JSON.parse(sessionStorage.getItem('user'))
                 var id = user.userId
                 var me = this
-                axios.get('http://localhost:8080/user/self_and_sons_mark?userId='+id)
+                axios.get('http://60.205.187.142:9090/user/self_and_sons_mark?userId='+id)
                     .then(function(response){
                         var code = response.data.code
                         var msg = response.data.msg
@@ -656,7 +656,7 @@ var vm = new Vue({
                     }
                     axios({
                         method:'post',
-                        url:'http://localhost:8080/user/mark_delete',
+                        url:'http://60.205.187.142:9090/user/mark_delete',
                         data:JSON.stringify(data),
                         headers: {
                             'Content-Type': 'application/json'
@@ -688,7 +688,7 @@ var vm = new Vue({
                 var user = JSON.parse(sessionStorage.getItem('user'))
                 var id = user.userId
                 var me = this
-                axios.get('http://localhost:8080/user/self_and_sons_mark_sum?userId='+id)
+                axios.get('http://60.205.187.142:9090/user/self_and_sons_mark_sum?userId='+id)
                     .then(function(response){
                         var code = response.data.code
                         var msg = response.data.msg
@@ -716,7 +716,7 @@ var vm = new Vue({
     },
     created: function () {
         var me = this
-        axios.get('http://localhost:8080/record/relative_records')
+        axios.get('http://60.205.187.142:9090/record/relative_records')
             .then(function (response) {
                 var code = response.data.code
                 var msg = response.data.msg
