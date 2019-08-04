@@ -171,7 +171,7 @@ public class UserController {
     public ResultInfo mark(@RequestBody Map<String, String> params) {//@RequestBody Integration integration, @RequestBody Map<String, String> params
         String level = params.get("level");
         //因为不支持同时类和params，重新组装一下
-        Integration integration = new Integration(params.get("name"), params.get("reason"), Double.parseDouble(params.get("mark")), params.get("userId"), params.get("markId"));
+        Integration integration = new Integration(params.get("name"), params.get("reason"), Double.parseDouble((null==params.get("mark")||"".equals(params.get("mark")))?"0":params.get("mark")), params.get("userId"), params.get("markId"));
         if (StringUtils.isEmpty(level)) {
             return new ResultInfo(0, "输入当前用户级别");
         }

@@ -10,11 +10,13 @@
     <link rel="stylesheet" href="css/detail.css">
     <script src='lib/vue-2.4.0.js'></script>
     <script src="lib/axios.js"></script>
+    <link rel="stylesheet" href="js/layui/css/layui.css"  media="all">
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 
 <body>
 <div class="main-title">
-    安全审计统计系统
+    安全审计问题管理系统
 </div>
 <div id="app">
     <div class="welcome">
@@ -159,7 +161,7 @@
                     </thead>
                     <tbody>
                     <tr v-for="(item,index) in search()">
-                        <td align="center"><a href="#" style="color: green;" @click="edit(item.problemId)">编辑</a></td>
+                        <td align="center"><a href="#" style="color: #009688;" @click="edit(item.problemId)">编辑</a></td>
                         <td align="center">{{index+1}}</td>
                         <td align="center">{{item.auditArea}}</td>
                         <td align="center">{{item.proposeTime}}</td>
